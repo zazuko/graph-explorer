@@ -1,27 +1,40 @@
 import { createElement, ClassAttributes } from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Workspace, WorkspaceProps, SparqlDataProvider, OWLRDFSSettings } from '../src/ontodia/index';
+import {
+  Workspace,
+  WorkspaceProps,
+  SparqlDataProvider,
+  OWLRDFSSettings,
+} from '../src/ontodia/index';
 
-import { onPageLoad, tryLoadLayoutFromLocalStorage, saveLayoutToLocalStorage } from './common';
+import {
+  onPageLoad,
+  tryLoadLayoutFromLocalStorage,
+  saveLayoutToLocalStorage,
+} from './common';
 
 function onWorkspaceMounted(workspace: Workspace) {
-    if (!workspace) { return; }
+  if (!workspace) {
+    return;
+  }
 
-    const diagram = tryLoadLayoutFromLocalStorage();
-    workspace.getModel().importLayout({
-        diagram,
-        validateLinks: true,
-        dataProvider: new SparqlDataProvider({
-            endpointUrl: '/sparql',
-            imagePropertyUris: [
-                'http://xmlns.com/foaf/0.1/img',
-            ],
-            // queryMethod: SparqlQueryMethod.POST
-        }, {...OWLRDFSSettings, ...{
-            fullTextSearch: {
-                prefix: 'PREFIX bds: <http://www.bigdata.com/rdf/search#>' + '\n',
-                queryPattern: `
+  const diagram = tryLoadLayoutFromLocalStorage();
+  workspace.getModel().importLayout({
+    diagram,
+    validateLinks: true,
+    dataProvider: new SparqlDataProvider(
+      {
+        endpointUrl: '/sparql',
+        imagePropertyUris: ['http://xmlns.com/foaf/0.1/img'],
+        // queryMethod: SparqlQueryMethod.POST
+      },
+      {
+        ...OWLRDFSSettings,
+        ...{
+          fullTextSearch: {
+            prefix: 'PREFIX bds: <http://www.bigdata.com/rdf/search#>' + '\n',
+            queryPattern: `
               ?inst rdfs:label ?searchLabel.
               SERVICE bds:search {
                      ?searchLabel bds:search "\${text}*" ;
@@ -30,9 +43,9 @@ function onWorkspaceMounted(workspace: Workspace) {
                                   bds:matchAllTerms 'true';
                                   bds:relevance ?score.
               }
-            `
-            },
-            elementInfoQuery: `
+            `,
+          },
+          elementInfoQuery: `
             CONSTRUCT {
                 ?inst rdf:type ?class;
                     rdfs:label ?label;
@@ -46,21 +59,24 @@ function onWorkspaceMounted(workspace: Workspace) {
 			    VALUES ?labelProp { rdfs:label foaf:name }
             } VALUES (?inst) {\${ids}}
         `,
-        }
-        }),
-    });
+        },
+      }
+    ),
+  });
 }
 
 const props: WorkspaceProps & ClassAttributes<Workspace> = {
-    ref: onWorkspaceMounted,
-    onSaveDiagram: workspace => {
-        const diagram = workspace.getModel().exportLayout();
-        window.location.hash = saveLayoutToLocalStorage(diagram);
-        window.location.reload();
-    },
-    viewOptions: {
-        onIriClick: ({iri}) => window.open(iri),
-    },
+  ref: onWorkspaceMounted,
+  onSaveDiagram: (workspace) => {
+    const diagram = workspace.getModel().exportLayout();
+    window.location.hash = saveLayoutToLocalStorage(diagram);
+    window.location.reload();
+  },
+  viewOptions: {
+    onIriClick: ({ iri }) => window.open(iri),
+  },
 };
 
-onPageLoad(container => ReactDOM.render(createElement(Workspace, props), container));
+onPageLoad((container) =>
+  ReactDOM.render(createElement(Workspace, props), container)
+);

@@ -1,7 +1,12 @@
 import { createElement, ClassAttributes } from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Workspace, WorkspaceProps, RDFDataProvider, GraphBuilder } from '../src/ontodia/index';
+import {
+  Workspace,
+  WorkspaceProps,
+  RDFDataProvider,
+  GraphBuilder,
+} from '../src/ontodia/index';
 
 import { onPageLoad } from './common';
 
@@ -51,42 +56,48 @@ const DIAGRAM = `@prefix fts: <https://w3id.org/datafabric.cc/ontologies/fts#> .
                         ex:LE-1-RegInfo-1157847449121 .`;
 
 function onWorkspaceMounted(workspace: Workspace) {
-    if (!workspace) { return; }
+  if (!workspace) {
+    return;
+  }
 
-    const provider = new RDFDataProvider({
-        data: [
-            {
-                content: EXAMPLE,
-                type: 'text/turtle',
-            }
-        ],
-        dataFetching: false,
-        parsers: {
-            'text/turtle': new N3Parser(),
-            'application/rdf+xml': new RdfXmlParser(),
-            'application/ld+json': new JsonLdParser(),
-        },
-    });
-    const graphBuilder = new GraphBuilder(provider);
-    const loadingGraph = graphBuilder.getGraphFromTurtleGraph(DIAGRAM);
+  const provider = new RDFDataProvider({
+    data: [
+      {
+        content: EXAMPLE,
+        type: 'text/turtle',
+      },
+    ],
+    dataFetching: false,
+    parsers: {
+      'text/turtle': new N3Parser(),
+      'application/rdf+xml': new RdfXmlParser(),
+      'application/ld+json': new JsonLdParser(),
+    },
+  });
+  const graphBuilder = new GraphBuilder(provider);
+  const loadingGraph = graphBuilder.getGraphFromTurtleGraph(DIAGRAM);
 
-    workspace.showWaitIndicatorWhile(loadingGraph);
+  workspace.showWaitIndicatorWhile(loadingGraph);
 
-    loadingGraph.then(({diagram, preloadedElements}) => {
-        const model = workspace.getModel();
-        return model.importLayout({
-            diagram,
-            preloadedElements,
-            dataProvider: provider,
-        });
-    }).then(() => {
-        workspace.forceLayout();
-        workspace.zoomToFit();
+  loadingGraph
+    .then(({ diagram, preloadedElements }) => {
+      const model = workspace.getModel();
+      return model.importLayout({
+        diagram,
+        preloadedElements,
+        dataProvider: provider,
+      });
+    })
+    .then(() => {
+      workspace.forceLayout();
+      workspace.zoomToFit();
     });
 }
 
 const props: WorkspaceProps & ClassAttributes<Workspace> = {
-    ref: onWorkspaceMounted,
+  ref: onWorkspaceMounted,
 };
 
-onPageLoad(container => ReactDOM.render(createElement(Workspace, props), container));
+onPageLoad((container) =>
+  ReactDOM.render(createElement(Workspace, props), container)
+);

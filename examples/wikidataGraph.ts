@@ -1,23 +1,34 @@
 import { createElement, ClassAttributes } from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Workspace, WorkspaceProps, SparqlDataProvider, SparqlGraphBuilder, WikidataSettings } from '../src/ontodia/index';
+import {
+  Workspace,
+  WorkspaceProps,
+  SparqlDataProvider,
+  SparqlGraphBuilder,
+  WikidataSettings,
+} from '../src/ontodia/index';
 
 import { onPageLoad } from './common';
 
 function onWorkspaceMounted(workspace: Workspace) {
-    if (!workspace) { return; }
+  if (!workspace) {
+    return;
+  }
 
-    const dataProvider = new SparqlDataProvider({
-        endpointUrl: '/wikidata',
-        imagePropertyUris: [
-            'http://www.wikidata.org/prop/direct/P18',
-            'http://www.wikidata.org/prop/direct/P154',
-        ],
-    }, WikidataSettings);
-    const graphBuilder = new SparqlGraphBuilder(dataProvider);
+  const dataProvider = new SparqlDataProvider(
+    {
+      endpointUrl: '/wikidata',
+      imagePropertyUris: [
+        'http://www.wikidata.org/prop/direct/P18',
+        'http://www.wikidata.org/prop/direct/P154',
+      ],
+    },
+    WikidataSettings
+  );
+  const graphBuilder = new SparqlGraphBuilder(dataProvider);
 
-    const loadingGraph = graphBuilder.getGraphFromConstruct(`
+  const loadingGraph = graphBuilder.getGraphFromConstruct(`
         CONSTRUCT { ?current ?p ?o. }
         WHERE {
             {
@@ -30,23 +41,28 @@ function onWorkspaceMounted(workspace: Workspace) {
         LIMIT 20
         VALUES (?current) {
             (<http://www.wikidata.org/entity/Q567>)
-        }`,
-    );
-    workspace.showWaitIndicatorWhile(loadingGraph);
+        }`);
+  workspace.showWaitIndicatorWhile(loadingGraph);
 
-    loadingGraph.then(({diagram, preloadedElements}) =>
-        workspace.getModel().importLayout({diagram, preloadedElements, dataProvider}),
-    ).then(() => {
-        workspace.forceLayout();
-        workspace.zoomToFit();
+  loadingGraph
+    .then(({ diagram, preloadedElements }) =>
+      workspace
+        .getModel()
+        .importLayout({ diagram, preloadedElements, dataProvider })
+    )
+    .then(() => {
+      workspace.forceLayout();
+      workspace.zoomToFit();
     });
 }
 
 const props: WorkspaceProps & ClassAttributes<Workspace> = {
-    ref: onWorkspaceMounted,
-    viewOptions: {
-        onIriClick: ({iri}) => window.open(iri),
-    },
+  ref: onWorkspaceMounted,
+  viewOptions: {
+    onIriClick: ({ iri }) => window.open(iri),
+  },
 };
 
-onPageLoad(container => ReactDOM.render(createElement(Workspace, props), container));
+onPageLoad((container) =>
+  ReactDOM.render(createElement(Workspace, props), container)
+);

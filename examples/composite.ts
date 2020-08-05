@@ -2,38 +2,47 @@ import { createElement, ClassAttributes } from 'react';
 import * as ReactDOM from 'react-dom';
 
 import {
-    Workspace,
-    WorkspaceProps,
-    RDFDataProvider,
-    CompositeDataProvider,
-    SparqlDataProvider,
-    SparqlQueryMethod,
-    WikidataSettings,
-    LinkModel,
- } from '../src/ontodia/index';
+  Workspace,
+  WorkspaceProps,
+  RDFDataProvider,
+  CompositeDataProvider,
+  SparqlDataProvider,
+  SparqlQueryMethod,
+  WikidataSettings,
+  LinkModel,
+} from '../src/ontodia/index';
 
 const N3Parser: any = require('rdf-parser-n3');
 const RdfXmlParser: any = require('rdf-parser-rdfxml');
 const JsonLdParser: any = require('rdf-parser-jsonld');
 
-import { onPageLoad, tryLoadLayoutFromLocalStorage, saveLayoutToLocalStorage } from './common';
+import {
+  onPageLoad,
+  tryLoadLayoutFromLocalStorage,
+  saveLayoutToLocalStorage,
+} from './common';
 import { LinkBinding } from '../src/ontodia/data/sparql/sparqlModels';
 import { getLinksInfo } from '../src/ontodia/data/sparql/responseHandler';
 
 const data = require<string>('./resources/orgOntology.ttl');
 
 class TransformingDataProvider extends SparqlDataProvider {
+  createRefQueryPart(params: {
+    elementId: string;
+    linkId?: string;
+    direction?: 'in' | 'out';
+  }): string {
+    let refQueryPart = '';
+    const refElementIRI = `<${params.elementId}>`;
+    const refElementLinkIRI = params.linkId ? `<${params.linkId}>` : undefined;
 
-    createRefQueryPart(params: { elementId: string; linkId?: string; direction?: 'in' | 'out'}): string {
-        let refQueryPart = '';
-        const refElementIRI = `<${params.elementId}>`;
-        const refElementLinkIRI = params.linkId ? `<${params.linkId}>` : undefined;
-
-        //  link to element with specified link type
-        // if direction is not specified, provide both patterns and union them
-        // FILTER ISIRI is used to prevent blank nodes appearing in results
-        if (params.elementId && params.linkId) {
-            refQueryPart += !params.direction || params.direction === 'out' ? `
+    //  link to element with specified link type
+    // if direction is not specified, provide both patterns and union them
+    // FILTER ISIRI is used to prevent blank nodes appearing in results
+    if (params.elementId && params.linkId) {
+      refQueryPart +=
+        !params.direction || params.direction === 'out'
+          ? `
                 { ${refElementIRI} ${refElementLinkIRI} ?inst . FILTER ISIRI(?inst)}
                 UNION
                 { ${refElementIRI} ${refElementLinkIRI} ?literalId.
@@ -41,16 +50,20 @@ class TransformingDataProvider extends SparqlDataProvider {
     		        ?property wdt:P1630|wdt:P1921 ?template.
                     BIND(IRI(REPLACE(?template, "\\\\$1", ?literalId)) as ?inst)
                 }
-                ` : '';
-            refQueryPart += !params.direction ? ' UNION ' : '';
-            refQueryPart += !params.direction ||
-                params.direction === 'in' ?
-                    `{  ?inst ${refElementLinkIRI} ${refElementIRI} . FILTER ISIRI(?inst)}` : '';
-        }
+                `
+          : '';
+      refQueryPart += !params.direction ? ' UNION ' : '';
+      refQueryPart +=
+        !params.direction || params.direction === 'in'
+          ? `{  ?inst ${refElementLinkIRI} ${refElementIRI} . FILTER ISIRI(?inst)}`
+          : '';
+    }
 
-        // all links to current element
-        if (params.elementId && !params.linkId) {
-            refQueryPart += !params.direction || params.direction === 'out' ? `
+    // all links to current element
+    if (params.elementId && !params.linkId) {
+      refQueryPart +=
+        !params.direction || params.direction === 'out'
+          ? `
                 { ${refElementIRI} ?link ?inst . FILTER ISIRI(?inst)}
                 UNION
                 { ${refElementIRI} ?link ?literalId.
@@ -58,21 +71,26 @@ class TransformingDataProvider extends SparqlDataProvider {
     		        ?property wdt:P1630|wdt:P1921 ?template.
                     BIND(IRI(REPLACE(?template, "\\\\$1", ?literalId)) as ?inst)
                 }
-                ` : '';
-            refQueryPart += !params.direction ? ' UNION ' : '';
-            refQueryPart += !params.direction ||
-                params.direction === 'in' ?
-                    `{  ?inst ?link ${refElementIRI} . FILTER ISIRI(?inst)}` : '';
-        }
-        return refQueryPart;
+                `
+          : '';
+      refQueryPart += !params.direction ? ' UNION ' : '';
+      refQueryPart +=
+        !params.direction || params.direction === 'in'
+          ? `{  ?inst ?link ${refElementIRI} . FILTER ISIRI(?inst)}`
+          : '';
     }
+    return refQueryPart;
+  }
 
-    linksInfo(params: {
-        elementIds: string[];
-        linkTypeIds: string[];
-    }): Promise<LinkModel[]> {
-        const ids = params.elementIds.map(uri => `<${uri}>`).map(id => ` ( ${id} )`).join(' ');
-        const query = `PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+  linksInfo(params: {
+    elementIds: string[];
+    linkTypeIds: string[];
+  }): Promise<LinkModel[]> {
+    const ids = params.elementIds
+      .map((uri) => `<${uri}>`)
+      .map((id) => ` ( ${id} )`)
+      .join(' ');
+    const query = `PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
             SELECT ?source ?type ?target
             WHERE {
@@ -91,33 +109,37 @@ class TransformingDataProvider extends SparqlDataProvider {
                 }
             }
         `;
-        return this.executeSparqlQuery<LinkBinding>(query).then(getLinksInfo);
-    }
+    return this.executeSparqlQuery<LinkBinding>(query).then(getLinksInfo);
+  }
 }
 
 function onWorkspaceMounted(workspace: Workspace) {
-    if (!workspace) { return; }
+  if (!workspace) {
+    return;
+  }
 
-    const rdfDataProvider = new RDFDataProvider({
-        data: [
-            {content: data, type: 'text/turtle'},
-        ],
-        dataFetching: true,
-        parsers: {
-            'text/turtle': new N3Parser(),
-            'application/rdf+xml': new RdfXmlParser(),
-            'application/ld+json': new JsonLdParser(),
-        },
-    });
+  const rdfDataProvider = new RDFDataProvider({
+    data: [{ content: data, type: 'text/turtle' }],
+    dataFetching: true,
+    parsers: {
+      'text/turtle': new N3Parser(),
+      'application/rdf+xml': new RdfXmlParser(),
+      'application/ld+json': new JsonLdParser(),
+    },
+  });
 
-    const sparqlDataProvider = new TransformingDataProvider({
-        endpointUrl: '/wikidata',
-        imagePropertyUris: [
-            'http://www.wikidata.org/prop/direct/P18',
-            'http://www.wikidata.org/prop/direct/P154',
-        ],
-        queryMethod: SparqlQueryMethod.POST,
-    }, {...WikidataSettings, ...{
+  const sparqlDataProvider = new TransformingDataProvider(
+    {
+      endpointUrl: '/wikidata',
+      imagePropertyUris: [
+        'http://www.wikidata.org/prop/direct/P18',
+        'http://www.wikidata.org/prop/direct/P154',
+      ],
+      queryMethod: SparqlQueryMethod.POST,
+    },
+    {
+      ...WikidataSettings,
+      ...{
         linkTypesOfQuery: `SELECT DISTINCT ?link
         WHERE {
             {
@@ -160,32 +182,36 @@ function onWorkspaceMounted(workspace: Workspace) {
         filterAdditionalRestriction: `FILTER ISIRI(?inst)
                         BIND(STR(?inst) as ?strInst)
 `,
-    }});
+      },
+    }
+  );
 
-    const diagram = tryLoadLayoutFromLocalStorage();
-    workspace.getModel().importLayout({
-        diagram,
-        validateLinks: true,
-        dataProvider: new CompositeDataProvider(
-            [
-                {name: 'SPARQL Provider', dataProvider: sparqlDataProvider},
-                {name: 'RDF Provider', dataProvider: rdfDataProvider},
-            ],
-            {mergeMode: 'sequentialFetching'}
-        ),
-    });
+  const diagram = tryLoadLayoutFromLocalStorage();
+  workspace.getModel().importLayout({
+    diagram,
+    validateLinks: true,
+    dataProvider: new CompositeDataProvider(
+      [
+        { name: 'SPARQL Provider', dataProvider: sparqlDataProvider },
+        { name: 'RDF Provider', dataProvider: rdfDataProvider },
+      ],
+      { mergeMode: 'sequentialFetching' }
+    ),
+  });
 }
 
 const props: WorkspaceProps & ClassAttributes<Workspace> = {
-    ref: onWorkspaceMounted,
-    onSaveDiagram: workspace => {
-        const diagram = workspace.getModel().exportLayout();
-        window.location.hash = saveLayoutToLocalStorage(diagram);
-        window.location.reload();
-    },
-    viewOptions: {
-        onIriClick: ({iri}) => window.open(iri),
-    },
+  ref: onWorkspaceMounted,
+  onSaveDiagram: (workspace) => {
+    const diagram = workspace.getModel().exportLayout();
+    window.location.hash = saveLayoutToLocalStorage(diagram);
+    window.location.reload();
+  },
+  viewOptions: {
+    onIriClick: ({ iri }) => window.open(iri),
+  },
 };
 
-onPageLoad(container => ReactDOM.render(createElement(Workspace, props), container));
+onPageLoad((container) =>
+  ReactDOM.render(createElement(Workspace, props), container)
+);
