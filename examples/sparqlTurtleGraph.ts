@@ -98,6 +98,6 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
   ref: onWorkspaceMounted,
 };
 
-onPageLoad((container) =>
-  ReactDOM.render(createElement(Workspace, props), container)
-);
+onPageLoad((container) => {
+  ReactDOM.render(createElement(Workspace, props), container);
+});

@@ -50,6 +50,6 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
   },
 };
 
-onPageLoad((container) =>
-  ReactDOM.render(createElement(Workspace, props), container)
-);
+onPageLoad((container) => {
+  ReactDOM.render(createElement(Workspace, props), container);
+});

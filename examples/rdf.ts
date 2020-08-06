@@ -22,7 +22,7 @@ const N3Parser: any = require('rdf-parser-n3');
 const RdfXmlParser: any = require('rdf-parser-rdfxml');
 const JsonLdParser: any = require('rdf-parser-jsonld');
 
-const data = require<string>('./resources/orgOntology.ttl');
+const data = require('./resources/orgOntology.ttl');
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {
@@ -86,6 +86,6 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
   },
 };
 
-onPageLoad((container) =>
-  ReactDOM.render(createElement(Workspace, props), container)
-);
+onPageLoad((container) => {
+  ReactDOM.render(createElement(Workspace, props), container);
+});

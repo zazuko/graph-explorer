@@ -24,7 +24,7 @@ import {
 import { LinkBinding } from '../src/ontodia/data/sparql/sparqlModels';
 import { getLinksInfo } from '../src/ontodia/data/sparql/responseHandler';
 
-const data = require<string>('./resources/orgOntology.ttl');
+const data = require('./resources/orgOntology.ttl');
 
 class TransformingDataProvider extends SparqlDataProvider {
   createRefQueryPart(params: {
@@ -212,6 +212,6 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
   },
 };
 
-onPageLoad((container) =>
-  ReactDOM.render(createElement(Workspace, props), container)
-);
+onPageLoad((container) => {
+  ReactDOM.render(createElement(Workspace, props), container);
+});

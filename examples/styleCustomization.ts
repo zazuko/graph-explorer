@@ -14,10 +14,8 @@ import {
   saveLayoutToLocalStorage,
 } from './common';
 
-const certificateIcon = require<
-  string
->('../images/font-awesome/certificate-solid.svg');
-const cogIcon = require<string>('../images/font-awesome/cog-solid.svg');
+const certificateIcon = require('../images/font-awesome/certificate-solid.svg');
+const cogIcon = require('../images/font-awesome/cog-solid.svg');
 
 const CUSTOM_LINK_TEMPLATE: LinkTemplate = {
   markerSource: {
@@ -94,6 +92,6 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
   linkTemplateResolver: (type) => CUSTOM_LINK_TEMPLATE,
 };
 
-onPageLoad((container) =>
-  ReactDOM.render(createElement(Workspace, props), container)
-);
+onPageLoad((container) => {
+  ReactDOM.render(createElement(Workspace, props), container);
+});

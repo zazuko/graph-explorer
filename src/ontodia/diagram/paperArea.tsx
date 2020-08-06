@@ -295,7 +295,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
             }
           />
           {watermarkSvg ? (
-            <a href={watermarkUrl} target="_blank" rel="noopener">
+            <a href={watermarkUrl} target="_blank" rel="noopener noreferrer">
               <img
                 className={`${CLASS_NAME}__watermark`}
                 src={watermarkSvg}

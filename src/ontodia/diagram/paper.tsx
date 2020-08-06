@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component, CSSProperties } from 'react';
+import { Component, CSSProperties, SVGProps } from 'react';
 
 import { Cell, LinkVertex } from './elements';
 import { ElementLayer } from './elementLayer';
@@ -129,7 +129,7 @@ export interface PaperTransform {
 }
 
 export interface TransformedSvgCanvasProps
-  extends React.HTMLProps<SVGSVGElement> {
+  extends React.SVGProps<SVGSVGElement> {
   paperTransform: PaperTransform;
 }
 

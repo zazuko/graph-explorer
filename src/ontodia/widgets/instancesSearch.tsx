@@ -21,8 +21,8 @@ import {
   WorkspaceEventKey,
 } from '../workspace/workspaceContext';
 
-const DirectionInImage = require<string>('../../../images/direction-in.png');
-const DirectionOutImage = require<string>('../../../images/direction-out.png');
+const DirectionInImage = require('../../../images/direction-in.png');
+const DirectionOutImage = require('../../../images/direction-out.png');
 
 export interface InstancesSearchProps {
   className?: string;

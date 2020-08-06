@@ -13,10 +13,10 @@ import {
   saveLayoutToLocalStorage,
 } from './common';
 
-const CLASSES = require<any>('./resources/classes.json');
-const LINK_TYPES = require<any>('./resources/linkTypes.json');
-const ELEMENTS = require<any>('./resources/elements.json');
-const LINKS = require<any>('./resources/links.json');
+const CLASSES = require('./resources/classes.json');
+const LINK_TYPES = require('./resources/linkTypes.json');
+const ELEMENTS = require('./resources/elements.json');
+const LINKS = require('./resources/links.json');
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {
@@ -43,6 +43,6 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
   },
 };
 
-onPageLoad((container) =>
-  ReactDOM.render(createElement(Workspace, props), container)
-);
+onPageLoad((container) => {
+  ReactDOM.render(createElement(Workspace, props), container);
+});

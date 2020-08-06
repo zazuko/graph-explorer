@@ -18,7 +18,7 @@ interface CanvgOptions {
   ignoreDimensions?: boolean;
   ignoreClear?: boolean;
 }
-const canvg = require<CanvgRender>('canvg-fixed');
+const canvg = require('canvg-fixed');
 
 const SVG_NAMESPACE: 'http://www.w3.org/2000/svg' =
   'http://www.w3.org/2000/svg';
