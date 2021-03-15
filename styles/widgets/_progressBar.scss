@@ -1,4 +1,4 @@
-@keyframes ontodia-progress-bar-stripes {
+@keyframes graph-explorer-progress-bar-stripes {
   from {
     background-position: 40px 0;
   }
@@ -7,7 +7,7 @@
   }
 }
 
-.ontodia-progress-bar {
+.graph-explorer-progress-bar {
   flex-shrink: 0;
   -webkit-flex-shrink: 0; /* safari 8 */
   width: 100%;
@@ -32,7 +32,7 @@
     background-repeat: repeat-x;
     background-size: 40px 40px;
 
-    animation: ontodia-progress-bar-stripes 2s linear infinite;
+    animation: graph-explorer-progress-bar-stripes 2s linear infinite;
   }
 
   &--error &__bar {

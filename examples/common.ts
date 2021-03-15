@@ -1,7 +1,7 @@
 import {
   SerializedDiagram,
   convertToSerializedDiagram,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 export function onPageLoad(callback: (container: HTMLDivElement) => void) {
   document.addEventListener('DOMContentLoaded', () => {

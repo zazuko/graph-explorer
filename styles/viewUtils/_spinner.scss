@@ -1,6 +1,6 @@
-.ontodia-spinner {
+.graph-explorer-spinner {
   &__arrow {
-    animation-name: ontodia-spinner-rotation;
+    animation-name: graph-explorer-spinner-rotation;
     animation-duration: 1.5s;
     animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
     animation-iteration-count: infinite;
@@ -11,7 +11,7 @@
   }
 }
 
-@keyframes ontodia-spinner-rotation {
+@keyframes graph-explorer-spinner-rotation {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }

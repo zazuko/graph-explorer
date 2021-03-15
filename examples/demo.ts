@@ -5,7 +5,7 @@ import {
   Workspace,
   WorkspaceProps,
   DemoDataProvider,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import {
   onPageLoad,

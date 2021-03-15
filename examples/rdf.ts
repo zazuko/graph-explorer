@@ -6,7 +6,7 @@ import {
   WorkspaceProps,
   RDFDataProvider,
   GroupTemplate,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import {
   ExampleMetadataApi,

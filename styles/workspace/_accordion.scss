@@ -1,4 +1,4 @@
-.ontodia-accordion {
+.graph-explorer-accordion {
   flex: auto;
   display: flex;
   height: 100%;
@@ -12,12 +12,12 @@
     flex-direction: column;
   }
 
-  &--vertical:not(&--resizing) > .ontodia-accordion-item {
+  &--vertical:not(&--resizing) > .graph-explorer-accordion-item {
     transition: height 0.3s ease-in-out;
   }
 }
 
-.ontodia-accordion-item {
+.graph-explorer-accordion-item {
   display: flex;
   position: relative;
   flex: auto;

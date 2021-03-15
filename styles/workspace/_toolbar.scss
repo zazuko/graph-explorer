@@ -1,6 +1,6 @@
 $toolbarHeight: 30px;
 
-.ontodia-toolbar {
+.graph-explorer-toolbar {
   &__language-selector {
     margin-left: 5px;
     margin-right: 5px;
@@ -53,19 +53,19 @@ $toolbarHeight: 30px;
     float: left;
     margin-left: 5px;
     height: $toolbarHeight;
-  
+
     > label {
       margin-right: 5px;
     }
-  
+
     .btn-group,button {
       height: 100%;
     }
   }
 }
 
-.ontodia-toolbar .ontodia-toolbar__undo,
-.ontodia-toolbar .ontodia-toolbar__redo {
+.graph-explorer-toolbar .graph-explorer-toolbar__undo,
+.graph-explorer-toolbar .graph-explorer-toolbar__redo {
   display: none;
 }
 

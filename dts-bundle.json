@@ -1,5 +1,5 @@
 {
-  "name": "ontodia",
+  "name": "graph-explorer",
   "main": "dist/temp/dts/index.d.ts",
-  "out": "../../ontodia.d.ts"
+  "out": "../../graph-explorer.d.ts"
 }

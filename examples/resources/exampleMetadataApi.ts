@@ -13,7 +13,7 @@ import {
   LinkError,
   DirectedLinkType,
   CancellationToken,
-} from '../../src/ontodia/index';
+} from '../../src/graph-explorer/index';
 
 const OWL_PREFIX = 'http://www.w3.org/2002/07/owl#';
 const RDFS_PREFIX = 'http://www.w3.org/2000/01/rdf-schema#';

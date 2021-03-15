@@ -1,13 +1,13 @@
-.ontodia-paper-area--animated {
-    .ontodia-overlayed-element {
+.graph-explorer-paper-area--animated {
+    .graph-explorer-overlayed-element {
         transition: transform 0.5s ease-in-out;
     }
-    .ontodia-link-layer, .ontodia-paper-area__widgets {
+    .graph-explorer-link-layer, .graph-explorer-paper-area__widgets {
         transition: none;
         opacity: 0;
     }
 }
 
-.ontodia-link-layer, .ontodia-paper-area__widgets {
+.graph-explorer-link-layer, .graph-explorer-paper-area__widgets {
     transition: opacity 0.5s ease-in-out;
 }

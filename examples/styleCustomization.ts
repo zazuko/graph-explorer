@@ -6,7 +6,7 @@ import {
   WorkspaceProps,
   SparqlDataProvider,
   LinkTemplate,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import {
   onPageLoad,

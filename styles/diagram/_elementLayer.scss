@@ -1,10 +1,10 @@
-.ontodia-overlayed-element {
+.graph-explorer-overlayed-element {
   cursor: move;
   outline: none;
 }
 
-.ontodia-overlayed-element,
-.ontodia-exported-element {
+.graph-explorer-overlayed-element,
+.graph-explorer-exported-element {
   // set defaults for all inherited properties
   box-sizing: border-box;
   color: black;
@@ -16,13 +16,13 @@
   img { vertical-align: middle; }
 }
 
-.ontodia-exported-element {
+.graph-explorer-exported-element {
   *, *:before, *:after {
     box-sizing: inherit;
   }
 }
 
-.ontodia-overlayed-element--blurred {
+.graph-explorer-overlayed-element--blurred {
   filter: grayscale(100%);
   opacity: 0.5;
 }

@@ -9,7 +9,7 @@ import {
   SparqlQueryMethod,
   PropertySuggestionParams,
   PropertyScore,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import {
   onPageLoad,

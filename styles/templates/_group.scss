@@ -1,41 +1,41 @@
-.ontodia-group-template {
+.graph-explorer-group-template {
   overflow: hidden;
 
   &__wrap {
-    @extend .ontodia-default-template;
+    @extend .graph-explorer-default-template;
     max-width: none;
   }
 
   &__type-line {
-    @extend .ontodia-default-template_type-line;
+    @extend .graph-explorer-default-template_type-line;
   }
 
   &__type-line-icon {
-    @extend .ontodia-default-template_type-line__icon;
+    @extend .graph-explorer-default-template_type-line__icon;
   }
 
   &__type-line-text-container {
-    @extend .ontodia-default-template_type-line_text-container;
+    @extend .graph-explorer-default-template_type-line_text-container;
   }
 
   &__type-line-text {
-    @extend .ontodia-default-template_type-line_text-container__text;
+    @extend .graph-explorer-default-template_type-line_text-container__text;
   }
 
   &__body {
-    @extend .ontodia-default-template_body;
+    @extend .graph-explorer-default-template_body;
     overflow: visible;
   }
 
   &__label {
-    @extend .ontodia-default-template_body__label;
+    @extend .graph-explorer-default-template_body__label;
   }
 
   &__embedded-layer {
     margin-top: 7px;
   }
 
-  .ontodia-paper__canvas {
+  .graph-explorer-paper__canvas {
     border-color: #fff;
   }
 }

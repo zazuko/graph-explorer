@@ -1,4 +1,4 @@
-.ontodia-paper-area {
+.graph-explorer-paper-area {
   flex: auto;
   width: 0;
   display: flex;
@@ -39,11 +39,11 @@
   }
 }
 
-.ontodia-paper {
+.graph-explorer-paper {
   position: relative;
 }
 
-.ontodia-exported-watermark {
+.graph-explorer-exported-watermark {
   opacity: 0.3;
   transition: opacity 0.3s;
 }

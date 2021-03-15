@@ -1,4 +1,4 @@
-.ontodia-class-tree {
+.graph-explorer-class-tree {
   flex: auto;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@
   }
 }
 
-.ontodia-class-leaf {
+.graph-explorer-class-leaf {
   margin: 1px 0;
 
   &__row {
@@ -40,7 +40,7 @@
     > * { flex-shrink: 0; }
   }
 
-  &__body { 
+  &__body {
     display: flex;
     align-items: center;
     text-decoration: none;

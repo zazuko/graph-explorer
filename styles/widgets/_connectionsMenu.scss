@@ -1,4 +1,4 @@
-.ontodia-connections-menu {
+.graph-explorer-connections-menu {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -29,7 +29,7 @@
   }
 }
 
-.ontodia-connections-menu_bread-crumbs {
+.graph-explorer-connections-menu_bread-crumbs {
   padding: 10px;
   padding-bottom: 0px;
   overflow: hidden;
@@ -39,7 +39,7 @@
   flex-grow: 0;
 }
 
-.ontodia-connections-menu__title-label {
+.graph-explorer-connections-menu__title-label {
   position: absolute;
   top: -11px;
   left: 10px;
@@ -49,19 +49,19 @@
   border-radius: 6px;
 }
 
-.ontodia-connections-menu_search-line {
+.graph-explorer-connections-menu_search-line {
   padding: 10px;
   display: flex;
   align-items: center;
   flex: 0 0 auto;
 }
 
-.ontodia-connections-menu_search-line-sort-switches {
+.graph-explorer-connections-menu_search-line-sort-switches {
   flex: 0 0 20px;
   margin-left: 10px;
 }
 
-.ontodia-connections-menu_links-list {
+.graph-explorer-connections-menu_links-list {
   padding: 5px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -75,7 +75,7 @@
   align-items: center;
 }
 
-.ontodia-connections-menu_links-list__empty {
+.graph-explorer-connections-menu_links-list__empty {
   width: 100%;
   position: relative;
   font-size: x-large;
@@ -83,8 +83,8 @@
   text-align: center;
 }
 
-.ontodia-connections-menu__loading,
-.ontodia-connections-menu__error {
+.graph-explorer-connections-menu__loading,
+.graph-explorer-connections-menu__error {
   width: 100%;
   height: 100%;
   position: relative;
@@ -94,7 +94,7 @@
   align-items: center;
   justify-content: center;
 }
-.ontodia-connections-menu__loading-objects {
+.graph-explorer-connections-menu__loading-objects {
   border: 1px solid gray;
   flex-grow: 1;
   box-shadow: inset 0px 0px 23px -8px gray;
@@ -108,7 +108,7 @@
   margin-bottom: 5px;
 }
 
-.ontodia-connections-menu__move-to-filter {
+.graph-explorer-connections-menu__move-to-filter {
   display: flex;
   padding: 5px 10px;
   user-select: none;
@@ -195,7 +195,7 @@
   opacity: 0.5;
 }
 
-.ontodia-connections-menu_links-list__loading {
+.graph-explorer-connections-menu_links-list__loading {
   text-align: center;
   width: 100%;
   position: relative;
@@ -203,12 +203,12 @@
   color: #cbcbcb;
 }
 
-.ontodia-connections-menu_links-list__hr {
+.graph-explorer-connections-menu_links-list__hr {
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.ontodia-connections-menu_objects-panel {
+.graph-explorer-connections-menu_objects-panel {
   flex-grow: 1;
   padding: 10px;
   position: relative;
@@ -217,7 +217,7 @@
   padding-top: 0px;
 }
 
-.ontodia-connections-menu_objects-panel__select-all {
+.graph-explorer-connections-menu_objects-panel__select-all {
     white-space: nowrap;
     margin-bottom: 5px;
     display: flex;
@@ -228,14 +228,14 @@
     }
 }
 
-.ontodia-connections-menu_objects-panel_bottom-panel {
+.graph-explorer-connections-menu_objects-panel_bottom-panel {
   height: 25px;
   white-space: nowrap;
   display: flex;
   justify-content: space-between;
 }
 
-.ontodia-connections-menu_objects-panel_bottom-panel__count-label {
+.graph-explorer-connections-menu_objects-panel_bottom-panel__count-label {
   height: 25px;
   float: left;
   padding: 0px 5px;
@@ -245,18 +245,18 @@
   max-width: 60%;
 }
 
-.ontodia-connections-menu_objects-panel_bottom-panel__extra-elements {
+.graph-explorer-connections-menu_objects-panel_bottom-panel__extra-elements {
   color: gray;
   cursor: help;
 }
 
-.ontodia-btn.ontodia-connections-menu_objects-panel_bottom-panel__add-button {
+.graph-explorer-btn.graph-explorer-connections-menu_objects-panel_bottom-panel__add-button {
   height: 25px;
   padding-top: 1px;
   padding-bottom: 2px;
 }
 
-.ontodia-connections-menu_objects-panel_objects-list {
+.graph-explorer-connections-menu_objects-panel_objects-list {
   border: 1px solid gray;
   height: 0;
   flex-grow: 1;
@@ -266,7 +266,7 @@
   margin-bottom: 5px;
 }
 
-.ontodia-connections-menu__link {
+.graph-explorer-connections-menu__link {
   color: #337ab7;
   cursor: pointer;
   text-decoration: none;

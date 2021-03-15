@@ -7,7 +7,7 @@ import {
   SparqlDataProvider,
   SparqlQueryMethod,
   DBPediaSettings,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import {
   onPageLoad,

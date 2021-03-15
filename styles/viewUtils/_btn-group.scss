@@ -1,38 +1,38 @@
-.ontodia-btn-group {
+.graph-explorer-btn-group {
   position: relative;
   display: inline-block;
   vertical-align: middle;
 
-  > .ontodia-btn, > .ontodia-btn-group {
+  > .graph-explorer-btn, > .graph-explorer-btn-group {
     position: relative;
     float: left;
   }
 
-  > .ontodia-btn:hover,
-  > .ontodia-btn:focus,
-  > .ontodia-btn.active,
-  > .ontodia-btn.active:hover {
+  > .graph-explorer-btn:hover,
+  > .graph-explorer-btn:focus,
+  > .graph-explorer-btn.active,
+  > .graph-explorer-btn.active:hover {
     z-index: 2;
   }
 
-  .ontodia-btn + .ontodia-btn,
-  .ontodia-btn + .ontodia-btn-group,
-  .ontodia-btn-group + .ontodia-btn,
-  .ontodia-btn-group + .ontodia-btn-group {
+  .graph-explorer-btn + .graph-explorer-btn,
+  .graph-explorer-btn + .graph-explorer-btn-group,
+  .graph-explorer-btn-group + .graph-explorer-btn,
+  .graph-explorer-btn-group + .graph-explorer-btn-group {
     margin-left: -1px;
   }
 
-  > .ontodia-btn:first-child {
+  > .graph-explorer-btn:first-child {
     margin-left: 0;
   }
 
-  &-sm > .ontodia-btn {
+  &-sm > .graph-explorer-btn {
     font-size: 12px;
     line-height: 1.5;
     padding: 5px 10px;
   }
 
-  &-xs > .ontodia-btn {
+  &-xs > .graph-explorer-btn {
     font-size: 12px;
     line-height: 1.5;
     padding: 1px 5px;

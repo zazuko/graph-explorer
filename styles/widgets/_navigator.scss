@@ -1,4 +1,4 @@
-.ontodia-navigator {
+.graph-explorer-navigator {
   display: block;
   position: absolute;
   bottom: 25px;
@@ -7,7 +7,7 @@
 
   // increase specificity to override default box-sizing,
   // so border size won't be included into total size
-  .ontodia & {
+  .graph-explorer & {
     box-sizing: content-box;
   }
 

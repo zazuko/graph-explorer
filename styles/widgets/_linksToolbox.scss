@@ -62,7 +62,7 @@
   padding-left: .3em;
 }
 
-.ontodia-list-group .linkInToolBox {
+.graph-explorer-list-group .linkInToolBox {
   padding: 0 0 0 5px;
   word-break: break-word;
 }
@@ -79,7 +79,7 @@
     background: orange;
   }
 
-  .ontodia-badge {
+  .graph-explorer-badge {
     display: none;
     margin-left: .5em;
     white-space: normal;
@@ -92,14 +92,14 @@
     display: inline;
   }
 
-  .ontodia-btn-group {
+  .graph-explorer-btn-group {
     float: left;
     margin-top: 2px;
     margin-right: 6px;
     margin-bottom: 2px;
   }
 
-  .ontodia-btn.ontodia-btn-default {
+  .graph-explorer-btn.graph-explorer-btn-default {
     border-color: rgb(195, 195, 195);
   }
 
@@ -121,7 +121,7 @@
   }
 }
 
-.connected-links .linkInToolBox .ontodia-badge {
+.connected-links .linkInToolBox .graph-explorer-badge {
   /* show connection count badge only in "Connected to Element" list */
   display: inline;
 }

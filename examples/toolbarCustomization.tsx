@@ -6,7 +6,7 @@ import {
   WorkspaceProps,
   DemoDataProvider,
   ToolbarProps,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 import {
   onPageLoad,
   tryLoadLayoutFromLocalStorage,
@@ -22,21 +22,21 @@ export interface Props extends ToolbarProps {
   onExampleClick?: () => void;
 }
 
-const CLASS_NAME = 'ontodia-toolbar';
+const CLASS_NAME = 'graph-explorer-toolbar';
 
 export class Toolbar extends React.Component<Props, {}> {
   render() {
     return (
       <div className={CLASS_NAME}>
-        <div className="ontodia-btn-group ontodia-btn-group-sm">
+        <div className="graph-explorer-btn-group graph-explorer-btn-group-sm">
           <span className={`${CLASS_NAME}__layout-group`}>
-            <label className="ontodia-label">
+            <label className="graph-explorer-label">
               <span>Layout - </span>
             </label>
-            <span className="ontodia-btn-group ontodia-btn-group-sm">
+            <span className="graph-explorer-btn-group graph-explorer-btn-group-sm">
               <button
                 type="button"
-                className="ontodia-btn ontodia-btn-default"
+                className="graph-explorer-btn graph-explorer-btn-default"
                 onClick={this.props.onForceLayout}
               >
                 <span
@@ -47,7 +47,7 @@ export class Toolbar extends React.Component<Props, {}> {
               </button>
               <button
                 type="button"
-                className="ontodia-btn ontodia-btn-default"
+                className="graph-explorer-btn graph-explorer-btn-default"
                 onClick={this.props.onExampleClick}
               >
                 <span title="Example button">Exapmle button</span>

@@ -1,9 +1,9 @@
-.ontodia-input-group {
+.graph-explorer-input-group {
   position: relative;
   display: table;
   border-collapse: separate;
 
-  .ontodia-form-control {
+  .graph-explorer-form-control {
     display: table-cell;
     position: relative;
     z-index: 2;
@@ -12,13 +12,13 @@
     margin-bottom: 0;
   }
 
-  .ontodia-form-control:first-child {
+  .graph-explorer-form-control:first-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
 }
 
-.ontodia-input-group-btn {
+.graph-explorer-input-group-btn {
   display: table-cell;
   width: 1%;
   vertical-align: middle;
@@ -26,7 +26,7 @@
   font-size: 0;
   white-space: nowrap;
 
-  &:last-child > .ontodia-btn {
+  &:last-child > .graph-explorer-btn {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     z-index: 2;

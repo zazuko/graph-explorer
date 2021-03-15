@@ -6,7 +6,7 @@ import {
   WorkspaceProps,
   SparqlDataProvider,
   OWLRDFSSettings,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import {
   onPageLoad,

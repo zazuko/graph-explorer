@@ -8,7 +8,7 @@ import {
   OWLStatsSettings,
   GraphBuilder,
   Triple,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 import { onPageLoad } from './common';
 

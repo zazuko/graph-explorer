@@ -10,7 +10,7 @@ import {
   SparqlQueryMethod,
   WikidataSettings,
   LinkModel,
-} from '../src/ontodia/index';
+} from '../src/graph-explorer/index';
 
 const N3Parser: any = require('rdf-parser-n3');
 const RdfXmlParser: any = require('rdf-parser-rdfxml');
@@ -21,8 +21,8 @@ import {
   tryLoadLayoutFromLocalStorage,
   saveLayoutToLocalStorage,
 } from './common';
-import { LinkBinding } from '../src/ontodia/data/sparql/sparqlModels';
-import { getLinksInfo } from '../src/ontodia/data/sparql/responseHandler';
+import { LinkBinding } from '../src/graph-explorer/data/sparql/sparqlModels';
+import { getLinksInfo } from '../src/graph-explorer/data/sparql/responseHandler';
 
 const data = require('./resources/orgOntology.ttl');
 

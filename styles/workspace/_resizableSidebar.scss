@@ -1,6 +1,6 @@
-.ontodia-drag-resizable-column.ontodia-drag-resizable-column--docked-bottom,
-.ontodia-drag-resizable-column.ontodia-drag-resizable-column--docked-top {
-  .ontodia-drag-resizable-column__handle {
+.graph-explorer-drag-resizable-column.graph-explorer-drag-resizable-column--docked-bottom,
+.graph-explorer-drag-resizable-column.graph-explorer-drag-resizable-column--docked-top {
+  .graph-explorer-drag-resizable-column__handle {
     height: 8px;
     width: 100%;
     top: initial;
@@ -8,7 +8,7 @@
     cursor: ns-resize;
   }
 
-  .ontodia-drag-resizable-column__handle-btn {
+  .graph-explorer-drag-resizable-column__handle-btn {
     height: 100%;
     width: 40px;
     top: 0;
@@ -18,7 +18,7 @@
   }
 }
 
-.ontodia-drag-resizable-column {
+.graph-explorer-drag-resizable-column {
   display: flex;
   flex-direction: column;
   position: relative;
