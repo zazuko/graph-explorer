@@ -13,7 +13,6 @@ import {
   EventSource,
   PropertyChange,
 } from '../viewUtils/events';
-import { isIE11 } from '../viewUtils/polyfills';
 import { PropTypes } from '../viewUtils/react';
 import {
   ToSVGOptions,
@@ -349,11 +348,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     this.area.addEventListener('dragover', this.onDragOver);
     this.area.addEventListener('drop', this.onDragDrop);
     this.area.addEventListener('scroll', this.onScroll);
-    this.area.addEventListener(
-      'wheel',
-      this.onWheel,
-      isIE11() ? false : { passive: false }
-    );
+    this.area.addEventListener('wheel', this.onWheel, { passive: false });
   }
 
   componentDidUpdate(prevProps: PaperAreaProps, prevState: State) {

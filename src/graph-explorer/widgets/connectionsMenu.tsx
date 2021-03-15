@@ -676,7 +676,7 @@ class ConnectionsList extends React.Component<
         isSmartMode ? null : (
           <li key="probable-links">
             <span className="graph-explorer-label">
-              Probably, you're looking for..
+              Probably, you&lsquo;re looking for..
             </span>
           </li>
         ),

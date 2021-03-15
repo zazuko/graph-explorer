@@ -168,7 +168,7 @@ function isPropertiesEqual(
     return false;
   }
   for (const key in left.properties) {
-    if (left.properties.hasOwnProperty(key)) {
+    if (key in left.properties) {
       const leftProperty = left[key];
       const rightProperty = right[key];
       if (!rightProperty) {

@@ -14,13 +14,8 @@ export class RDFLoader {
     this.proxy = parameters.proxy || DEFAULT_PROXY;
   }
 
-  private parseData(
-    data: string,
-    contentType?: string,
-    prefix?: string
-  ): Promise<RDFGraph> {
-    let result: Promise<RDFGraph>;
-    result = this.parser.parse(data, contentType);
+  private parseData(data: string, contentType?: string): Promise<RDFGraph> {
+    const result: Promise<RDFGraph> = this.parser.parse(data, contentType);
     return result;
   }
 
@@ -45,7 +40,7 @@ export class RDFLoader {
             Accept: acceptType,
           },
         }).then((body: string) => {
-          return this.parseData(body, acceptType, elementId).catch((error) => {
+          return this.parseData(body, acceptType).catch((error) => {
             // tslint:disable-next-line:no-console
             console.warn(error);
             if (typePointer < mimeTypes.length) {

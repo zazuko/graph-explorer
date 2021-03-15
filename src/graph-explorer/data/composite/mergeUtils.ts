@@ -1,4 +1,3 @@
-import { DataProvider, FilterParams } from '../provider';
 import {
   Dictionary,
   ClassModel,
@@ -11,7 +10,8 @@ import {
   LocalizedString,
 } from '../model';
 
-const DATA_PROVIDER_PROPERTY = 'http://graph-explorer.org/property/DataProvider';
+const DATA_PROVIDER_PROPERTY =
+  'http://graph-explorer.org/property/DataProvider';
 
 export interface CompositeResponse<Type> {
   dataSourceName: string;

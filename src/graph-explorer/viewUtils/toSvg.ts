@@ -2,22 +2,7 @@ import { uniqueId } from 'lodash';
 
 import { DiagramModel } from '../diagram/model';
 import { Rect, Vector, boundsOf } from '../diagram/geometry';
-import { isIE11 } from './polyfills';
-import { htmlToSvg } from './htmlToSvg';
 
-type CanvgRender = (
-  canvas: HTMLCanvasElement,
-  svg: string,
-  options?: CanvgOptions
-) => void;
-interface CanvgOptions {
-  offsetX?: number;
-  offsetY?: number;
-  scaleWidth?: number;
-  scaleHeight?: number;
-  ignoreDimensions?: boolean;
-  ignoreClear?: boolean;
-}
 const canvg = require('canvg-fixed');
 
 const SVG_NAMESPACE: 'http://www.w3.org/2000/svg' =
@@ -61,9 +46,6 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
     options,
     FOREIGN_OBJECT_SIZE_PADDING
   );
-  if (isIE11()) {
-    clearAttributes(svgClone);
-  }
 
   const paddedWidth = bbox.width + 2 * BORDER_PADDING;
   const paddedHeight = bbox.height + 2 * BORDER_PADDING;
@@ -90,10 +72,8 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
   addWatermark(svgClone, viewBox, watermarkSvg);
 
   const images: HTMLImageElement[] = [];
-  if (!isIE11()) {
-    const nodes = svgClone.querySelectorAll('img');
-    foreachNode(nodes, (node) => images.push(node));
-  }
+  const nodes = svgClone.querySelectorAll('img');
+  foreachNode(nodes, (node) => images.push(node));
 
   const convertingImages = Promise.all(
     images.map((img) => {
@@ -172,9 +152,6 @@ function clearAttributes(svg: SVGElement) {
       const id = (def as SVGElement).getAttribute('id');
       if (id) {
         availableIds[id] = true;
-        if (isIE11() && def instanceof SVGFilterElement) {
-          availableIds[id] = false;
-        }
       }
     });
   });
@@ -196,14 +173,9 @@ function clearAttributes(svg: SVGElement) {
 
   function extractId(attributeValue: string) {
     if (attributeValue) {
-      if (isIE11()) {
-        return (attributeValue.match(/#(.*?)"/) || [])[1];
-      } else {
-        return (attributeValue.match(/#(.*?)\)/) || [])[1];
-      }
-    } else {
-      return undefined;
+      return (attributeValue.match(/#(.*?)\)/) || [])[1];
     }
+    return undefined;
   }
 }
 
@@ -277,13 +249,9 @@ function clonePaperSvg(
     ) as HTMLElement;
     elementRoot.setAttribute('class', 'graph-explorer-exported-element');
 
-    let newRoot;
-    if (isIE11()) {
-      newRoot = htmlToSvg(overlayedView, [], options.mockImages);
-    } else {
-      newRoot = document.createElementNS(SVG_NAMESPACE, 'foreignObject');
-      newRoot.appendChild(overlayedViewContent);
-    }
+    const newRoot = document.createElementNS(SVG_NAMESPACE, 'foreignObject');
+    newRoot.appendChild(overlayedViewContent);
+
     const { x, y, width, height } = boundsOf(element);
     newRoot.setAttribute('transform', `translate(${x},${y})`);
     newRoot.setAttribute('width', (width + elementSizePadding).toString());
@@ -292,9 +260,6 @@ function clonePaperSvg(
     elementRoot.appendChild(newRoot);
     viewport.appendChild(elementRoot);
 
-    const originalNodes = (overlayedView.firstChild as HTMLElement).querySelectorAll(
-      'img'
-    );
     const clonedNodes = overlayedViewContent.querySelectorAll('img');
 
     foreachNode(overlayedView.querySelectorAll('img'), (img, index) => {
@@ -325,7 +290,7 @@ function exportAsDataUri(original: HTMLImageElement): Promise<string> {
     context.drawImage(image, 0, 0);
 
     // match extensions like htttp://example.com/images/foo.JPG&w=200
-    const extensionMatch = url.match(/\.([a-zA-Z0-9]+)[^\.a-zA-Z0-9]?[^\.]*$/);
+    const extensionMatch = url.match(/\.([a-zA-Z0-9]+)[^.a-zA-Z0-9]?[^.]*$/);
     const extension = extensionMatch ? extensionMatch[1].toLowerCase() : 'png';
 
     try {
@@ -384,7 +349,7 @@ export async function toDataURL(
   const svgOptions = {
     ...options,
     convertImagesToDataUris: true,
-    mockImages: isIE11(),
+    mockImages: false,
     preserveDimensions: true,
   };
   const svg = await exportSVG(svgOptions);
@@ -412,34 +377,17 @@ export async function toDataURL(
     options.backgroundColor
   );
 
-  if (isIE11()) {
-    if (!canvg) {
-      throw new Error(
-        '"canvg-fixed" dependency required to support exporting in the IE.'
-      );
-    }
-    canvg(canvas, svgString, {
-      offsetX: offset.x,
-      offsetY: offset.y,
-      scaleWidth: innerSize.width,
-      scaleHeight: innerSize.height,
-      ignoreDimensions: true,
-      ignoreClear: true,
-    });
-    return canvas.toDataURL(mimeType, options.quality);
-  } else {
-    const image = await loadImage(
-      'data:image/svg+xml,' + encodeURIComponent(svgString)
-    );
-    context.drawImage(
-      image,
-      offset.x,
-      offset.y,
-      innerSize.width,
-      innerSize.height
-    );
-    return canvas.toDataURL(mimeType, options.quality);
-  }
+  const image = await loadImage(
+    'data:image/svg+xml,' + encodeURIComponent(svgString)
+  );
+  context.drawImage(
+    image,
+    offset.x,
+    offset.y,
+    innerSize.width,
+    innerSize.height
+  );
+  return canvas.toDataURL(mimeType, options.quality);
 
   function createCanvas(
     canvasWidth: number,
