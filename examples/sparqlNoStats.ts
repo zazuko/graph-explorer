@@ -56,7 +56,7 @@ function onWorkspaceMounted(workspace: Workspace) {
                 OPTIONAL {?inst \${dataLabelProperty} ?label}
                 OPTIONAL {?inst ?propType ?propValue.
                 FILTER (isLiteral(?propValue)) }
-			    VALUES ?labelProp { rdfs:label foaf:name }
+              VALUES ?labelProp { rdfs:label foaf:name }
             } VALUES (?inst) {\${ids}}
         `,
         },

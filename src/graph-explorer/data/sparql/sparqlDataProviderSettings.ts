@@ -539,7 +539,7 @@ export const OWLRDFSSettingsOverride: Partial<SparqlDataProviderSettings> = {
         `,
 
   // todo: think more, maybe add a limit here?
-  linkTypesPattern: `{	?link a rdf:Property
+  linkTypesPattern: `{  ?link a rdf:Property
                     } UNION {
                     ?link a owl:ObjectProperty
                 }

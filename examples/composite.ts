@@ -46,8 +46,8 @@ class TransformingDataProvider extends SparqlDataProvider {
                 { ${refElementIRI} ${refElementLinkIRI} ?inst . FILTER ISIRI(?inst)}
                 UNION
                 { ${refElementIRI} ${refElementLinkIRI} ?literalId.
-    		        ?property <http://wikiba.se/ontology#directClaim> ${refElementLinkIRI}.
-    		        ?property wdt:P1630|wdt:P1921 ?template.
+                  ?property <http://wikiba.se/ontology#directClaim> ${refElementLinkIRI}.
+                  ?property wdt:P1630|wdt:P1921 ?template.
                     BIND(IRI(REPLACE(?template, "\\\\$1", ?literalId)) as ?inst)
                 }
                 `
@@ -67,8 +67,8 @@ class TransformingDataProvider extends SparqlDataProvider {
                 { ${refElementIRI} ?link ?inst . FILTER ISIRI(?inst)}
                 UNION
                 { ${refElementIRI} ?link ?literalId.
-    		        ?property <http://wikiba.se/ontology#directClaim> ?link.
-    		        ?property wdt:P1630|wdt:P1921 ?template.
+                  ?property <http://wikiba.se/ontology#directClaim> ?link.
+                  ?property wdt:P1630|wdt:P1921 ?template.
                     BIND(IRI(REPLACE(?template, "\\\\$1", ?literalId)) as ?inst)
                 }
                 `
@@ -101,8 +101,8 @@ class TransformingDataProvider extends SparqlDataProvider {
                 {
                     ?source ?type ?literalId.
                     FILTER(ISLITERAL(?literalId))
-    		        ?property <http://wikiba.se/ontology#directClaim> ?type.
-    		        ?property wdt:P1630|wdt:P1921 ?template.
+                  ?property <http://wikiba.se/ontology#directClaim> ?type.
+                  ?property wdt:P1630|wdt:P1921 ?template.
                     BIND(IRI(REPLACE(?template, "\\\\$1", ?literalId)) as ?createdTarget)
                     BIND(?createdTarget as ?target)
                     FILTER (BOUND(?createdTarget))

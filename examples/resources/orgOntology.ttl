@@ -1,6 +1,6 @@
 @prefix :           <http://www.w3.org/ns/org#> .
 @prefix dc11: <http://purl.org/dc/elements/1.1/> .
-@prefix dc: 		<http://purl.org/dc/terms/> .
+@prefix dc:     <http://purl.org/dc/terms/> .
 @prefix dct:        <http://purl.org/dc/terms/> .
 @prefix foaf:       <http://xmlns.com/foaf/0.1/> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
@@ -947,11 +947,11 @@ prov:wasDerivedFrom owl:propertyChainAxiom (org:resultedFrom org:originalOrganiz
 org:Post a owl:Class, rdfs:Class;
 
     rdfs:label "Post"@en;
-  	rdfs:label "Poste"@fr;
+    rdfs:label "Poste"@fr;
     rdfs:label "Impiego"@it;
 
     rdfs:comment """A Post represents some position within an organization that exists independently of the person or persons filling it. Posts may be used to represent situations where a person is a member of an organization ex officio (for example the Secretary of State for Scotland is part of UK Cabinet by virtue of being Secretary of State for Scotland, not as an individual person). A post can be held by multiple people and hence can be treated as a organization in its own right."""@en;
-  	rdfs:comment """Un Poste reprÃ©sente une position au sein d'une Organisation qui existe indÃ©pendamment de la personne ou des personnes qui le remplissent. Les postes peuvent Ãªtre utilisÃ©s pour reprÃ©senter des situations oÃ¹ une personne est membre d'une Organisation d'office (par exemple, le SecrÃ©taire d'Etat pour l'Ecosse fait partie du Cabinet du Royaume-Uni du fait d'Ãªtre SecrÃ©taire d'Etat pour l'Ecosse, non pas comme une personne physique). Un poste aprÃ¨s peut Ãªtre occupÃ© par plusieurs personnes et peut donc Ãªtre considÃ©rÃ© comme une Organisation Ã  part entiÃ¨re."""@fr;
+    rdfs:comment """Un Poste reprÃ©sente une position au sein d'une Organisation qui existe indÃ©pendamment de la personne ou des personnes qui le remplissent. Les postes peuvent Ãªtre utilisÃ©s pour reprÃ©senter des situations oÃ¹ une personne est membre d'une Organisation d'office (par exemple, le SecrÃ©taire d'Etat pour l'Ecosse fait partie du Cabinet du Royaume-Uni du fait d'Ãªtre SecrÃ©taire d'Etat pour l'Ecosse, non pas comme une personne physique). Un poste aprÃ¨s peut Ãªtre occupÃ© par plusieurs personnes et peut donc Ãªtre considÃ©rÃ© comme une Organisation Ã  part entiÃ¨re."""@fr;
     rdfs:comment """Un Impiego rappresenta una posizione all'interno dell'organizzazione che esiste indipendentemente dalla persona che la ricopre. Gli impieghi possono essere utilizzati per le situazioni in cui una persona Ã¨ membro di un'organizzazione o di un ufficio (ad esempio un segretario di stato). Un Impiego puÃ² essere ricoperto da piÃ¹ persone."""@it;
     rdfs:comment "ãƒã‚¹ãƒˆã¯ã€ãã‚Œã‚’åŸ‹ã‚ã‚‹äººï¼ˆäººã€…ï¼‰ã¨ã¯ç„¡é–¢ä¿‚ã«å­˜åœ¨ã™ã‚‹çµ„ç¹”å†…ã®ã‚ã‚‹ä½ç½®ã‚’è¡¨ã‚ã—ã¾ã™ã€‚ãƒã‚¹ãƒˆã¯ã€äººãŒè·æ¨©ä¸Šã€çµ„ç¹”ã®ãƒ¡ãƒ³ãƒãƒ¼ã§ã‚ã‚‹çŠ¶æ³ã‚’è¡¨ã‚ã™ãŸã‚ã«ä½¿ç”¨ã§ãã¾ã™ï¼ˆä¾‹ãˆã°ã€ã‚¹ã‚³ãƒƒãƒˆãƒ©ãƒ³ãƒ‰å¤§è‡£ã¯ã€å€‹äººã¨ã—ã¦ã§ã¯ãªãã€ã‚¹ã‚³ãƒƒãƒˆãƒ©ãƒ³ãƒ‰å¤§è‡£ã§ã‚ã‚‹ã“ã¨ã«ã‚ˆã‚Šã€è‹±å›½å†…é–£ã®ä¸€éƒ¨ã§ã™ï¼‰ã€‚ãƒã‚¹ãƒˆã¯ã€è¤‡æ•°ã®äººã€…ã«ã‚ˆã£ã¦ä¿æŒã•ã‚Œã‚‹ã“ã¨ãŒå¯èƒ½ã ã‚ã‚‹ãŸã‚ã€ãã‚Œè‡ªä½“ã‚’çµ„ç¹”ã¨ã—ã¦æ‰±ã†ã“ã¨ãŒã§ãã¾ã™ã€‚"@ja;
     rdfs:isDefinedBy <http://www.w3.org/ns/org> ;
@@ -963,7 +963,7 @@ org:Post rdfs:label "puesto"@es ;
 org:holds a owl:ObjectProperty, rdf:Property;
 
     rdfs:label "holds"@en;
-  	rdfs:label "occupe"@fr;
+    rdfs:label "occupe"@fr;
     rdfs:label "ricopre"@it;
 
     rdfs:comment """Indicates a Post held by some Agent."""@en;
@@ -985,7 +985,7 @@ org:holds rdfs:label "ocupa"@es ;
 org:heldBy a owl:ObjectProperty, rdf:Property;
 
     rdfs:label "held by"@en;
-  	rdfs:label "occupÃ© par"@fr;
+    rdfs:label "occupÃ© par"@fr;
     rdfs:label "ricoperto da"@it;
 
     rdfs:comment """Indicates an Agent which holds a Post."""@en;
@@ -1010,7 +1010,7 @@ org:holds owl:inverseOf org:heldBy .
 org:postIn a owl:ObjectProperty, rdf:Property;
 
     rdfs:label "post in"@en;
-	rdfs:label "poste chez"@fr;
+  rdfs:label "poste chez"@fr;
     rdfs:label "impiego in"@it;
 
     rdfs:comment """Indicates the Organization in which the Post exists."""@en;
@@ -1029,11 +1029,11 @@ org:postIn rdfs:label "es un puesto en"@es ;
 org:hasPost a owl:ObjectProperty, rdf:Property;
 
     rdfs:label "post"@en;
-	rdfs:label "possÃ¨de un poste"@fr;
+  rdfs:label "possÃ¨de un poste"@fr;
     rdfs:label "impiego"@it;
 
     rdfs:comment """Indicates a Post which exists within the Organization."""@en;
-	rdfs:comment """Indicate un Poste qui existe dans l'Organisation."""@fr;
+  rdfs:comment """Indicate un Poste qui existe dans l'Organisation."""@fr;
     rdfs:comment """Indica il Post che Ã¨ presente in una Organization."""@it;
     rdfs:comment "çµ„ç¹”å†…ã«å­˜åœ¨ã™ã‚‹ãƒã‚¹ãƒˆã‚’ç¤ºã—ã¾ã™ã€‚"@ja;
     rdfs:domain  org:Organization;
