@@ -280,7 +280,7 @@ export class InstancesSearch extends React.Component<
     this.queryItems(false);
   }
 
-  componentWillReceiveProps(nextProps: InstancesSearchProps) {
+  componentDidUpdate(nextProps: InstancesSearchProps) {
     const languageChanged = this.currentRequest
       ? this.currentRequest.languageCode !== nextProps.view.getLanguage()
       : false;

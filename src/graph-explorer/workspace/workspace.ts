@@ -323,7 +323,7 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
     }
   }
 
-  componentWillReceiveProps(nextProps: WorkspaceProps) {
+  componentDidUpdate(nextProps: WorkspaceProps) {
     const controlledLanguage = Boolean(nextProps.onLanguageChange);
     if (controlledLanguage && nextProps.language !== this.view.getLanguage()) {
       this.view.setLanguage(nextProps.language);

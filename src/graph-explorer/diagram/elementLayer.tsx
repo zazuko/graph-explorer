@@ -166,7 +166,7 @@ export class ElementLayer extends React.Component<Props, State> {
     });
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     if (this.props.group !== nextProps.group) {
       this.setState(
         (state): State => ({

@@ -61,7 +61,7 @@ export class Dialog extends React.Component<Props, State> {
     this.focusOn();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     if (nextProps.target !== this.props.target) {
       this.listenToTarget(nextProps.target);
     }

@@ -47,7 +47,7 @@ export class ResizableSidebar extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     if (this.state.open !== nextProps.isOpen) {
       this.toggle({ open: nextProps.isOpen });
     }
