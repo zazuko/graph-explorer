@@ -1,14 +1,20 @@
-# Ontodia [![npm](https://img.shields.io/npm/v/ontodia.svg)](https://www.npmjs.com/package/ontodia) [![CircleCI](https://circleci.com/gh/sputniq-space/ontodia.svg?style=svg)](https://circleci.com/gh/sputniq-space/ontodia) #
+# Graph Explorer
 
-Ontodia is a JavaScript library that allows to visualize, navigate and explore data in the form of an interactive graph based on underlying data sources.
+Do you work with graph-based data and find it difficult to understand the underlying model?
 
-## What is Ontodia for?
+Is your graph growing rapidly and you are looking for an exploratory tool to better understand how your knowledge graph is linked?
 
-Ontodia allows you to create and persist diagrams made from existing data - relational, object, semantic.
+Are you looking for a way to document your schema, ontology or data for others?
 
-It was designed to visualize RDF data sets in particular, but could be tailored to almost any data source by implementing a data provider interface.  
+Then Graph Explorer is the tool for you!
 
-## Core features
+Graph Explorer is a JavaScript-based application and library that helps you visualize, navigate, and explore RDF-based knowledge graphs and data sources. It can be configured to work with one or more SPARQL endpoints, and it can load RDF resources from the web.
+
+In short, Graph Explorer helps you, your team, and the world better access and understand linked data.
+
+Graph Explorer is a fork of [Ontodia](https://github.com/metaphacts/ontodia), which is now part of [Metaphacts](https://metaphacts.com/). In an effort to further develop its open-source version, we decided to fork, maintain and extend the codebase where needed. Contributions from any partners are very welcome!
+
+## Features
 
 - Visual navigation and diagramming over large graph data sets
 - Rich graph visualization and context-aware navigation features 
@@ -16,35 +22,14 @@ It was designed to visualize RDF data sets in particular, but could be tailored 
 - User friendly - no graph query language or prior knowledge of the schema required
 - Customizable user interface (by modifying templates for nodes and links) and data storage back-end
 
-## How to try it?
+## Examples
 
-You can follow developer tutorials at the [developer documentation page](https://github.com/metaphacts/ontodia/wiki)
+TODO
 
-## License
+## Installation
 
-The Ontodia library is distributed under LGPL-2.1. A commercial license with additional features, support and custom development is available, please contact us at [info@metaphacts.com](info@metaphacts.com).   
+TODO
 
 
-## Developer documentation and contributing
 
-Developer documentation is available at [wiki page](https://github.com/metaphacts/ontodia/wiki).
 
-## Giving Ontodia people credit
-
-If you use the Ontodia library in your projects, please provide a link to this repository in your publication and a citation reference to the following paper: 
-
-Mouromtsev, D., Pavlov, D., Emelyanov, Y., Morozov, A., Razdyakonov, D. and Galkin, M., 2015. The Simple Web-based Tool for Visualization and Sharing of Semantic Data and Ontologies. In International Semantic Web Conference (Posters & Demos).
-
-```
-@inproceedings{Mouromtsev2015,
-    author = {Mouromtsev, Dmitry and Pavlov, Dmitry and Emelyanov, Yury and
-        Morozov, Alexey and Razdyakonov, Daniil and Galkin, Mikhail},
-    year = {2015},
-    month = {10},
-    title = {The Simple Web-based Tool for Visualization and Sharing of Semantic Data and Ontologies},
-    booktitle = {International Semantic Web Conference (Posters & Demos)}
-}
-```
-
-It really helps our team to gain publicity and acknowledgment for our efforts.
-Thank you for being considerate!
