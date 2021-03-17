@@ -145,14 +145,14 @@ export interface CancellationToken {
   removeEventListener(event: 'abort', handler: () => void): void;
 }
 
-export namespace CancellationToken {
-  export function throwIfAborted(ct: CancellationToken): void {
+export const CancellationToken = {
+  throwIfAborted(ct: CancellationToken): void {
     if (ct.aborted) {
       throw new CancelledError();
     }
-  }
+  },
 
-  export function mapCancelledToNull<T>(
+  mapCancelledToNull<T>(
     ct: CancellationToken,
     promise: Promise<T>
   ): Promise<T | null> {
@@ -169,8 +169,8 @@ export namespace CancellationToken {
       return Promise.reject(err);
     };
     return promise.then(onResolve, onReject);
-  }
-}
+  },
+};
 
 export class CancelledError extends Error {
   constructor(message = 'Operation was cancelled') {

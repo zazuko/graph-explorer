@@ -9,16 +9,16 @@ export const PLACEHOLDER_ELEMENT_TYPE = 'http://graph-explorer.org/NewEntity' as
 export const PLACEHOLDER_LINK_TYPE = 'http://graph-explorer.org/NewLink' as LinkTypeIri;
 const GRAPH_EXPLORER_ID_URL_PREFIX = 'http://graph-explorer.org/data/';
 
-export namespace GenerateID {
-  export function forElement() {
+export const GenerateID = {
+  forElement() {
     return `${GRAPH_EXPLORER_ID_URL_PREFIX}e_${generate128BitID()}`;
-  }
-  export function forLink() {
+  },
+  forLink() {
     return `${GRAPH_EXPLORER_ID_URL_PREFIX}l_${generate128BitID()}`;
-  }
-}
+  },
+};
 
-export namespace TemplateProperties {
-  export const PinnedProperties = 'graph-explorer:pinnedProperties';
-  export const CustomLabel = 'graph-explorer:customLabel';
-}
+export const TemplateProperties = {
+  PinnedProperties: 'graph-explorer:pinnedProperties',
+  CustomLabel: 'graph-explorer:customLabel',
+};

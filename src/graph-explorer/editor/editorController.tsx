@@ -63,9 +63,9 @@ import {
   AuthoringState,
   AuthoringKind,
   AuthoringEvent,
-  TemporaryState,
   ElementChange,
 } from './authoringState';
+import { TemporaryState } from './temporaryState';
 import { EditLayer, EditLayerMode } from './editLayer';
 import {
   ValidationState,

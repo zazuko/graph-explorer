@@ -4,30 +4,27 @@ export interface Vector {
   readonly x: number;
   readonly y: number;
 }
-export namespace Vector {
-  export function equals(a: Vector, b: Vector) {
+export const Vector = {
+  equals(a: Vector, b: Vector) {
     return a.x === b.x && a.y === b.y;
-  }
-  export function length({ x, y }: Vector) {
+  },
+  length({ x, y }: Vector) {
     return Math.sqrt(x * x + y * y);
-  }
-  export function normalize({ x, y }: Vector) {
+  },
+  normalize({ x, y }: Vector) {
     if (x === 0 && y === 0) {
       return { x, y };
     }
     const inverseLength = 1 / Math.sqrt(x * x + y * y);
     return { x: x * inverseLength, y: y * inverseLength };
-  }
-  export function dot(
-    { x: x1, y: y1 }: Vector,
-    { x: x2, y: y2 }: Vector
-  ): number {
+  },
+  dot({ x: x1, y: y1 }: Vector, { x: x2, y: y2 }: Vector): number {
     return x1 * x2 + y1 * y2;
-  }
-  export function cross2D({ x: x1, y: y1 }: Vector, { x: x2, y: y2 }: Vector) {
+  },
+  cross2D({ x: x1, y: y1 }: Vector, { x: x2, y: y2 }: Vector) {
     return x1 * y2 - y1 * x2;
-  }
-}
+  },
+};
 
 export interface Size {
   readonly width: number;
@@ -40,11 +37,12 @@ export interface Rect {
   readonly width: number;
   readonly height: number;
 }
-export namespace Rect {
-  export function center({ x, y, width, height }: Rect) {
+
+export const Rect = {
+  center({ x, y, width, height }: Rect) {
     return { x: x + width / 2, y: y + height / 2 };
-  }
-}
+  },
+};
 
 export function boundsOf(element: Element): Rect {
   const { x, y } = element.position;
