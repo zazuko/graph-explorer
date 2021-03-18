@@ -618,6 +618,8 @@ class LinkLabel extends Component<LinkLabelProps, LinkLabelState> {
 
   componentDidUpdate(nextProps: LinkLabelProps) {
     this.shouldUpdateBounds = true;
+  }
+  componentWillReceiveProps() {
     this.recomputeBounds(this.props);
   }
 
