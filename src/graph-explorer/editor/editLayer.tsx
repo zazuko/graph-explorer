@@ -18,7 +18,7 @@ import { Cancellation, CancellationToken } from '../viewUtils/async';
 import { EventObserver } from '../viewUtils/events';
 import { Spinner } from '../viewUtils/spinner';
 
-import { TemporaryState } from './authoringState';
+import { TemporaryState } from './temporaryState';
 import { EditorController } from './editorController';
 
 export enum EditLayerMode {

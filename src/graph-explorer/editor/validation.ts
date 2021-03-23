@@ -25,46 +25,53 @@ export interface LinkValidation {
   readonly errors: ReadonlyArray<LinkError>;
 }
 
-export namespace ValidationState {
-  export const empty: ValidationState = createMutable();
-  export const emptyElement: ElementValidation = { loading: false, errors: [] };
-  export const emptyLink: LinkValidation = { loading: false, errors: [] };
+const empty: ValidationState = createMutable();
+const emptyElement: ElementValidation = { loading: false, errors: [] };
+const emptyLink: LinkValidation = { loading: false, errors: [] };
 
-  export function createMutable() {
-    return {
-      elements: new Map<ElementIri, ElementValidation>(),
-      links: new HashMap<LinkModel, LinkValidation>(hashLink, sameLink),
-    };
-  }
-
-  export function setElementErrors(
-    state: ValidationState,
-    target: ElementIri,
-    errors: ReadonlyArray<ElementError>
-  ): ValidationState {
-    const elements = cloneMap(state.elements);
-    if (errors.length > 0) {
-      elements.set(target, { loading: false, errors });
-    } else {
-      elements.delete(target);
-    }
-    return { ...state, elements };
-  }
-
-  export function setLinkErrors(
-    state: ValidationState,
-    target: LinkModel,
-    errors: ReadonlyArray<LinkError>
-  ): ValidationState {
-    const links = state.links.clone();
-    if (errors.length > 0) {
-      links.set(target, { loading: false, errors });
-    } else {
-      links.delete(target);
-    }
-    return { ...state, links };
-  }
+function createMutable() {
+  return {
+    elements: new Map<ElementIri, ElementValidation>(),
+    links: new HashMap<LinkModel, LinkValidation>(hashLink, sameLink),
+  };
 }
+
+function setElementErrors(
+  state: ValidationState,
+  target: ElementIri,
+  errors: ReadonlyArray<ElementError>
+): ValidationState {
+  const elements = cloneMap(state.elements);
+  if (errors.length > 0) {
+    elements.set(target, { loading: false, errors });
+  } else {
+    elements.delete(target);
+  }
+  return { ...state, elements };
+}
+
+function setLinkErrors(
+  state: ValidationState,
+  target: LinkModel,
+  errors: ReadonlyArray<LinkError>
+): ValidationState {
+  const links = state.links.clone();
+  if (errors.length > 0) {
+    links.set(target, { loading: false, errors });
+  } else {
+    links.delete(target);
+  }
+  return { ...state, links };
+}
+
+export const ValidationState = {
+  empty,
+  emptyElement,
+  emptyLink,
+  createMutable,
+  setElementErrors,
+  setLinkErrors,
+};
 
 export function changedElementsToValidate(
   previousAuthoring: AuthoringState,

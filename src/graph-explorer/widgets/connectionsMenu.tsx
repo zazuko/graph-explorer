@@ -523,7 +523,7 @@ class ConnectionsList extends React.Component<
     this.updateScores(props);
   }
 
-  componentWillReceiveProps(newProps: ConnectionsListProps) {
+  componentDidUpdate(newProps: ConnectionsListProps) {
     this.updateScores(newProps);
   }
 
@@ -806,7 +806,7 @@ class ObjectsPanel extends React.Component<
     this.state = { selection: new Set<ElementIri>() };
   }
 
-  componentWillReceiveProps(nextProps: ObjectsPanelProps) {
+  componentDidUpdate(nextProps: ObjectsPanelProps) {
     if (this.props.data.objects.length < nextProps.data.objects.length) {
       this.setState({ selection: new Set<ElementIri>() });
     }

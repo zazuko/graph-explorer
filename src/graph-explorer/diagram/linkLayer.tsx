@@ -266,7 +266,7 @@ class LinkView extends Component<LinkViewProps, {}> {
     this.grabLinkTemplate(this.props);
   }
 
-  componentWillReceiveProps(nextProps: LinkViewProps) {
+  componentDidUpdate(nextProps: LinkViewProps) {
     if (this.linkType.id !== nextProps.model.typeId) {
       this.grabLinkTemplate(nextProps);
     }
@@ -616,11 +616,10 @@ class LinkLabel extends Component<LinkLabelProps, LinkLabelState> {
     onBoundsUpdate(undefined);
   }
 
-  componentWillReceiveProps(nextProps: LinkLabelProps) {
+  componentDidUpdate(nextProps: LinkLabelProps) {
     this.shouldUpdateBounds = true;
   }
-
-  componentDidUpdate(props: LinkLabelProps) {
+  componentWillReceiveProps() {
     this.recomputeBounds(this.props);
   }
 

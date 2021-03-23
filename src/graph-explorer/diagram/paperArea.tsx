@@ -796,7 +796,6 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       return this.centerTo();
     }
 
-    let bbox;
     let elements: ReadonlyArray<Element>;
     if (options.elements) {
       const selectionElements: Element[] = [];
@@ -805,7 +804,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     } else {
       elements = this.props.view.model.elements;
     }
-    bbox = getContentFittingBox(elements, []);
+    const bbox = getContentFittingBox(elements, []);
     return this.zoomToFitRect(bbox, options);
   }
 

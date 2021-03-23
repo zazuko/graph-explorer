@@ -1,3 +1,4 @@
-export namespace PropTypes {
-  export const anything: any = (): null => null;
-}
+const anything: any = (): null => null;
+export const PropTypes = {
+  anything,
+};

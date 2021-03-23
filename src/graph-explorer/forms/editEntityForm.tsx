@@ -31,7 +31,7 @@ export class EditEntityForm extends React.Component<Props, State> {
     this.state = { elementModel: props.entity };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     if (this.props.entity !== nextProps.entity) {
       this.setState({ elementModel: nextProps.entity });
     }

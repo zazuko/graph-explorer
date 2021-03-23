@@ -40,37 +40,34 @@ interface MutableAuthoringState extends AuthoringState {
   readonly links: HashMap<LinkModel, LinkChange>;
 }
 
-export namespace AuthoringState {
-  export const empty: AuthoringState = {
+export const AuthoringState = {
+  empty: {
     elements: new Map<ElementIri, ElementChange>(),
     links: new HashMap<LinkModel, LinkChange>(hashLink, sameLink),
-  };
+  } as AuthoringState,
 
-  export function isEmpty(state: AuthoringState) {
+  isEmpty(state: AuthoringState) {
     return state.elements.size === 0 && state.links.size === 0;
-  }
+  },
 
-  export function clone(index: AuthoringState): MutableAuthoringState {
+  clone(index: AuthoringState): MutableAuthoringState {
     return {
       elements: cloneMap(index.elements),
       links: index.links.clone(),
     };
-  }
+  },
 
-  export function has(state: AuthoringState, event: AuthoringEvent): boolean {
+  has(state: AuthoringState, event: AuthoringEvent): boolean {
     return event.type === AuthoringKind.ChangeElement
       ? state.elements.get(event.after.id) === event
       : state.links.get(event.after) === event;
-  }
+  },
 
-  export function discard(
-    state: AuthoringState,
-    discarded: AuthoringEvent
-  ): AuthoringState {
-    if (!has(state, discarded)) {
+  discard(state: AuthoringState, discarded: AuthoringEvent): AuthoringState {
+    if (!this.has(state, discarded)) {
       return state;
     }
-    const newState = clone(state);
+    const newState = this.clone(state);
     if (discarded.type === AuthoringKind.ChangeElement) {
       newState.elements.delete(discarded.after.id);
       if (!discarded.before) {
@@ -84,42 +81,36 @@ export namespace AuthoringState {
       newState.links.delete(discarded.after);
     }
     return newState;
-  }
+  },
 
-  export function addElement(
-    state: AuthoringState,
-    item: ElementModel
-  ): AuthoringState {
+  addElement(state: AuthoringState, item: ElementModel): AuthoringState {
     const event: ElementChange = {
       type: AuthoringKind.ChangeElement,
       after: item,
       deleted: false,
     };
-    const newState = clone(state);
+    const newState = this.clone(state);
     newState.elements.set(event.after.id, event);
     return newState;
-  }
+  },
 
-  export function addLink(
-    state: AuthoringState,
-    item: LinkModel
-  ): AuthoringState {
+  addLink(state: AuthoringState, item: LinkModel): AuthoringState {
     const event: LinkChange = {
       type: AuthoringKind.ChangeLink,
       after: item,
       deleted: false,
     };
-    const newState = clone(state);
+    const newState = this.clone(state);
     newState.links.set(event.after, event);
     return newState;
-  }
+  },
 
-  export function changeElement(
+  changeElement(
     state: AuthoringState,
     before: ElementModel,
     after: ElementModel
   ): AuthoringState {
-    const newState = clone(state);
+    const newState = this.clone(state);
     // delete previous state for an entity
     newState.elements.delete(before.id);
 
@@ -163,9 +154,9 @@ export namespace AuthoringState {
     }
 
     return newState;
-  }
+  },
 
-  export function changeLink(
+  changeLink(
     state: AuthoringState,
     before: LinkModel,
     after: LinkModel
@@ -173,7 +164,7 @@ export namespace AuthoringState {
     if (!sameLink(before, after)) {
       throw new Error('Cannot move link to another element or change its type');
     }
-    const newState = clone(state);
+    const newState = this.clone(state);
     const previous = state.links.get(before);
     newState.links.set(before, {
       type: AuthoringKind.ChangeLink,
@@ -182,20 +173,17 @@ export namespace AuthoringState {
       deleted: false,
     });
     return newState;
-  }
+  },
 
-  export function deleteElement(
-    state: AuthoringState,
-    model: ElementModel
-  ): AuthoringState {
-    const newState = clone(state);
+  deleteElement(state: AuthoringState, model: ElementModel): AuthoringState {
+    const newState = this.clone(state);
     newState.elements.delete(model.id);
     state.links.forEach((e) => {
       if (isLinkConnectedToElement(e.after, model.id)) {
         newState.links.delete(e.after);
       }
     });
-    if (!isNewElement(state, model.id)) {
+    if (!this.isNewElement(state, model.id)) {
       newState.elements.set(model.id, {
         type: AuthoringKind.ChangeElement,
         before: model,
@@ -204,15 +192,12 @@ export namespace AuthoringState {
       });
     }
     return newState;
-  }
+  },
 
-  export function deleteLink(
-    state: AuthoringState,
-    target: LinkModel
-  ): AuthoringState {
-    const newState = clone(state);
+  deleteLink(state: AuthoringState, target: LinkModel): AuthoringState {
+    const newState = this.clone(state);
     newState.links.delete(target);
-    if (!isNewLink(state, target)) {
+    if (!this.isNewLink(state, target)) {
       newState.links.set(target, {
         type: AuthoringKind.ChangeLink,
         before: target,
@@ -221,13 +206,13 @@ export namespace AuthoringState {
       });
     }
     return newState;
-  }
+  },
 
-  export function deleteNewLinksConnectedToElements(
+  deleteNewLinksConnectedToElements(
     state: AuthoringState,
     elementIris: Set<ElementIri>
   ): AuthoringState {
-    const newState = clone(state);
+    const newState = this.clone(state);
     state.links.forEach((e) => {
       if (!e.before) {
         const target = e.after;
@@ -240,28 +225,19 @@ export namespace AuthoringState {
       }
     });
     return newState;
-  }
+  },
 
-  export function isNewElement(
-    state: AuthoringState,
-    target: ElementIri
-  ): boolean {
+  isNewElement(state: AuthoringState, target: ElementIri): boolean {
     const event = state.elements.get(target);
     return event && event.type === AuthoringKind.ChangeElement && !event.before;
-  }
+  },
 
-  export function isDeletedElement(
-    state: AuthoringState,
-    target: ElementIri
-  ): boolean {
+  isDeletedElement(state: AuthoringState, target: ElementIri): boolean {
     const event = state.elements.get(target);
     return event && event.deleted;
-  }
+  },
 
-  export function isElementWithModifiedIri(
-    state: AuthoringState,
-    target: ElementIri
-  ): boolean {
+  isElementWithModifiedIri(state: AuthoringState, target: ElementIri): boolean {
     const event = state.elements.get(target);
     return (
       event &&
@@ -269,74 +245,30 @@ export namespace AuthoringState {
       event.before &&
       Boolean(event.newIri)
     );
-  }
+  },
 
-  export function isNewLink(
-    state: AuthoringState,
-    linkModel: LinkModel
-  ): boolean {
+  isNewLink(state: AuthoringState, linkModel: LinkModel): boolean {
     const event = state.links.get(linkModel);
     return event && !event.before;
-  }
+  },
 
-  export function isDeletedLink(
-    state: AuthoringState,
-    linkModel: LinkModel
-  ): boolean {
+  isDeletedLink(state: AuthoringState, linkModel: LinkModel): boolean {
     const event = state.links.get(linkModel);
     return (
       (event && event.deleted) ||
-      isDeletedElement(state, linkModel.sourceId) ||
-      isDeletedElement(state, linkModel.targetId)
+      this.isDeletedElement(state, linkModel.sourceId) ||
+      this.isDeletedElement(state, linkModel.targetId)
     );
-  }
+  },
 
-  export function isUncertainLink(
-    state: AuthoringState,
-    linkModel: LinkModel
-  ): boolean {
+  isUncertainLink(state: AuthoringState, linkModel: LinkModel): boolean {
     return (
-      !isDeletedLink(state, linkModel) &&
-      (isElementWithModifiedIri(state, linkModel.sourceId) ||
-        isElementWithModifiedIri(state, linkModel.targetId))
+      !this.isDeletedLink(state, linkModel) &&
+      (this.isElementWithModifiedIri(state, linkModel.sourceId) ||
+        this.isElementWithModifiedIri(state, linkModel.targetId))
     );
-  }
-}
-
-export interface TemporaryState {
-  readonly elements: ReadonlyMap<ElementIri, ElementModel>;
-  readonly links: ReadonlyHashMap<LinkModel, LinkModel>;
-}
-
-export namespace TemporaryState {
-  export const empty: TemporaryState = {
-    elements: new Map<ElementIri, ElementModel>(),
-    links: new HashMap<LinkModel, LinkModel>(hashLink, sameLink),
-  };
-
-  export function addElement(state: TemporaryState, element: ElementModel) {
-    const elements = cloneMap(state.elements);
-    elements.set(element.id, element);
-    return { ...state, elements };
-  }
-
-  export function deleteElement(state: TemporaryState, element: ElementModel) {
-    const elements = cloneMap(state.elements);
-    elements.delete(element.id);
-    return { ...state, elements };
-  }
-
-  export function addLink(state: TemporaryState, link: LinkModel) {
-    const links = state.links.clone();
-    links.set(link, link);
-    return { ...state, links };
-  }
-  export function deleteLink(state: TemporaryState, link: LinkModel) {
-    const links = state.links.clone();
-    links.delete(link);
-    return { ...state, links };
-  }
-}
+  },
+};
 
 export function isLinkConnectedToElement(
   link: LinkModel,

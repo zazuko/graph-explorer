@@ -8,26 +8,29 @@ export interface Command {
 /** @returns Inverse command */
 export type CommandAction = () => Command;
 
-export namespace Command {
-  export function create(title: string, action: CommandAction): Command {
-    return { title, invoke: action };
-  }
-
-  export function effect(title: string, body: () => void): Command {
-    const perform = {
-      title,
-      invoke: () => {
-        body();
-        return skip;
-      },
-    };
-    const skip = {
-      title: 'Skipped effect: ' + title,
-      invoke: () => perform,
-    };
-    return perform;
-  }
+function createAction(title: string, action: CommandAction): Command {
+  return { title, invoke: action };
 }
+
+function effectAction(title: string, body: () => void): Command {
+  const perform = {
+    title,
+    invoke: () => {
+      body();
+      return skip;
+    },
+  };
+  const skip = {
+    title: 'Skipped effect: ' + title,
+    invoke: () => perform,
+  };
+  return perform;
+}
+
+export const Command = {
+  create: createAction,
+  effect: effectAction,
+};
 
 export interface CommandHistoryEvents {
   historyChanged: { hasChanges: boolean };
