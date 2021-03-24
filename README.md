@@ -30,6 +30,11 @@ TODO
 
 `npm install graph-explorer`
 
+## Building / Publishing
 
-
-
+```
+npm run build-all
+npm run typings
+<bump>
+npm publish
+```
