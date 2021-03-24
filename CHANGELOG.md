@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Latest]
 
+## [1.0.0] - 2021-03-25
+
+- Forked from Ontodia 0.12.0, rebranded as *Graph Explorer*
+- Update dependencies
+- Cleanup
+
 ## [0.12.0] - 2020-02-05
 ### Changed
 - Move toolbar to paper viewport as a widget.
