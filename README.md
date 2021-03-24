@@ -28,7 +28,7 @@ TODO
 
 ## Installation
 
-TODO
+`npm install graph-explorer`
 
 
 
