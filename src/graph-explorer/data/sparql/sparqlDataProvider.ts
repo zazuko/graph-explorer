@@ -701,6 +701,7 @@ export class SparqlDataProvider implements DataProvider {
         /[?$]class\b/g,
         elementTypeIri
       );
+      elementTypePart += ' .';
     }
 
     const { defaultPrefix, fullTextSearch, dataLabelProperty } = this.settings;
