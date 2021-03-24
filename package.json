@@ -27,7 +27,6 @@
     "build": "npm run _webpack && npm run typings",
     "build-all": "npm run _webpack && BUNDLE_PEERS=true npm run _webpack",
     "build-examples": "./node_modules/.bin/webpack --config webpack.demo.config.js",
-    "test": "npm run build-all && npm run lint",
     "typings": "npm run _typings-tsc && npm run _typings-dts-bundle",
     "lint": "eslint './{src,examples}/**/*.{ts,tsx}'",
     "_typings-tsc": "./node_modules/.bin/tsc --project tsconfig.typings.json",

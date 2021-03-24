@@ -116,7 +116,7 @@ export class SearchResults extends React.Component<SearchResultProps, {}> {
     }
   };
 
-  componentWillReceiveProps(props: SearchResultProps) {
+  UNSAFE_componentWillReceiveProps(props: SearchResultProps) {
     this.setState({ selection: props.selection || {} });
   }
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 import { hcl } from 'd3-color';
