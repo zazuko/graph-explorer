@@ -24,7 +24,7 @@ Graph Explorer is a fork of [Ontodia](https://github.com/metaphacts/ontodia), wh
 
 ## Examples
 
-TODO
+`npm run demo` and open <http://localhost:10444/>
 
 ## Installation
 
