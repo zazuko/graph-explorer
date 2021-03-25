@@ -130,12 +130,12 @@ function onWorkspaceMounted(workspace: Workspace) {
 
   const sparqlDataProvider = new TransformingDataProvider(
     {
-      endpointUrl: '/wikidata',
+      endpointUrl: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
       imagePropertyUris: [
         'http://www.wikidata.org/prop/direct/P18',
         'http://www.wikidata.org/prop/direct/P154',
       ],
-      queryMethod: SparqlQueryMethod.POST,
+      //queryMethod: SparqlQueryMethod.POST,
     },
     {
       ...WikidataSettings,
