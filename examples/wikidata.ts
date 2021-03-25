@@ -103,12 +103,12 @@ function onWorkspaceMounted(wspace: Workspace) {
   const diagram = tryLoadLayoutFromLocalStorage();
   const dataProvider = new SparqlDataProvider(
     {
-      endpointUrl: '/wikidata',
+      endpointUrl: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
       imagePropertyUris: [
         'http://www.wikidata.org/prop/direct/P18',
         'http://www.wikidata.org/prop/direct/P154',
       ],
-      queryMethod: SparqlQueryMethod.POST,
+      //queryMethod: SparqlQueryMethod.POST,
     },
     WikidataSettings
   );

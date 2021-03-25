@@ -27,13 +27,13 @@ module.exports = {
   entry: {
     rdf: path.join(examplesDir, 'rdf.ts'),
     demo: path.join(examplesDir, 'demo.ts'),
-    sparql: path.join(examplesDir, 'sparql.ts'),
+    /*sparql: path.join(examplesDir, 'sparql.ts'),*/
     dbpedia: path.join(examplesDir, 'dbpedia.ts'),
-    sparqlNoStats: path.join(examplesDir, 'sparqlNoStats.ts'),
+   /* sparqlNoStats: path.join(examplesDir, 'sparqlNoStats.ts'),
     sparqlConstruct: path.join(examplesDir, 'sparqlConstruct.ts'),
     sparqlRDFGraph: path.join(examplesDir, 'sparqlRDFGraph.ts'),
     sparqlTurtleGraph: path.join(examplesDir, 'sparqlTurtleGraph.ts'),
-    styleCustomization: path.join(examplesDir, 'styleCustomization.ts'),
+    styleCustomization: path.join(examplesDir, 'styleCustomization.ts'),*/
     wikidata: path.join(examplesDir, 'wikidata.ts'),
     composite: path.join(examplesDir, 'composite.ts'),
     wikidataGraph: path.join(examplesDir, 'wikidataGraph.ts'),
@@ -86,45 +86,9 @@ module.exports = {
       template: htmlTemplatePath,
     }),
     new HtmlWebpackPlugin({
-      filename: 'sparql.html',
-      title: 'Graph Explorer SparQL Demo',
-      chunks: ['commons', 'sparql'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
       filename: 'dbpedia.html',
       title: 'Graph Explorer DBPedia SparQL Demo',
       chunks: ['commons', 'dbpedia'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'sparqlNoStats.html',
-      title: 'Graph Explorer SparQL Demo',
-      chunks: ['commons', 'sparqlNoStats'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'sparqlConstruct.html',
-      title: 'Graph Explorer SparQL Construct Demo',
-      chunks: ['commons', 'sparqlConstruct'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'sparqlRDFGraph.html',
-      title: 'Graph Explorer SparQL RDF Graph Demo',
-      chunks: ['commons', 'sparqlRDFGraph'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'sparqlTurtleGraph.html',
-      title: 'Graph Explorer SparQL Turtle Graph Demo',
-      chunks: ['commons', 'sparqlTurtleGraph'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'styleCustomization.html',
-      title: 'Graph Explorer Style Customization Demo',
-      chunks: ['commons', 'styleCustomization'],
       template: htmlTemplatePath,
     }),
     new HtmlWebpackPlugin({
