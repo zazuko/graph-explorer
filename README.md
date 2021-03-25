@@ -1,4 +1,6 @@
 # Graph Explorer
+[![npm version](https://badge.fury.io/js/graph-explorer.svg)](https://www.npmjs.com/package/graph-explorer)
+![CI status](https://github.com/zazuko/graph-explorer/workflows/Node.js%20CI/badge.svg)
 
 Do you work with graph-based data and find it difficult to understand the underlying model?
 
