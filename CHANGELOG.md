@@ -526,7 +526,8 @@ info loaded from `DataProvider`.
 ### Added
 - Ontodia published on GitHub as OSS project.
 
-[Latest]: https://github.com/metaphacts/ontodia/compare/v0.12.0...HEAD
+[Latest]: https://github.com/zazuko/graph-explorer/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/zazuko/graph-explorer/compare/v0.12.0...v1.0.0
 [0.12.0]: https://github.com/metaphacts/ontodia/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/metaphacts/ontodia/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/metaphacts/ontodia/compare/v0.9.12...v0.10.0
