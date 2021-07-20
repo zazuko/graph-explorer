@@ -730,8 +730,9 @@ export class RDFDataProvider implements DataProvider {
         ) {
           const property = props[statemet.predicate.nominalValue];
           const value = {
-            text: statemet.object.nominalValue,
-            lang: statemet.object.language || '',
+            //NH: 28-6-2021 - mapping of properties is incorrect. text should be value and lang should be language.
+            value: statemet.object.nominalValue,
+            language: statemet.object.language || '',
           };
           props[statemet.predicate.nominalValue] = {
             type: 'string',
