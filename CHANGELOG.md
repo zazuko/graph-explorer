@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Latest]
 
+## [1.1.0] - 2021-09-06
+
+- Fix [#13](https://github.com/zazuko/graph-explorer/issues/13): properties like rdfs:comment and skos:prefLabel are blank on the canvas
+
 ## [1.0.0] - 2021-03-25
 
 - Forked from Ontodia 0.12.0, rebranded as *Graph Explorer*
