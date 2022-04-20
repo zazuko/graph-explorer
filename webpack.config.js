@@ -1,4 +1,5 @@
 const path = require('path');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 // if BUNDLE_PEERS is set, we'll produce bundle with all dependencies
 const BUNDLE_PEERS = Boolean(process.env.BUNDLE_PEERS);
@@ -24,6 +25,9 @@ module.exports = {
     alias: aliases,
     extensions: ['.ts', '.tsx', '.js'],
   },
+  plugins: [
+    new NodePolyfillPlugin(),
+  ],
   module: {
     rules: [
       { test: /\.ts$|\.tsx$/, use: ['ts-loader'] },
