@@ -252,6 +252,11 @@ export interface FullTextSearchSettings {
    * makes it available as `?extractedLabel` binding in `queryPattern`.
    */
   extractLabel?: boolean;
+
+  /**
+   * run type filter first?
+   */
+  elementFirst?: boolean;
 }
 
 /**
@@ -357,6 +362,7 @@ export const RDFSettings: SparqlDataProviderSettings = {
   fullTextSearch: {
     prefix: '',
     queryPattern: ``,
+    elementFirst: false,
   },
 
   classTreeQuery: ``,

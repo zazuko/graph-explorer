@@ -730,9 +730,10 @@ export class SparqlDataProvider implements DataProvider {
         WHERE {
             {
                 SELECT DISTINCT ${innerProjection} WHERE {
+                    ${fullTextSearch.elementFirst ? '' : textSearchPart}
                     ${elementTypePart}
                     ${refQueryPart}
-                    ${textSearchPart}
+                    ${fullTextSearch.elementFirst ? textSearchPart : ''}
                     ${this.settings.filterAdditionalRestriction}
                 }
                 ${textSearchPart ? 'ORDER BY DESC(?score)' : ''}
