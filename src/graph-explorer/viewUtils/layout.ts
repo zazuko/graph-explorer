@@ -1,10 +1,10 @@
-import * as cola from 'webcola';
+import * as cola from "webcola";
 
-import { DiagramModel } from '../diagram/model';
-import { boundsOf, Vector, computeGrouping, Size } from '../diagram/geometry';
-import { Element } from '../diagram/elements';
-import { EventObserver } from './events';
-import { getContentFittingBox } from '../diagram/paperArea';
+import { DiagramModel } from "../diagram/model";
+import { boundsOf, Vector, computeGrouping, Size } from "../diagram/geometry";
+import { Element } from "../diagram/elements";
+import { EventObserver } from "./events";
+import { getContentFittingBox } from "../diagram/paperArea";
 
 export interface LayoutNode {
   id?: string;
@@ -253,12 +253,8 @@ export function calculateLayout(params: {
 }
 
 export function applyLayout(model: DiagramModel, layout: CalculatedLayout) {
-  const {
-    positions,
-    group,
-    nestedLayouts,
-    keepAveragePosition,
-  } = layout as UnzippedCalculatedLayout;
+  const { positions, group, nestedLayouts, keepAveragePosition } =
+    layout as UnzippedCalculatedLayout;
   const elements = model.elements.filter(({ id }) => positions.has(id));
   for (const nestedLayout of nestedLayouts) {
     applyLayout(model, nestedLayout);
@@ -372,14 +368,14 @@ export function placeElementsAround(params: {
 
   return new Promise((resolve) => {
     const listener = new EventObserver();
-    listener.listen(model.events, 'changeCells', () => {
+    listener.listen(model.events, "changeCells", () => {
       listener.stopListening();
 
       removeOverlaps({
         model,
         padding: { x: 15, y: 15 },
       });
-      resolve();
+      resolve(true);
     });
   });
 }

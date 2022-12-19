@@ -1,4 +1,4 @@
-import { EventSource } from './events';
+import { EventSource } from "./events";
 
 export abstract class BatchingScheduler {
   private useAnimationFrame: boolean;
@@ -10,7 +10,7 @@ export abstract class BatchingScheduler {
   }
 
   protected schedule() {
-    if (typeof this.scheduled === 'undefined') {
+    if (typeof this.scheduled === "undefined") {
       if (this.useAnimationFrame) {
         this.scheduled = requestAnimationFrame(this.runSynchronously);
       } else {
@@ -35,7 +35,7 @@ export abstract class BatchingScheduler {
   }
 
   private cancelScheduledTimeout(): boolean {
-    if (typeof this.scheduled !== 'undefined') {
+    if (typeof this.scheduled !== "undefined") {
       if (this.useAnimationFrame) {
         cancelAnimationFrame(this.scheduled);
       } else {
@@ -95,9 +95,8 @@ export class Cancellation {
       /* nothing */
     },
   };
-  private source:
-    | EventSource<{ abort: undefined }>
-    | undefined = new EventSource();
+  private source: EventSource<{ abort: undefined }> | undefined =
+    new EventSource();
   private aborted = false;
 
   readonly signal: CancellationToken;
@@ -108,22 +107,22 @@ export class Cancellation {
       get aborted() {
         return this.parent.aborted;
       }
-      addEventListener(event: 'abort', handler: () => void) {
-        if (event !== 'abort') {
+      addEventListener(event: "abort", handler: () => void) {
+        if (event !== "abort") {
           return;
         }
         if (this.parent.source) {
-          this.parent.source.on('abort', handler);
+          this.parent.source.on("abort", handler);
         } else {
           handler();
         }
       }
-      removeEventListener(event: 'abort', handler: () => void) {
-        if (event !== 'abort') {
+      removeEventListener(event: "abort", handler: () => void) {
+        if (event !== "abort") {
           return;
         }
         if (this.parent.source) {
-          this.parent.source.off('abort', handler);
+          this.parent.source.off("abort", handler);
         }
       }
     })(this);
@@ -134,15 +133,15 @@ export class Cancellation {
       return;
     }
     this.aborted = true;
-    this.source.trigger('abort', undefined);
+    this.source.trigger("abort", undefined);
     this.source = undefined;
   }
 }
 
 export interface CancellationToken {
   readonly aborted: boolean;
-  addEventListener(event: 'abort', handler: () => void): void;
-  removeEventListener(event: 'abort', handler: () => void): void;
+  addEventListener(event: "abort", handler: () => void): void;
+  removeEventListener(event: "abort", handler: () => void): void;
 }
 
 export const CancellationToken = {
@@ -173,7 +172,7 @@ export const CancellationToken = {
 };
 
 export class CancelledError extends Error {
-  constructor(message = 'Operation was cancelled') {
+  constructor(message = "Operation was cancelled") {
     super(message);
     this.name = CancelledError.name;
     Object.setPrototypeOf(this, CancelledError.prototype);
@@ -181,7 +180,7 @@ export class CancelledError extends Error {
 }
 
 export function delay(timeout: number) {
-  return new Promise((resolve) => setTimeout(() => resolve(), timeout));
+  return new Promise((resolve) => setTimeout(resolve, timeout));
 }
 
 export function animateInterval(
@@ -213,7 +212,7 @@ export function animateInterval(
       }
     };
 
-    cancellation.signal.addEventListener('abort', () => {
+    cancellation.signal.addEventListener("abort", () => {
       cancelAnimationFrame(animationFrameId);
       resolve();
     });
