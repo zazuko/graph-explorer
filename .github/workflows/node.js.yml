@@ -1,6 +1,8 @@
 name: Node.js CI
 
-on: [push, pull_request]
+on:
+  - push
+  - pull_request
 
 jobs:
   build:
@@ -8,14 +10,20 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version:
+          - 14
+          - 16
+          - 18
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build-all
-      - run: npm run lint
+      - name: Install dependencies
+        run: npm ci
+      - name: Build the app
+        run: npm run build-all
+      - name: Run the linter
+        run: npm run lint
