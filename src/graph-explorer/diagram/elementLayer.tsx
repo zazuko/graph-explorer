@@ -355,8 +355,8 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
         tabIndex={0}
         ref={this.onMount}
         // resize element when child image loaded
-        onLoad={this.onLoadOrErrorEvent}
-        onError={this.onLoadOrErrorEvent}
+        onLoad={this.onLoadOrErrorEvent} // eslint-disable-line
+        onError={this.onLoadOrErrorEvent} // eslint-disable-line
         onClick={this.onClick}
         onDoubleClick={this.onDoubleClick}
       >
