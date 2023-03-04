@@ -1,5 +1,4 @@
 /// <reference path='local/file-saverjs/index.d.ts' />
-/// <reference path="local/n3/index.d.ts" />
 /// <reference path="local/rdf-ext/index.d.ts" />
 
 // placeholders for webcola
