@@ -84,7 +84,7 @@ const props: WorkspaceProps & React.ClassAttributes<Workspace> = {
   },
   toolbar: (
     <Toolbar
-      onExampleClick={(workspace : Workspace) => {
+      onExampleClick={(workspace: Workspace) => {
         alert('Example button has been pressed!');
       }}
     />
