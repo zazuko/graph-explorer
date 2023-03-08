@@ -11,6 +11,9 @@ import {
   ValidationEvent,
   ElementError,
   LinkError,
+  Property,
+  LiteralProperty,
+  LocalizedString,
   DirectedLinkType,
   CancellationToken,
 } from '../../src/graph-explorer/index';
@@ -51,7 +54,7 @@ export class ExampleMetadataApi implements MetadataApi {
     target: ElementModel,
     ct: CancellationToken
   ): Promise<boolean> {
-    await delay(SIMULATED_DELAY, ct);
+    //await delay(SIMULATED_DELAY, ct);
     const linkTypes = await this.possibleLinkTypes(source, target, ct);
     CancellationToken.throwIfAborted(ct);
     return linkTypes.length > 0;
@@ -62,19 +65,14 @@ export class ExampleMetadataApi implements MetadataApi {
     target: ElementModel,
     ct: CancellationToken
   ): Promise<DirectedLinkType[]> {
-    await delay(SIMULATED_DELAY, ct);
-    return hasType(source, owl.class) && hasType(target, owl.class)
-      ? mapLinkTypes([rdfs.subClassOf]).concat(
-          mapLinkTypes([rdfs.subClassOf], LinkDirection.in)
+    //await delay(SIMULATED_DELAY, ct);
+    return hasType(source, 'http://schema.table.org/Column' as ElementTypeIri) && hasType(target, 'http://example.org/ea/Attribute' as ElementTypeIri) 
+      ? mapLinkTypes(['http://example.org/ea/assignment' as LinkTypeIri]).concat(
+          mapLinkTypes(['http://example.org/ea/assignment' as LinkTypeIri], LinkDirection.in)
         )
-      : hasType(source, owl.objectProperty) && hasType(target, owl.class)
-      ? mapLinkTypes([owl.domain, owl.range])
-      : hasType(target, owl.objectProperty) && hasType(source, owl.class)
-      ? mapLinkTypes([owl.domain, owl.range], LinkDirection.in)
-      : hasType(source, owl.objectProperty) &&
-        hasType(target, owl.objectProperty)
-      ? mapLinkTypes([rdfs.subPropertyOf]).concat(
-          mapLinkTypes([rdfs.subPropertyOf], LinkDirection.in)
+      : hasType(target, 'http://schema.table.org/Column' as ElementTypeIri) && hasType(source, 'http://example.org/ea/Attribute' as ElementTypeIri) 
+      ? mapLinkTypes(['http://example.org/ea/assignment' as LinkTypeIri]).concat(
+          mapLinkTypes(['http://example.org/ea/assignment' as LinkTypeIri], LinkDirection.in)
         )
       : [];
 
@@ -102,7 +100,7 @@ export class ExampleMetadataApi implements MetadataApi {
     type: ElementTypeIri,
     ct: CancellationToken
   ): Promise<PropertyTypeIri[]> {
-    await delay(SIMULATED_DELAY, ct);
+    //await delay(SIMULATED_DELAY, ct);
     return [];
   }
 
@@ -118,10 +116,10 @@ export class ExampleMetadataApi implements MetadataApi {
     types: ReadonlySet<ElementTypeIri>,
     ct: CancellationToken
   ): Promise<ReadonlySet<ElementTypeIri>> {
-    await delay(SIMULATED_DELAY, ct);
+    //await delay(SIMULATED_DELAY, ct);
     const result = new Set<ElementTypeIri>();
     types.forEach((type) => {
-      if (type.length % 2 === 0) {
+      if (type === "http://xmlns.com/foaf/0.1/Person") {
         result.add(type);
       }
     });
@@ -140,7 +138,7 @@ export class ExampleMetadataApi implements MetadataApi {
     element: ElementModel,
     ct: CancellationToken
   ): Promise<boolean> {
-    await delay(SIMULATED_DELAY, ct);
+    //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
@@ -150,7 +148,7 @@ export class ExampleMetadataApi implements MetadataApi {
     target: ElementModel,
     ct: CancellationToken
   ): Promise<boolean> {
-    await delay(SIMULATED_DELAY, ct);
+    //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
@@ -160,7 +158,7 @@ export class ExampleMetadataApi implements MetadataApi {
     target: ElementModel,
     ct: CancellationToken
   ): Promise<boolean> {
-    await delay(SIMULATED_DELAY, ct);
+    //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
@@ -176,7 +174,7 @@ export class ExampleMetadataApi implements MetadataApi {
       id: `${types[0]}_${random32BitDigits}` as ElementIri,
       types: [...types],
       label: { values: [{ value: 'New Entity', language: '' }] },
-      properties: {},
+      properties:  {"http://xmlns.com/foaf/0.1/name":  {type: 'string', values: [{language:"",value:"helo"}]} as LiteralProperty},
     };
   }
 }
