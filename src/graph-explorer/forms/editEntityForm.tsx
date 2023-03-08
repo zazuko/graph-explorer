@@ -7,6 +7,7 @@ import {
   PropertyTypeIri,
   Property,
   isIriProperty,
+  LiteralProperty,
   isLiteralProperty,
   ElementIri,
 } from '../data/model';
@@ -57,6 +58,8 @@ export class EditEntityForm extends React.Component<Props, State> {
               key={index}
               className="graph-explorer-form-control"
               defaultValue={value}
+              onChange={this.onChangeProp}
+              data-iri={key}
             />
           ))}
         </label>
@@ -132,6 +135,18 @@ export class EditEntityForm extends React.Component<Props, State> {
       },
     });
   };
+
+  private onChangeProp = (e: React.FormEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    // we should select all elements with the same data-iri element, and create the values accordingly
+    this.setState({
+      elementModel: {
+        ...this.state.elementModel,
+        properties:  {...this.state.elementModel.properties, [target.dataset['iri']] :  {type: 'string', values: [{language:"",value:target.value}]} as LiteralProperty},
+      },
+    });
+  } 
+
 
   private renderLabel() {
     const { view } = this.props;
