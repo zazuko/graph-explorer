@@ -534,6 +534,7 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
       selectedLanguage: view.getLanguage(),
       onChangeLanguage: workspace.changeLanguage,
       hidePanels,
+      workspace: workspace
     };
     if (toolbar) {
       const toolbarProps: ToolbarProps = {

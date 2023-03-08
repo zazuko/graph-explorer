@@ -19,7 +19,7 @@ const ELEMENTS = require('./resources/elements.json');
 const LINKS = require('./resources/links.json');
 
 export interface Props extends ToolbarProps {
-  onExampleClick?: () => void;
+  onExampleClick?: (workspace: Workspace) => void;
 }
 
 const CLASS_NAME = 'graph-explorer-toolbar';
@@ -48,7 +48,7 @@ export class Toolbar extends React.Component<Props, {}> {
               <button
                 type="button"
                 className="graph-explorer-btn graph-explorer-btn-default"
-                onClick={this.props.onExampleClick}
+                onClick={() => this.props.onExampleClick(this.props.workspace)}
               >
                 <span title="Example button">Exapmle button</span>
               </button>
@@ -84,7 +84,7 @@ const props: WorkspaceProps & React.ClassAttributes<Workspace> = {
   },
   toolbar: (
     <Toolbar
-      onExampleClick={() => {
+      onExampleClick={(workspace : Workspace) => {
         alert('Example button has been pressed!');
       }}
     />

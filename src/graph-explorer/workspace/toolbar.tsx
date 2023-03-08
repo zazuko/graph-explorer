@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { WorkspaceLanguage } from './workspace';
+import { Workspace, WorkspaceLanguage } from './workspace';
 
 export interface ToolbarProps {
   canSaveDiagram?: boolean;
@@ -19,6 +19,7 @@ export interface ToolbarProps {
   selectedLanguage?: string;
   onChangeLanguage?: (language: string) => void;
   hidePanels?: boolean;
+  workspace?: Workspace;
 }
 
 const CLASS_NAME = 'graph-explorer-toolbar';
