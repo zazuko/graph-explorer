@@ -2,27 +2,27 @@
 [![npm version](https://badge.fury.io/js/graph-explorer.svg)](https://www.npmjs.com/package/graph-explorer)
 ![CI status](https://github.com/zazuko/graph-explorer/workflows/Node.js%20CI/badge.svg)
 
-Do you work with graph-based data and find it difficult to understand the underlying model?
+Working with graph-based data and struggling to grasp the underlying model?
 
-Is your graph growing rapidly and you are looking for an exploratory tool to better understand how your knowledge graph is linked?
+Experiencing rapid graph growth and seeking an exploratory tool to better comprehend your knowledge graph's connections?
 
-Are you looking for a way to document your schema, ontology or data for others?
+Need a solution for documenting your schema, ontology, or data for others?
 
-Then Graph Explorer is the tool for you!
+Graph Explorer is the perfect tool for you!
 
-Graph Explorer is a JavaScript-based application and library that helps you visualize, navigate, and explore RDF-based knowledge graphs and data sources. It can be configured to work with one or more SPARQL endpoints, and it can load RDF resources from the web.
+Graph Explorer is a JavaScript application and library designed to visualize, navigate, and examine RDF-based knowledge graphs and data sources. It's configurable to operate with single or multiple SPARQL endpoints and can load RDF resources from the web.
 
-In short, Graph Explorer helps you, your team, and the world better access and understand linked data.
+In essence, Graph Explorer empowers you, your team, and the global community to access and understand linked data more effectively.
 
-Graph Explorer is a fork of [Ontodia](https://github.com/metaphacts/ontodia), which is now part of [Metaphacts](https://metaphacts.com/). In an effort to further develop its open-source version, we decided to fork, maintain and extend the codebase where needed. Contributions from any partners are very welcome!
+Graph Explorer is a fork of [Ontodia](https://github.com/metaphacts/ontodia), now incorporated into [Metaphacts](https://metaphacts.com/). To advance the open-source version, we chose to fork, maintain, and expand the codebase as necessary. Contributions from partners are highly encouraged!
 
 ## Features
 
-- Visual navigation and diagramming over large graph data sets
-- Rich graph visualization and context-aware navigation features 
-- Ability to store and retrieve diagrams
-- User friendly - no graph query language or prior knowledge of the schema required
-- Customizable user interface (by modifying templates for nodes and links) and data storage back-end
+- Visual navigation and diagramming for extensive graph data sets
+- Engaging graph visualization and context-aware navigation capabilities
+- Diagram storage and retrieval functionality
+- User-friendly design, no graph query language or schema knowledge needed
+- Customizable UI (by adjusting node and link templates) and data storage back-end
 
 ## Examples
 
