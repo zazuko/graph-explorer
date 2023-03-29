@@ -2,7 +2,7 @@
 [![npm version](https://badge.fury.io/js/graph-explorer.svg)](https://www.npmjs.com/package/graph-explorer)
 ![CI status](https://github.com/zazuko/graph-explorer/workflows/Node.js%20CI/badge.svg)
 
-Working with graph-based data and struggling to grasp the underlying model?
+Working with RDF graph-based data and struggling to grasp the underlying model?
 
 Experiencing rapid graph growth and seeking an exploratory tool to better comprehend your knowledge graph's connections?
 
