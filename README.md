@@ -28,6 +28,10 @@ Graph Explorer is a fork of [Ontodia](https://github.com/metaphacts/ontodia), no
 
 `npm run demo` and open <http://localhost:10444/>
 
+or
+
+`SPARQL_ENDPOINT=http://localhost:7200/repositories/foobar npm run demo` and open <http://localhost:10444/envendpoint.html>
+
 ## Installation
 
 `npm install graph-explorer`
