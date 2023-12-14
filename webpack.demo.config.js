@@ -33,6 +33,7 @@ module.exports = {
     composite: path.join(examplesDir, 'composite.ts'),
     wikidataGraph: path.join(examplesDir, 'wikidataGraph.ts'),
     toolbarCustomization: path.join(examplesDir, 'toolbarCustomization.tsx'),
+    envendpoint: path.join(examplesDir, 'envendpoint.ts'),
   },
   resolve: {
     alias: aliases,
@@ -109,6 +110,12 @@ module.exports = {
       filename: 'toolbarCustomization.html',
       title: 'Graph Explorer Toolbar Customization Demo',
       chunks: ['commons', 'toolbarCustomization'],
+      template: htmlTemplatePath,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'envendpoint.html',
+      title: 'Graph Explorer on $SPARQL_ENDPOINT from env',
+      chunks: ['commons', 'envendpoint'],
       template: htmlTemplatePath,
     }),
   ],
