@@ -254,7 +254,7 @@ export class RDFDataProvider implements DataProvider {
           id: classId,
           label: { values: labels },
           count: this.rdfStorage.getTypeCount(classId),
-          children: [],
+          children: [] as any[],
         };
       } catch (error) {
         // tslint:disable-next-line:no-console
@@ -381,11 +381,11 @@ export class RDFDataProvider implements DataProvider {
               .then((exists) => this.fetchIfNecessary(target, exists)),
           ])
             .then(() => ({ subject: source, object: target }))
-            .catch((error) => {
+            .catch((error) : any => {
               // tslint:disable-next-line:no-console
               console.warn(error);
               return null;
-            })
+            } )
         );
       }
     }
