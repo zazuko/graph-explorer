@@ -61,6 +61,7 @@
     "@types/lodash": "^4.14.191",
     "@types/node": "^22.13.5",
     "@types/react-dom": "^16.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
     "canvg-fixed": "1.0.0",
     "css-loader": "^3.4.0",
     "dts-bundle": "^0.7.3",
