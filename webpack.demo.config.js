@@ -27,14 +27,14 @@ const htmlTemplatePath = path.join(__dirname, 'examples', 'template.ejs');
 module.exports = {
   mode: 'development',
   entry: {
-    rdf: path.join(examplesDir, 'rdf.ts'),
     edit: path.join(examplesDir, 'edit.ts'),
     demo: path.join(examplesDir, 'demo.ts'),
     dbpedia: path.join(examplesDir, 'dbpedia.ts'),
     wikidata: path.join(examplesDir, 'wikidata.ts'),
-    composite: path.join(examplesDir, 'composite.ts'),
+    //composite: path.join(examplesDir, 'composite.ts'),
     wikidataGraph: path.join(examplesDir, 'wikidataGraph.ts'),
     toolbarCustomization: path.join(examplesDir, 'toolbarCustomization.tsx'),
+    envendpoint: path.join(examplesDir, 'envendpoint.ts'),
   },
   resolve: {
     alias: aliases,
@@ -119,6 +119,12 @@ module.exports = {
       chunks: ['commons', 'toolbarCustomization'],
       template: htmlTemplatePath,
     }),
+    new HtmlWebpackPlugin({
+      filename: 'envendpoint.html',
+      title: 'Graph Explorer on $SPARQL_ENDPOINT from env',
+      chunks: ['commons', 'envendpoint'],
+      template: htmlTemplatePath,
+    }),
   ],
   devServer: {
     headers: {
@@ -126,8 +132,10 @@ module.exports = {
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
       "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
     },
-    proxy: {
-      '/sparql**': {
+   proxy: [ 
+       {
+        context: ['/sparql**'],
+
         target: SPARQL_ENDPOINT,
         pathRewrite: { '/sparql': '' },
         changeOrigin: true,
@@ -139,23 +147,26 @@ module.exports = {
         changeOrigin: true,
         secure: false,
       },
-      '/wikidata**': {
+      {
+        context: ['/wikidata**'],
         target: WIKIDATA_ENDPOINT || SPARQL_ENDPOINT,
         pathRewrite: { '/wikidata': '' },
         changeOrigin: true,
         secure: false,
       },
-      '/lod-proxy/**': {
+      {
+        context: ['/lod-proxy/**'],
         target: LOD_PROXY,
         changeOrigin: true,
         secure: false,
       },
-      '/wikidata-prop-suggest**': {
+      {
+        context: ['/wikidata-prop-suggest**'],
         target: PROP_SUGGEST,
         pathRewrite: { '/wikidata-prop-suggest': '' },
         changeOrigin: true,
         secure: false,
-      },
-    },
+      }
+    ]
   },
 };

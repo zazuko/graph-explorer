@@ -265,7 +265,7 @@ export class CompositeDataProvider implements DataProvider {
         return {
           dataSourceName: dpName,
           useInStats: useProviderInStats,
-          response: undefined,
+          response: undefined as any,
         };
       });
   }

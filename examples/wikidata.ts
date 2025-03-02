@@ -47,7 +47,7 @@ function wikidataSuggestProperties(params: PropertySuggestionParams) {
   const requestBody = {
     threshold: 0.1,
     term,
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    
     instance_properties: properties,
   };
   return fetch('/wikidata-prop-suggest', {
