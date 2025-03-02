@@ -3,11 +3,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const SUPPORT_IE = process.env.SUPPORT_IE;
-const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT;
-const SPARQL_UPDATEENDPOINT = process.env.SPARQL_UPDATEENDPOINT;
-const WIKIDATA_ENDPOINT = process.env.WIKIDATA_ENDPOINT;
-const LOD_PROXY = process.env.LOD_PROXY;
-const PROP_SUGGEST = process.env.PROP_SUGGEST;
+const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT !== undefined ? process.env.SPARQL_ENDPOINT : "http://example.com";
+const SPARQL_UPDATEENDPOINT = process.env.SPARQL_UPDATEENDPOINT !== undefined ? process.env.SPARQL_UPDATEENDPOINT :"http://example.com";
+const WIKIDATA_ENDPOINT = process.env.WIKIDATA_ENDPOINT !== undefined ? process.env.WIKIDATA_ENDPOINT : "http://example.com";
+const LOD_PROXY = process.env.LOD_PROXY !== undefined ? process.env.LOD_PROXY : "http://example.com";
+const PROP_SUGGEST = process.env.PROP_SUGGEST !== undefined ? process.env.PROP_SUGGEST : "http://example.com";
 
 const aliases = {};
 if (!SUPPORT_IE) {
@@ -73,12 +73,6 @@ module.exports = {
   plugins: [
     new NodePolyfillPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'rdf.html',
-      title: 'Graph Explorer RDF Demo',
-      chunks: ['commons', 'rdf'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
       filename: 'edit.html',
       title: 'Graph Explorer Edit Demo',
       chunks: ['commons', 'edit'],
@@ -108,12 +102,6 @@ module.exports = {
       template: htmlTemplatePath,
     }),
     new HtmlWebpackPlugin({
-      filename: 'composite.html',
-      title: 'Graph Explorer composite DP Demo',
-      chunks: ['commons', 'composite'],
-      template: htmlTemplatePath,
-    }),
-    new HtmlWebpackPlugin({
       filename: 'toolbarCustomization.html',
       title: 'Graph Explorer Toolbar Customization Demo',
       chunks: ['commons', 'toolbarCustomization'],
@@ -135,13 +123,13 @@ module.exports = {
    proxy: [ 
        {
         context: ['/sparql**'],
-
         target: SPARQL_ENDPOINT,
         pathRewrite: { '/sparql': '' },
         changeOrigin: true,
         secure: false,
       },
-      '/update**': {
+       {
+        context: ['/update**'],
         target: SPARQL_UPDATEENDPOINT,
         pathRewrite: { '/update': '' },
         changeOrigin: true,

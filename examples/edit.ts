@@ -1,7 +1,7 @@
 import { createElement, ClassAttributes } from 'react';
 import * as ReactDOM from 'react-dom';
 const SparqlGenerator = require('sparqljs').Generator;
-const SparqlClient = require('sparql-http-client');
+import SparqlClient from 'sparql-http-client'
 
 const RDFS_PREFIX = 'http://www.w3.org/2000/01/rdf-schema#';
 const RDF_PREFIX = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#';
@@ -141,6 +141,7 @@ function generateSparqlUpdate(workspace: Workspace) {
             endpointUrl: window.location.origin + '/query',
             updateUrl:  window.location.origin + '/update',
         });
+        console.log(updateQuery);
         client.query.update(updateQuery);
         
        
