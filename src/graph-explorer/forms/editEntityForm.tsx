@@ -148,7 +148,7 @@ export class EditEntityForm extends React.Component<Props, State> {
         properties:  {...this.state.elementModel.properties, [target.dataset['iri']] :  {type: 'string', values: values} as LiteralProperty},
       },
     });
-  } 
+  }; 
 
   private renderLabel() {
     const { view } = this.props;
@@ -164,7 +164,7 @@ export class EditEntityForm extends React.Component<Props, State> {
         />
       </label>
     );
-  }
+  };
 
   render() {
     return (
