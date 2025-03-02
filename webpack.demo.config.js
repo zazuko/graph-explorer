@@ -4,6 +4,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const SUPPORT_IE = process.env.SUPPORT_IE;
 const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT;
+const SPARQL_UPDATEENDPOINT = process.env.SPARQL_UPDATEENDPOINT;
 const WIKIDATA_ENDPOINT = process.env.WIKIDATA_ENDPOINT;
 const LOD_PROXY = process.env.LOD_PROXY;
 const PROP_SUGGEST = process.env.PROP_SUGGEST;
@@ -26,7 +27,7 @@ const htmlTemplatePath = path.join(__dirname, 'examples', 'template.ejs');
 module.exports = {
   mode: 'development',
   entry: {
-    //rdf: path.join(examplesDir, 'rdf.ts'),
+    edit: path.join(examplesDir, 'edit.ts'),
     demo: path.join(examplesDir, 'demo.ts'),
     dbpedia: path.join(examplesDir, 'dbpedia.ts'),
     wikidata: path.join(examplesDir, 'wikidata.ts'),
@@ -78,6 +79,12 @@ module.exports = {
       template: htmlTemplatePath,
     }),
     new HtmlWebpackPlugin({
+      filename: 'edit.html',
+      title: 'Graph Explorer Edit Demo',
+      chunks: ['commons', 'edit'],
+      template: htmlTemplatePath,
+    }),
+    new HtmlWebpackPlugin({
       title: 'Graph Explorer Local Demo',
       chunks: ['commons', 'demo'],
       template: htmlTemplatePath,
@@ -120,11 +127,23 @@ module.exports = {
     }),
   ],
   devServer: {
-    proxy: [ 
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+    },
+   proxy: [ 
        {
         context: ['/sparql**'],
+
         target: SPARQL_ENDPOINT,
         pathRewrite: { '/sparql': '' },
+        changeOrigin: true,
+        secure: false,
+      },
+      '/update**': {
+        target: SPARQL_UPDATEENDPOINT,
+        pathRewrite: { '/update': '' },
         changeOrigin: true,
         secure: false,
       },
