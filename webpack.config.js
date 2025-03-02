@@ -61,7 +61,6 @@ module.exports = {
         'file-saverjs',
         'lodash',
         'n3',
-        'rdf-ext',
         'react',
         'react-dom',
         'webcola',

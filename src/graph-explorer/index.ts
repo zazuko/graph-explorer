@@ -17,7 +17,6 @@ export {
   RdfLiteral,
   Triple,
 } from './data/sparql/sparqlModels';
-export * from './data/rdf/rdfDataProvider';
 export * from './data/sparql/sparqlDataProvider';
 export * from './data/composite/composite';
 export * from './data/sparql/sparqlDataProviderSettings';
