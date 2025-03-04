@@ -1,8 +1,8 @@
-import * as React from 'react';
-import { hcl } from 'd3-color';
+import * as React from "react";
+import { hcl } from "d3-color";
 
-import { ElementModel } from '../data/model';
-import { DiagramView } from '../diagram/view';
+import { ElementModel } from "../data/model";
+import { DiagramView } from "../diagram/view";
 
 export interface ListElementViewProps {
   className?: string;
@@ -12,10 +12,10 @@ export interface ListElementViewProps {
   disabled?: boolean;
   selected?: boolean;
   onClick?: (event: React.MouseEvent<any>, model: ElementModel) => void;
-  onDragStart?: React.HTMLProps<HTMLElement>['onDragStart'];
+  onDragStart?: React.HTMLProps<HTMLElement>["onDragStart"];
 }
 
-const CLASS_NAME = 'graph-explorer-list-element-view';
+const CLASS_NAME = "graph-explorer-list-element-view";
 
 export class ListElementView extends React.Component<ListElementViewProps, {}> {
   render() {
@@ -31,16 +31,16 @@ export class ListElementView extends React.Component<ListElementViewProps, {}> {
 
     const { h, c, l } = view.getTypeStyle(model.types).color;
     const frontColor =
-      selected && !disabled ? hcl(h, c, l * 1.2) : hcl('white');
+      selected && !disabled ? hcl(h, c, l * 1.2) : hcl("white");
 
     let classNames = `${CLASS_NAME}`;
-    classNames += disabled ? ` ${CLASS_NAME}--disabled` : '';
-    classNames += className ? ` ${className}` : '';
+    classNames += disabled ? ` ${CLASS_NAME}--disabled` : "";
+    classNames += className ? ` ${className}` : "";
     const localizedText = view.formatLabel(model.label.values, model.id);
     const classesString =
       model.types.length > 0
         ? `\nClasses: ${view.getElementTypeString(model)}`
-        : '';
+        : "";
 
     return (
       <li
@@ -72,16 +72,16 @@ export class ListElementView extends React.Component<ListElementViewProps, {}> {
 
 export function startDragElements(
   e: React.DragEvent<{}>,
-  iris: ReadonlyArray<string>
+  iris: readonly string[]
 ) {
   try {
     e.dataTransfer.setData(
-      'application/x-graph-explorer-elements',
+      "application/x-graph-explorer-elements",
       JSON.stringify(iris)
     );
   } catch (ex) {
     // IE fix
-    e.dataTransfer.setData('text', JSON.stringify(iris));
+    e.dataTransfer.setData("text", JSON.stringify(iris));
   }
   return false;
 }

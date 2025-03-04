@@ -1,26 +1,26 @@
-import * as React from 'react';
+import * as React from "react";
 
 import {
   Dictionary,
   ElementModel,
   ElementIri,
   LinkTypeIri,
-} from '../data/model';
+} from "../data/model";
 
-import { FatLinkType, Element } from '../diagram/elements';
-import { DiagramView } from '../diagram/view';
+import { FatLinkType, Element } from "../diagram/elements";
+import { DiagramView } from "../diagram/view";
 
-import { EditorController } from '../editor/editorController';
-import { EventObserver } from '../viewUtils/events';
-import { ProgressBar, ProgressState } from './progressBar';
-import { highlightSubstring } from './listElementView';
-import { SearchResults } from './searchResults';
+import { EditorController } from "../editor/editorController";
+import { EventObserver } from "../viewUtils/events";
+import { ProgressBar, ProgressState } from "./progressBar";
+import { highlightSubstring } from "./listElementView";
+import { SearchResults } from "./searchResults";
 
 import {
   WorkspaceContextTypes,
   WorkspaceContextWrapper,
   WorkspaceEventKey,
-} from '../workspace/workspaceContext';
+} from "../workspace/workspaceContext";
 
 interface ConnectionCount {
   inCount: number;
@@ -34,8 +34,8 @@ export interface ReactElementModel {
 
 const MAX_LINK_COUNT = 100;
 const ALL_RELATED_ELEMENTS_LINK: FatLinkType = new FatLinkType({
-  id: 'allRelatedElements' as LinkTypeIri,
-  label: [{ value: 'All', language: '' }],
+  id: "allRelatedElements" as LinkTypeIri,
+  label: [{ value: "All", language: "" }],
 });
 
 export interface PropertySuggestionParams {
@@ -48,7 +48,7 @@ export type PropertySuggestionHandler = (
   params: PropertySuggestionParams
 ) => Promise<Dictionary<PropertyScore>>;
 
-type SortMode = 'alphabet' | 'smart';
+type SortMode = "alphabet" | "smart";
 
 export interface PropertyScore {
   propertyIri: string;
@@ -57,7 +57,7 @@ export interface PropertyScore {
 
 export interface LinkDataChunk {
   link: FatLinkType;
-  direction?: 'in' | 'out';
+  direction?: "in" | "out";
   expectedCount: number;
   offset?: number;
 }
@@ -88,7 +88,7 @@ export class ConnectionsMenu extends React.Component<ConnectionsMenuProps, {}> {
   private loadingState = ProgressState.none;
 
   private links: FatLinkType[];
-  private countMap: { [linkTypeId: string]: ConnectionCount };
+  private countMap: Record<string, ConnectionCount>;
 
   private linkDataChunk: LinkDataChunk;
   private objects: ReactElementModel[];
@@ -97,7 +97,7 @@ export class ConnectionsMenu extends React.Component<ConnectionsMenuProps, {}> {
 
   componentDidMount() {
     const { view } = this.props;
-    this.handler.listen(view.events, 'changeLanguage', this.updateAll);
+    this.handler.listen(view.events, "changeLanguage", this.updateAll);
 
     this.loadLinks();
   }
@@ -108,18 +108,18 @@ export class ConnectionsMenu extends React.Component<ConnectionsMenuProps, {}> {
   }
 
   private resubscribeOnLinkTypeEvents(
-    linkTypesOfElement: ReadonlyArray<FatLinkType>
+    linkTypesOfElement: readonly FatLinkType[]
   ) {
     this.linkTypesListener.stopListening();
     for (const linkType of linkTypesOfElement) {
       this.linkTypesListener.listen(
         linkType.events,
-        'changeLabel',
+        "changeLabel",
         this.updateAll
       );
       this.linkTypesListener.listen(
         linkType.events,
-        'changeVisibility',
+        "changeVisibility",
         this.updateAll
       );
     }
@@ -166,7 +166,6 @@ export class ConnectionsMenu extends React.Component<ConnectionsMenuProps, {}> {
         );
       })
       .catch((err) => {
-        // tslint:disable-next-line:no-console
         console.error(err);
         this.loadingState = ProgressState.error;
         this.updateAll();
@@ -207,7 +206,6 @@ export class ConnectionsMenu extends React.Component<ConnectionsMenuProps, {}> {
         );
       })
       .catch((err) => {
-        // tslint:disable-next-line:no-console
         console.error(err);
         this.loadingState = ProgressState.error;
         this.updateAll();
@@ -291,7 +289,7 @@ interface ConnectionsMenuMarkupProps {
 
   connectionsData: {
     links: FatLinkType[];
-    countMap: { [linkTypeId: string]: ConnectionCount };
+    countMap: Record<string, ConnectionCount>;
   };
 
   objectsData?: ObjectsData;
@@ -319,9 +317,9 @@ class ConnectionsMenuMarkup extends React.Component<
   constructor(props: ConnectionsMenuMarkupProps) {
     super(props);
     this.state = {
-      filterKey: '',
-      panel: 'connections',
-      sortMode: 'alphabet',
+      filterKey: "",
+      panel: "connections",
+      sortMode: "alphabet",
     };
   }
 
@@ -331,28 +329,28 @@ class ConnectionsMenuMarkup extends React.Component<
   };
 
   private getTitle = () => {
-    if (this.props.objectsData && this.state.panel === 'objects') {
-      return 'Objects';
+    if (this.props.objectsData && this.state.panel === "objects") {
+      return "Objects";
     } else if (
       this.props.connectionsData &&
-      this.state.panel === 'connections'
+      this.state.panel === "connections"
     ) {
-      return 'Connections';
+      return "Connections";
     }
-    return 'Error';
+    return "Error";
   };
 
   private onExpandLink = (linkDataChunk: LinkDataChunk) => {
-    this.setState({ filterKey: '', panel: 'objects' });
+    this.setState({ filterKey: "", panel: "objects" });
     this.props.onExpandLink(linkDataChunk);
   };
 
   private onCollapseLink = () => {
-    this.setState({ filterKey: '', panel: 'connections' });
+    this.setState({ filterKey: "", panel: "connections" });
   };
 
   private getBreadCrumbs = () => {
-    if (this.props.objectsData && this.state.panel === 'objects') {
+    if (this.props.objectsData && this.state.panel === "objects") {
       const { link, direction } = this.props.objectsData.linkDataChunk;
       const localizedText = this.props.view.formatLabel(link.label, link.id);
 
@@ -364,7 +362,7 @@ class ConnectionsMenuMarkup extends React.Component<
           >
             Connections
           </a>
-          {'\u00A0' + '/' + '\u00A0'}
+          {"\u00A0" + "/" + "\u00A0"}
           {localizedText} {direction ? `(${direction})` : null}
         </span>
       );
@@ -374,13 +372,13 @@ class ConnectionsMenuMarkup extends React.Component<
   };
 
   private getBody = () => {
-    if (this.props.state === 'error') {
+    if (this.props.state === "error") {
       return (
         <label className="graph-explorer-label graph-explorer-connections-menu__error">
           Error
         </label>
       );
-    } else if (this.props.objectsData && this.state.panel === 'objects') {
+    } else if (this.props.objectsData && this.state.panel === "objects") {
       return (
         <ObjectsPanel
           data={this.props.objectsData}
@@ -393,7 +391,7 @@ class ConnectionsMenuMarkup extends React.Component<
       );
     } else if (
       this.props.connectionsData &&
-      this.state.panel === 'connections'
+      this.state.panel === "connections"
     ) {
       if (this.props.state === ProgressState.loading) {
         return (
@@ -455,7 +453,7 @@ class ConnectionsMenuMarkup extends React.Component<
 
   private renderSortSwitches = () => {
     if (
-      this.state.panel !== 'connections' ||
+      this.state.panel !== "connections" ||
       !this.props.propertySuggestionCall
     ) {
       return null;
@@ -464,11 +462,11 @@ class ConnectionsMenuMarkup extends React.Component<
     return (
       <div className="graph-explorer-connections-menu_search-line-sort-switches">
         {this.renderSortSwitch(
-          'alphabet',
-          'fa-sort-alpha-asc',
-          'Sort alphabetically'
+          "alphabet",
+          "fa-sort-alpha-asc",
+          "Sort alphabetically"
         )}
-        {this.renderSortSwitch('smart', 'fa-lightbulb-o', 'Smart sort')}
+        {this.renderSortSwitch("smart", "fa-lightbulb-o", "Smart sort")}
       </div>
     );
   };
@@ -501,7 +499,7 @@ interface ConnectionsListProps {
   id: string;
   data: {
     links: FatLinkType[];
-    countMap: { [linkTypeId: string]: ConnectionCount };
+    countMap: Record<string, ConnectionCount>;
   };
   view: DiagramView;
   filterKey: string;
@@ -530,7 +528,7 @@ class ConnectionsList extends React.Component<
   private updateScores = (props: ConnectionsListProps) => {
     if (
       props.propertySuggestionCall &&
-      (props.filterKey || props.sortMode === 'smart')
+      (props.filterKey || props.sortMode === "smart")
     ) {
       const { id, data, view, filterKey } = props;
       const lang = view.getLanguage();
@@ -543,7 +541,7 @@ class ConnectionsList extends React.Component<
   };
 
   private isSmartMode(): boolean {
-    return this.props.sortMode === 'smart' && !this.props.filterKey;
+    return this.props.sortMode === "smart" && !this.props.filterKey;
   }
 
   private compareLinks = (a: FatLinkType, b: FatLinkType) => {
@@ -595,15 +593,15 @@ class ConnectionsList extends React.Component<
     const countMap = this.props.data.countMap || {};
 
     const views: JSX.Element[] = [];
-    const addView = (link: FatLinkType, direction: 'in' | 'out') => {
+    const addView = (link: FatLinkType, direction: "in" | "out") => {
       const count =
-        direction === 'in'
+        direction === "in"
           ? countMap[link.id].inCount
           : countMap[link.id].outCount;
       if (count === 0) {
         return;
       }
-      const postfix = notSure ? '-probable' : '';
+      const postfix = notSure ? "-probable" : "";
       views.push(
         <LinkInPopupMenu
           key={`${direction}-${link.id}-${postfix}`}
@@ -612,7 +610,7 @@ class ConnectionsList extends React.Component<
           view={view}
           count={count}
           direction={direction}
-          filterKey={notSure ? '' : this.props.filterKey}
+          filterKey={notSure ? "" : this.props.filterKey}
           onMoveToFilter={this.props.onMoveToFilter}
           probability={
             this.state.scores[link.id] && notSure
@@ -624,8 +622,8 @@ class ConnectionsList extends React.Component<
     };
 
     for (const link of links) {
-      addView(link, 'in');
-      addView(link, 'out');
+      addView(link, "in");
+      addView(link, "out");
     }
 
     return views;
@@ -686,10 +684,10 @@ class ConnectionsList extends React.Component<
     return (
       <ul
         className={
-          'graph-explorer-connections-menu_links-list ' +
+          "graph-explorer-connections-menu_links-list " +
           (views.length === 0 && probableViews.length === 0
-            ? 'ocm_links-list-empty'
-            : '')
+            ? "ocm_links-list-empty"
+            : "")
         }
       >
         {viewList}
@@ -702,7 +700,7 @@ class ConnectionsList extends React.Component<
 interface LinkInPopupMenuProps {
   link: FatLinkType;
   count: number;
-  direction?: 'in' | 'out';
+  direction?: "in" | "out";
   view: DiagramView;
   filterKey?: string;
   onExpandLink?: (linkDataChunk: LinkDataChunk) => void;
@@ -715,7 +713,7 @@ class LinkInPopupMenu extends React.Component<LinkInPopupMenuProps, {}> {
     super(props);
   }
 
-  private onExpandLink = (expectedCount: number, direction?: 'in' | 'out') => {
+  private onExpandLink = (expectedCount: number, direction?: "in" | "out") => {
     this.props.onExpandLink({
       link: this.props.link,
       direction,
@@ -737,15 +735,15 @@ class LinkInPopupMenu extends React.Component<LinkInPopupMenuProps, {}> {
     const fullText = view.formatLabel(link.label, link.id);
     const probability = Math.round(this.props.probability * 100);
     const textLine = highlightSubstring(
-      fullText + (probability > 0 ? ' (' + probability + '%)' : ''),
+      fullText + (probability > 0 ? " (" + probability + "%)" : ""),
       this.props.filterKey
     );
     const directionName =
-      this.props.direction === 'in'
-        ? 'source'
-        : this.props.direction === 'out'
-        ? 'target'
-        : 'all connected';
+      this.props.direction === "in"
+        ? "source"
+        : this.props.direction === "out"
+        ? "target"
+        : "all connected";
 
     return (
       <li
@@ -756,19 +754,19 @@ class LinkInPopupMenu extends React.Component<LinkInPopupMenuProps, {}> {
           this.onExpandLink(this.props.count, this.props.direction)
         }
       >
-        {this.props.direction === 'in' || this.props.direction === 'out' ? (
+        {this.props.direction === "in" || this.props.direction === "out" ? (
           <div className="link-in-popup-menu_direction">
-            {this.props.direction === 'in' && (
+            {this.props.direction === "in" && (
               <div className="link-in-popup-menu_direction__in-direction" />
             )}
-            {this.props.direction === 'out' && (
+            {this.props.direction === "out" && (
               <div className="link-in-popup-menu_direction__out-direction" />
             )}
           </div>
         ) : null}
         <div className="link-in-popup-menu__link-title">{textLine}</div>
         <span className="graph-explorer-badge link-in-popup-menu__count">
-          {this.props.count <= MAX_LINK_COUNT ? this.props.count : '100+'}
+          {this.props.count <= MAX_LINK_COUNT ? this.props.count : "100+"}
         </span>
         <div
           className="link-in-popup-menu__filter-button"
@@ -840,8 +838,8 @@ class ObjectsPanel extends React.Component<
     });
   }
 
-  private getItems(list: ReadonlyArray<ReactElementModel>) {
-    const added: { [id: string]: true } = {};
+  private getItems(list: readonly ReactElementModel[]) {
+    const added: Record<string, true> = {};
     const result: ElementModel[] = [];
     for (const obj of list) {
       if (added[obj.model.id]) {
@@ -869,16 +867,16 @@ class ObjectsPanel extends React.Component<
         : Math.abs(wrongNodes).toString();
     const wrongNodesCount =
       wrongNodes === 0
-        ? ''
+        ? ""
         : wrongNodes < 0
         ? `\u00A0(${wrongNodesString})`
         : `\u00A0(${wrongNodesString})`;
     const wrongNodesTitle =
       wrongNodes === 0
-        ? ''
+        ? ""
         : wrongNodes > 0
-        ? 'Unavailable nodes'
-        : 'Extra nodes';
+        ? "Unavailable nodes"
+        : "Extra nodes";
 
     return (
       <div className="graph-explorer-label graph-explorer-connections-menu_objects-panel_bottom-panel__count-label">
@@ -949,15 +947,15 @@ class ObjectsPanel extends React.Component<
           {this.counter(active.length)}
           <button
             className={
-              'graph-explorer-btn graph-explorer-btn-primary pull-right ' +
-              'graph-explorer-connections-menu_objects-panel_bottom-panel__add-button'
+              "graph-explorer-btn graph-explorer-btn-primary pull-right " +
+              "graph-explorer-connections-menu_objects-panel_bottom-panel__add-button"
             }
             disabled={this.props.loading || nonPresented.length === 0}
             onClick={() =>
               onPressAddSelected(active.length > 0 ? active : nonPresented)
             }
           >
-            {active.length > 0 ? 'Add selected' : 'Add all'}
+            {active.length > 0 ? "Add selected" : "Add all"}
           </button>
         </div>
       </div>
@@ -965,7 +963,7 @@ class ObjectsPanel extends React.Component<
   }
 }
 
-function selectNonPresented(objects: ReadonlyArray<ReactElementModel>) {
+function selectNonPresented(objects: readonly ReactElementModel[]) {
   const selection = new Set<ElementIri>();
   for (const object of objects) {
     if (object.presentOnDiagram) {
@@ -977,7 +975,7 @@ function selectNonPresented(objects: ReadonlyArray<ReactElementModel>) {
 }
 
 function allNonPresentedAreSelected(
-  objects: ReadonlyArray<ReactElementModel>,
+  objects: readonly ReactElementModel[],
   selection: ReadonlySet<ElementIri>
 ): boolean {
   let allSelected = true;

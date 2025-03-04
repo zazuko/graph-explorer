@@ -1,22 +1,22 @@
 /* eslint-disable react/no-find-dom-node */
-import * as React from 'react';
-import { findDOMNode } from 'react-dom';
-import { hcl } from 'd3-color';
+import * as React from "react";
+import { findDOMNode } from "react-dom";
+import { hcl } from "d3-color";
 
-import { Property, ElementTypeIri, PropertyTypeIri } from '../data/model';
-import { TemplateProps } from '../customization/props';
-import { Debouncer } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
-import { PropTypes } from '../viewUtils/react';
+import { Property, ElementTypeIri, PropertyTypeIri } from "../data/model";
+import { TemplateProps } from "../customization/props";
+import { Debouncer } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
+import { PropTypes } from "../viewUtils/react";
 import {
   KeyedObserver,
   observeElementTypes,
   observeProperties,
-} from '../viewUtils/keyedObserver';
+} from "../viewUtils/keyedObserver";
 
-import { setElementExpanded } from './commands';
-import { Element } from './elements';
-import { DiagramView, RenderingLayer, IriClickIntent } from './view';
+import { setElementExpanded } from "./commands";
+import { Element } from "./elements";
+import { DiagramView, RenderingLayer, IriClickIntent } from "./view";
 
 export interface Props {
   view: DiagramView;
@@ -34,14 +34,12 @@ interface ElementState {
   blurred: boolean;
 }
 
-// tslint:disable:no-bitwise
 enum RedrawFlags {
   None = 0,
   Render = 1,
   RecomputeTemplate = 1 | 2,
   RecomputeBlurred = 1 | 4,
 }
-// tslint:enable:no-bitwise
 
 interface RedrawBatch {
   requests: Map<string, RedrawFlags>;
@@ -129,7 +127,7 @@ export class ElementLayer extends React.Component<Props, State> {
 
   componentDidMount() {
     const { view } = this.props;
-    this.listener.listen(view.model.events, 'changeCells', (e) => {
+    this.listener.listen(view.model.events, "changeCells", (e) => {
       if (e.updateAll) {
         this.requestRedrawAll(RedrawFlags.None);
       } else {
@@ -138,13 +136,13 @@ export class ElementLayer extends React.Component<Props, State> {
         }
       }
     });
-    this.listener.listen(view.events, 'changeLanguage', () => {
+    this.listener.listen(view.events, "changeLanguage", () => {
       this.requestRedrawAll(RedrawFlags.RecomputeTemplate);
     });
-    this.listener.listen(view.events, 'changeHighlight', () => {
+    this.listener.listen(view.events, "changeHighlight", () => {
       this.requestRedrawAll(RedrawFlags.RecomputeBlurred);
     });
-    this.listener.listen(view.model.events, 'elementEvent', ({ data }) => {
+    this.listener.listen(view.model.events, "elementEvent", ({ data }) => {
       const invalidatesTemplate =
         data.changeData || data.changeExpanded || data.changeElementState;
       if (invalidatesTemplate) {
@@ -158,7 +156,7 @@ export class ElementLayer extends React.Component<Props, State> {
         this.requestRedraw(invalidatesRender.source, RedrawFlags.Render);
       }
     });
-    this.listener.listen(view.events, 'syncUpdate', ({ layer }) => {
+    this.listener.listen(view.events, "syncUpdate", ({ layer }) => {
       if (layer === RenderingLayer.Element) {
         this.delatedRedraw.runSynchronously();
       } else if (layer === RenderingLayer.ElementSize) {
@@ -189,7 +187,6 @@ export class ElementLayer extends React.Component<Props, State> {
   }
 
   private requestRedraw = (element: Element, request: RedrawFlags) => {
-    // tslint:disable:no-bitwise
     const flagsWithForAll = this.redrawBatch.forAll | request;
     if (flagsWithForAll === this.redrawBatch.forAll) {
       // forAll flags already include the request
@@ -198,11 +195,9 @@ export class ElementLayer extends React.Component<Props, State> {
     const existing = this.redrawBatch.requests.get(element.id);
     this.redrawBatch.requests.set(element.id, existing | request);
     this.delatedRedraw.call(this.redrawElements);
-    // tslint:enable:no-bitwise
   };
 
   private requestRedrawAll(request: RedrawFlags) {
-    // tslint:disable-next-line:no-bitwise
     this.redrawBatch.forAll |= request;
     this.delatedRedraw.call(this.redrawElements);
   }
@@ -250,7 +245,6 @@ function applyRedrawRequests(
     const elementId = element.id;
     if (previous.has(elementId)) {
       let state = previous.get(elementId);
-      // tslint:disable:no-bitwise
       const request =
         (batch.requests.get(elementId) || RedrawFlags.None) | batch.forAll;
       if (request & RedrawFlags.Render) {
@@ -270,7 +264,6 @@ function applyRedrawRequests(
       }
       computed.set(elementId, state);
       batch.requests.delete(elementId);
-      // tslint:enable:no-bitwise
     } else {
       computed.set(element.id, {
         element,
@@ -344,19 +337,19 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
     // if (angle) { transform += `rotate(${angle}deg)`; }
 
     const className = `graph-explorer-overlayed-element ${
-      blurred ? 'graph-explorer-overlayed-element--blurred' : ''
+      blurred ? "graph-explorer-overlayed-element--blurred" : ""
     }`;
     return (
       <div
         className={className}
         // set `element-id` to translate mouse events to paper
         data-element-id={element.id}
-        style={{ position: 'absolute', transform }}
+        style={{ position: "absolute", transform }}
         tabIndex={0}
         ref={this.onMount}
         // resize element when child image loaded
-        onLoad={this.onLoadOrErrorEvent} // eslint-disable-line
-        onError={this.onLoadOrErrorEvent} // eslint-disable-line
+        onLoad={this.onLoadOrErrorEvent}
+        onError={this.onLoadOrErrorEvent}
         onClick={this.onClick}
         onDoubleClick={this.onDoubleClick}
       >
@@ -379,11 +372,11 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
   };
 
   private onClick = (e: React.MouseEvent<EventTarget>) => {
-    if (e.target instanceof HTMLElement && e.target.localName === 'a') {
+    if (e.target instanceof HTMLElement && e.target.localName === "a") {
       const anchor = e.target as HTMLAnchorElement;
       const { view, state } = this.props;
       const clickIntent =
-        e.target.getAttribute('data-iri-click-intent') ===
+        e.target.getAttribute("data-iri-click-intent") ===
         IriClickIntent.OpenEntityIri
           ? IriClickIntent.OpenEntityIri
           : IriClickIntent.OpenOtherIri;
@@ -405,7 +398,7 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
 
   componentDidMount() {
     const { state, view } = this.props;
-    this.listener.listen(state.element.events, 'requestedFocus', () => {
+    this.listener.listen(state.element.events, "requestedFocus", () => {
       const element = findDOMNode(this) as HTMLElement;
       if (element) {
         element.focus();
@@ -413,12 +406,12 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
     });
     this.typesObserver = observeElementTypes(
       view.model,
-      'changeLabel',
+      "changeLabel",
       this.rerenderTemplate
     );
     this.propertiesObserver = observeProperties(
       view.model,
-      'changeLabel',
+      "changeLabel",
       this.rerenderTemplate
     );
     this.observeTypes();
@@ -485,7 +478,7 @@ function computeTemplateProps(
   const types =
     model.data.types.length > 0
       ? view.getElementTypeString(model.data)
-      : 'Thing';
+      : "Thing";
   const label = view.formatLabel(model.data.label.values, model.iri);
   const { color, icon } = computeStyleFor(model, view);
   const propsAsList = computePropertyTable(model, view);
@@ -508,7 +501,7 @@ function computeTemplateProps(
 function computePropertyTable(
   model: Element,
   view: DiagramView
-): Array<{ id: string; name: string; property: Property }> {
+): { id: string; name: string; property: Property }[] {
   if (!model.data.properties) {
     return [];
   }

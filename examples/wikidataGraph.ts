@@ -1,5 +1,5 @@
-import { createElement, ClassAttributes } from 'react';
-import * as ReactDOM from 'react-dom';
+import { createElement, ClassAttributes } from "react";
+import * as ReactDOM from "react-dom";
 
 import {
   Workspace,
@@ -7,9 +7,9 @@ import {
   SparqlDataProvider,
   SparqlGraphBuilder,
   WikidataSettings,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 
-import { onPageLoad } from './common';
+import { onPageLoad } from "./common";
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {
@@ -18,10 +18,10 @@ function onWorkspaceMounted(workspace: Workspace) {
 
   const dataProvider = new SparqlDataProvider(
     {
-      endpointUrl: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
+      endpointUrl: "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
       imagePropertyUris: [
-        'http://www.wikidata.org/prop/direct/P18',
-        'http://www.wikidata.org/prop/direct/P154',
+        "http://www.wikidata.org/prop/direct/P18",
+        "http://www.wikidata.org/prop/direct/P154",
       ],
     },
     WikidataSettings

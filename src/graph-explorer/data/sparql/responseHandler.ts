@@ -1,7 +1,7 @@
 import {
   LinkConfiguration,
   PropertyConfiguration,
-} from './sparqlDataProviderSettings';
+} from "./sparqlDataProviderSettings";
 import {
   RdfLiteral,
   isRdfLiteral,
@@ -19,7 +19,7 @@ import {
   ElementTypeBinding,
   FilterBinding,
   Triple,
-} from './sparqlModels';
+} from "./sparqlModels";
 import {
   Dictionary,
   LocalizedString,
@@ -38,11 +38,11 @@ import {
   isLiteralProperty,
   sameLink,
   hashLink,
-} from '../model';
-import { HashMap, getOrCreateSetInMap } from '../../viewUtils/collections';
+} from "../model";
+import { HashMap, getOrCreateSetInMap } from "../../viewUtils/collections";
 
-const LABEL_URI = 'http://www.w3.org/2000/01/rdf-schema#label';
-const RDF_TYPE_URI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+const LABEL_URI = "http://www.w3.org/2000/01/rdf-schema#label";
+const RDF_TYPE_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
 const EMPTY_MAP: ReadonlyMap<any, any> = new Map();
 
@@ -73,9 +73,9 @@ export function getClassTree(
   return tree;
 }
 
-export function flattenClassTree(classTree: ReadonlyArray<ClassModel>) {
+export function flattenClassTree(classTree: readonly ClassModel[]) {
   const all: ClassModel[] = [];
-  const visitClasses = (classes: ReadonlyArray<ClassModel>) => {
+  const visitClasses = (classes: readonly ClassModel[]) => {
     for (const model of classes) {
       all.push(model);
       visitClasses(model.children);
@@ -187,7 +187,7 @@ function breakCyclesAndCalculateCounts(tree: ClassModel[]): ClassModel[] {
 export function getClassInfo(
   response: SparqlResponse<ClassBinding>
 ): ClassModel[] {
-  const classes: { [id: string]: ClassModel } = {};
+  const classes: Record<string, ClassModel> = {};
   for (const binding of response.results.bindings) {
     if (!binding.class) {
       continue;
@@ -277,7 +277,7 @@ export function triplesToElementBinding(
   const map: Dictionary<ElementBinding> = {};
   const convertedResponse: SparqlResponse<ElementBinding> = {
     head: {
-      vars: ['inst', 'class', 'label', 'blankType', 'propType', 'propValue'],
+      vars: ["inst", "class", "label", "blankType", "propType", "propValue"],
     },
     results: {
       bindings: [],
@@ -374,8 +374,8 @@ function mapPropertiesByConfig(
   modelTypes: ReadonlySet<ElementTypeIri> | undefined,
   propertyByPredicate: ReadonlyMap<string, readonly PropertyConfiguration[]>,
   openWorldProperties: boolean
-): ElementModel['properties'] {
-  const mapped: ElementModel['properties'] = {};
+): ElementModel["properties"] {
+  const mapped: ElementModel["properties"] = {};
   for (const propertyIri in model.properties) {
     if (!Object.hasOwnProperty.call(model.properties, propertyIri)) {
       continue;
@@ -558,7 +558,7 @@ export function getFilteredData(
 
     if (!openWorldLinks && binding.link && binding.direction) {
       const predicates =
-        binding.direction.value === 'out' ? outPredicates : inPredicates;
+        binding.direction.value === "out" ? outPredicates : inPredicates;
       getOrCreateSetInMap(predicates, model.id).add(binding.link.value);
     }
   }
@@ -623,7 +623,7 @@ export function isDirectProperty(property: PropertyConfiguration) {
 }
 
 function typeMatchesDomain(
-  config: { readonly domain?: ReadonlyArray<string> },
+  config: { readonly domain?: readonly string[] },
   types: ReadonlySet<ElementTypeIri> | undefined
 ): boolean {
   if (!config.domain || config.domain.length === 0) {
@@ -647,14 +647,14 @@ function typeMatchesDomain(
  * @param propValue
  */
 function mergeProperties(
-  properties: { [id: string]: Property },
+  properties: Record<string, Property>,
   propType: RdfIri,
   propValue: RdfIri | RdfLiteral
 ) {
   let property = properties[propType.value];
   if (isRdfIri(propValue)) {
     if (!property) {
-      property = { type: 'uri', values: [] };
+      property = { type: "uri", values: [] };
     }
     if (
       isIriProperty(property) &&
@@ -664,7 +664,7 @@ function mergeProperties(
     }
   } else if (isRdfLiteral(propValue)) {
     if (!property) {
-      property = { type: 'string', values: [] };
+      property = { type: "string", values: [] };
     }
     const propertyValue = getLocalizedString(propValue);
     if (
@@ -726,7 +726,7 @@ export function getLocalizedString(
   if (label) {
     return {
       value: label.value,
-      language: label['xml:lang'],
+      language: label["xml:lang"],
       datatype: label.datatype ? { value: label.datatype } : undefined,
     };
   } else {

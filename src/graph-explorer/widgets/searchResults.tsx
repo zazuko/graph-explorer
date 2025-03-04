@@ -1,17 +1,17 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { ElementModel, ElementIri } from '../data/model';
-import { DiagramView } from '../diagram/view';
-import { cloneSet } from '../viewUtils/collections';
-import { Debouncer } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
-import { ListElementView, startDragElements } from './listElementView';
+import { ElementModel, ElementIri } from "../data/model";
+import { DiagramView } from "../diagram/view";
+import { cloneSet } from "../viewUtils/collections";
+import { Debouncer } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
+import { ListElementView, startDragElements } from "./listElementView";
 
-const CLASS_NAME = 'graph-explorer-search-results';
+const CLASS_NAME = "graph-explorer-search-results";
 
 export interface SearchResultProps {
   view: DiagramView;
-  items: ReadonlyArray<ElementModel>;
+  items: readonly ElementModel[];
   selection: ReadonlySet<ElementIri>;
   onSelectionChanged: (newSelection: ReadonlySet<ElementIri>) => void;
   highlightText?: string;
@@ -93,7 +93,7 @@ export class SearchResults extends React.Component<SearchResultProps, {}> {
   };
 
   componentDidMount() {
-    this.listener.listen(this.props.view.model.events, 'changeCells', () => {
+    this.listener.listen(this.props.view.model.events, "changeCells", () => {
       this.delayedChangeCells.call(this.onChangeCells);
     });
   }
@@ -132,11 +132,11 @@ export class SearchResults extends React.Component<SearchResultProps, {}> {
   }
 
   private addKeyListener = () => {
-    document.addEventListener('keydown', this.onKeyUp);
+    document.addEventListener("keydown", this.onKeyUp);
   };
 
   private removeKeyListener = () => {
-    document.removeEventListener('keydown', this.onKeyUp);
+    document.removeEventListener("keydown", this.onKeyUp);
   };
 
   private onKeyUp = (event: KeyboardEvent) => {

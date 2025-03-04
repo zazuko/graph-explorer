@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { DraggableHandle } from './draggableHandle';
+import { DraggableHandle } from "./draggableHandle";
 
 export enum DockSide {
   Left = 1,
@@ -20,7 +20,7 @@ export interface Props {
   // props provided by Accordion
   collapsed?: boolean;
   size?: number | string;
-  direction?: 'vertical' | 'horizontal';
+  direction?: "vertical" | "horizontal";
   dockSide?: DockSide;
   onChangeCollapsed?: (collapsed: boolean) => void;
   onBeginDragHandle?: () => void;
@@ -28,7 +28,7 @@ export interface Props {
   onEndDragHandle?: () => void;
 }
 
-const CLASS_NAME = 'graph-explorer-accordion-item';
+const CLASS_NAME = "graph-explorer-accordion-item";
 
 export interface State {
   resizing?: boolean;
@@ -36,7 +36,7 @@ export interface State {
 
 export class AccordionItem extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
-    direction: 'vertical',
+    direction: "vertical",
   };
 
   private _element: HTMLDivElement;
@@ -57,7 +57,7 @@ export class AccordionItem extends React.Component<Props, State> {
   }
 
   private get isVertical() {
-    return this.props.direction === 'vertical';
+    return this.props.direction === "vertical";
   }
 
   private renderToggleButton() {
@@ -65,7 +65,7 @@ export class AccordionItem extends React.Component<Props, State> {
     if (!dockSide) {
       return null;
     }
-    const side = dockSide === DockSide.Left ? 'left' : 'right';
+    const side = dockSide === DockSide.Left ? "left" : "right";
     return (
       <div
         className={`${CLASS_NAME}__handle-btn ${CLASS_NAME}__handle-btn-${side}`}
@@ -101,9 +101,9 @@ export class AccordionItem extends React.Component<Props, State> {
     return (
       <div
         className={`${CLASS_NAME} ${CLASS_NAME}--${
-          collapsed ? 'collapsed' : 'expanded'
+          collapsed ? "collapsed" : "expanded"
         } ${CLASS_NAME}--${direction}
-                ${resizing ? `${CLASS_NAME}--resizing` : ''}`}
+                ${resizing ? `${CLASS_NAME}--resizing` : ""}`}
         ref={(element) => (this._element = element)}
         style={style}
       >
@@ -121,7 +121,7 @@ export class AccordionItem extends React.Component<Props, State> {
             {children && isMounted ? (
               children
             ) : (
-              <div ref={bodyRef} className={`${bodyClassName || ''}`} />
+              <div ref={bodyRef} className={`${bodyClassName || ""}`} />
             )}
           </div>
         </div>

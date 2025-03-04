@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
-import { hcl } from 'd3-color';
-import { defaultsDeep, cloneDeep } from 'lodash';
-import { ReactElement, MouseEvent } from 'react';
+import { ReactNode } from "react";
+import { hcl } from "d3-color";
+import { defaultsDeep, cloneDeep } from "lodash";
+import { ReactElement, MouseEvent } from "react";
 
 import {
   LinkRouter,
@@ -12,39 +12,39 @@ import {
   LinkTemplate,
   RoutedLink,
   RoutedLinks,
-} from '../customization/props';
-import { DefaultTypeStyleBundle } from '../customization/defaultTypeStyles';
-import { DefaultLinkTemplateBundle } from '../customization/defaultLinkStyles';
+} from "../customization/props";
+import { DefaultTypeStyleBundle } from "../customization/defaultTypeStyles";
+import { DefaultLinkTemplateBundle } from "../customization/defaultLinkStyles";
 import {
   StandardTemplate,
   DefaultElementTemplateBundle,
-} from '../customization/templates';
+} from "../customization/templates";
 
 import {
   ElementModel,
   LocalizedString,
   ElementTypeIri,
   LinkTypeIri,
-} from '../data/model';
-import { isEncodedBlank } from '../data/sparql/blankNodes';
-import { hashFnv32a, getUriLocalName } from '../data/utils';
+} from "../data/model";
+import { isEncodedBlank } from "../data/sparql/blankNodes";
+import { hashFnv32a, getUriLocalName } from "../data/utils";
 
 import {
   Events,
   EventSource,
   EventObserver,
   PropertyChange,
-} from '../viewUtils/events';
+} from "../viewUtils/events";
 
-import { Element, Link, FatLinkType } from './elements';
-import { Vector, isPolylineEqual } from './geometry';
-import { DefaultLinkRouter } from './linkRouter';
-import { DiagramModel } from './model';
+import { Element, Link, FatLinkType } from "./elements";
+import { Vector, isPolylineEqual } from "./geometry";
+import { DefaultLinkRouter } from "./linkRouter";
+import { DiagramModel } from "./model";
 
 export enum IriClickIntent {
-  JumpToEntity = 'jumpToEntity',
-  OpenEntityIri = 'openEntityIri',
-  OpenOtherIri = 'openOtherIri',
+  JumpToEntity = "jumpToEntity",
+  OpenEntityIri = "openEntityIri",
+  OpenOtherIri = "openOtherIri",
 }
 export interface IriClickEvent {
   iri: string;
@@ -55,7 +55,7 @@ export interface IriClickEvent {
 export type IriClickHandler = (event: IriClickEvent) => void;
 
 export type LabelLanguageSelector = (
-  labels: ReadonlyArray<LocalizedString>,
+  labels: readonly LocalizedString[],
   language: string
 ) => LocalizedString | undefined;
 
@@ -95,7 +95,7 @@ export interface DiagramViewEvents {
 }
 
 export interface UpdateWidgetsEvent {
-  widgets: { [key: string]: WidgetDescription };
+  widgets: Record<string, WidgetDescription>;
 }
 
 export enum WidgetAttachment {
@@ -133,7 +133,7 @@ export class DiagramView {
   private readonly resolveLinkTemplate: LinkTemplateResolver;
   private readonly resolveElementTemplate: TemplateResolver;
 
-  private _language = 'en';
+  private _language = "en";
 
   private linkTemplates = new Map<LinkTypeIri, LinkTemplate>();
   private router: LinkRouter;
@@ -161,15 +161,15 @@ export class DiagramView {
     this.router = this.options.linkRouter || new DefaultLinkRouter();
     this.updateRoutings();
 
-    this.listener.listen(this.model.events, 'changeCells', () =>
+    this.listener.listen(this.model.events, "changeCells", () =>
       this.updateRoutings()
     );
-    this.listener.listen(this.model.events, 'linkEvent', ({ key, data }) => {
+    this.listener.listen(this.model.events, "linkEvent", ({ key, data }) => {
       if (data.changeVertices) {
         this.updateRoutings();
       }
     });
-    this.listener.listen(this.model.events, 'elementEvent', ({ key, data }) => {
+    this.listener.listen(this.model.events, "elementEvent", ({ key, data }) => {
       if (data.changePosition || data.changeSize) {
         this.updateRoutings();
       }
@@ -188,7 +188,7 @@ export class DiagramView {
       }
     });
     this.routings = computedRoutes;
-    this.source.trigger('updateRoutings', {
+    this.source.trigger("updateRoutings", {
       source: this,
       previous: previousRoutes,
     });
@@ -207,14 +207,14 @@ export class DiagramView {
   }
   setLanguage(value: string) {
     if (!value) {
-      throw new Error('Cannot set empty language.');
+      throw new Error("Cannot set empty language.");
     }
     const previous = this._language;
     if (previous === value) {
       return;
     }
     this._language = value;
-    this.source.trigger('changeLanguage', { source: this, previous });
+    this.source.trigger("changeLanguage", { source: this, previous });
   }
 
   getLinkTemplates(): ReadonlyMap<LinkTypeIri, LinkTemplate> {
@@ -227,7 +227,7 @@ export class DiagramView {
       layer <= RenderingLayer.LastToUpdate;
       layer++
     ) {
-      this.source.trigger('syncUpdate', { layer });
+      this.source.trigger("syncUpdate", { layer });
     }
   }
 
@@ -252,7 +252,7 @@ export class DiagramView {
   }) {
     const { key, widget: element, attachment } = widget;
     const widgets = { [key]: element ? { element, attachment } : undefined };
-    this.source.trigger('updateWidgets', { widgets });
+    this.source.trigger("updateWidgets", { widgets });
   }
 
   setHandlerForNextDropOnPaper(handler: (e: DropOnPaperEvent) => void) {
@@ -270,17 +270,17 @@ export class DiagramView {
   }
 
   selectLabel(
-    labels: ReadonlyArray<LocalizedString>,
+    labels: readonly LocalizedString[],
     language?: string
   ): LocalizedString | undefined {
     const targetLanguage =
-      typeof language === 'undefined' ? this.getLanguage() : language;
+      typeof language === "undefined" ? this.getLanguage() : language;
     const { selectLabelLanguage = defaultSelectLabel } = this.options;
     return selectLabelLanguage(labels, targetLanguage);
   }
 
   formatLabel(
-    labels: ReadonlyArray<LocalizedString>,
+    labels: readonly LocalizedString[],
     fallbackIri: string,
     language?: string
   ): string {
@@ -295,7 +295,7 @@ export class DiagramView {
         return this.formatLabel(type.label, type.id);
       })
       .sort()
-      .join(', ');
+      .join(", ");
   }
 
   public getTypeStyle(types: ElementTypeIri[]): TypeStyle {
@@ -316,7 +316,7 @@ export class DiagramView {
 
   formatIri(iri: string): string {
     if (isEncodedBlank(iri)) {
-      return '(blank node)';
+      return "(blank node)";
     }
     return `<${iri}>`;
   }
@@ -339,7 +339,7 @@ export class DiagramView {
 
     fillLinkTemplateDefaults(template);
     this.linkTemplates.set(linkType.id, template);
-    this.source.trigger('changeLinkTemplates', {});
+    this.source.trigger("changeLinkTemplates", {});
     return template;
   }
 
@@ -347,7 +347,7 @@ export class DiagramView {
     if (this.disposed) {
       return;
     }
-    this.source.trigger('dispose', {});
+    this.source.trigger("dispose", {});
     this.listener.stopListening();
     this.disposed = true;
   }
@@ -361,7 +361,7 @@ export class DiagramView {
       return;
     }
     this._highlighter = value;
-    this.source.trigger('changeHighlight', { source: this, previous });
+    this.source.trigger("changeHighlight", { source: this, previous });
   }
 
   _setElementDecorator(decorator: ElementDecoratorResolver) {
@@ -382,7 +382,7 @@ function sameRoutedLink(a: RoutedLink, b: RoutedLink) {
 }
 
 function getHueFromClasses(
-  classes: ReadonlyArray<ElementTypeIri>,
+  classes: readonly ElementTypeIri[],
   seed?: number
 ): number {
   let hash = seed;
@@ -395,7 +395,7 @@ function getHueFromClasses(
 
 function fillLinkTemplateDefaults(template: LinkTemplate) {
   const defaults: Partial<LinkTemplate> = {
-    markerTarget: { d: 'M0,0 L0,8 L9,4 z', width: 9, height: 8, fill: 'black' },
+    markerTarget: { d: "M0,0 L0,8 L9,4 z", width: 9, height: 8, fill: "black" },
   };
   defaultsDeep(template, defaults);
   if (!template.renderLink) {
@@ -404,7 +404,7 @@ function fillLinkTemplateDefaults(template: LinkTemplate) {
 }
 
 function defaultSelectLabel(
-  texts: ReadonlyArray<LocalizedString>,
+  texts: readonly LocalizedString[],
   language: string
 ): LocalizedString | undefined {
   if (texts.length === 0) {
@@ -415,9 +415,9 @@ function defaultSelectLabel(
   for (const text of texts) {
     if (text.language === language) {
       return text;
-    } else if (text.language === '') {
+    } else if (text.language === "") {
       defaultValue = text;
-    } else if (text.language === 'en') {
+    } else if (text.language === "en") {
       englishValue = text;
     }
   }

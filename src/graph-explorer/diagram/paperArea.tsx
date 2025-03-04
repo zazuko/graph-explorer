@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 import {
   Debouncer,
@@ -6,38 +6,38 @@ import {
   animateInterval,
   delay,
   easeInOutBezier,
-} from '../viewUtils/async';
+} from "../viewUtils/async";
 import {
   EventObserver,
   Events,
   EventSource,
   PropertyChange,
-} from '../viewUtils/events';
-import { PropTypes } from '../viewUtils/react';
+} from "../viewUtils/events";
+import { PropTypes } from "../viewUtils/react";
 import {
   ToSVGOptions,
   ToDataURLOptions,
   toSVG,
   toDataURL,
   fitRectKeepingAspectRatio,
-} from '../viewUtils/toSvg';
+} from "../viewUtils/toSvg";
 
-import { RestoreGeometry } from './commands';
-import { Element, Link, Cell, LinkVertex } from './elements';
+import { RestoreGeometry } from "./commands";
+import { Element, Link, Cell, LinkVertex } from "./elements";
 import {
   Vector,
   Rect,
   computePolyline,
   findNearestSegmentIndex,
-} from './geometry';
-import { Batch } from './history';
+} from "./geometry";
+import { Batch } from "./history";
 import {
   DiagramView,
   RenderingLayer,
   WidgetDescription,
   WidgetAttachment,
-} from './view';
-import { Paper, PaperTransform } from './paper';
+} from "./view";
+import { Paper, PaperTransform } from "./paper";
 
 export interface PaperAreaProps {
   view: DiagramView;
@@ -91,7 +91,7 @@ export interface State {
   readonly scale?: number;
   readonly paddingX?: number;
   readonly paddingY?: number;
-  readonly renderedWidgets?: ReadonlyArray<WidgetDescription>;
+  readonly renderedWidgets?: readonly WidgetDescription[];
 }
 
 export interface PaperAreaContextWrapper {
@@ -155,7 +155,7 @@ export interface ScaleOptions extends ViewportOptions {
   pivot?: { x: number; y: number };
 }
 
-const CLASS_NAME = 'graph-explorer-paper-area';
+const CLASS_NAME = "graph-explorer-paper-area";
 const DEFAULT_ANIMATION_DURATION = 500;
 const LEFT_MOUSE_BUTTON = 0;
 
@@ -168,7 +168,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
 
   private outer: HTMLDivElement;
   private area: HTMLDivElement;
-  private widgets: { [key: string]: WidgetDescription } = {};
+  private widgets: Record<string, WidgetDescription> = {};
 
   private readonly pageSize = { x: 1500, y: 800 };
 
@@ -324,31 +324,31 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
 
     const { view } = this.props;
     const delayedAdjust = () => this.delayedPaperAdjust.call(this.adjustPaper);
-    this.listener.listen(view.model.events, 'changeCells', delayedAdjust);
-    this.listener.listen(view.model.events, 'elementEvent', ({ data }) => {
+    this.listener.listen(view.model.events, "changeCells", delayedAdjust);
+    this.listener.listen(view.model.events, "elementEvent", ({ data }) => {
       if (data.changePosition || data.changeSize) {
         delayedAdjust();
       }
     });
-    this.listener.listen(view.model.events, 'linkEvent', ({ data }) => {
+    this.listener.listen(view.model.events, "linkEvent", ({ data }) => {
       if (data.changeVertices) {
         delayedAdjust();
       }
     });
-    this.listener.listen(view.events, 'syncUpdate', ({ layer }) => {
+    this.listener.listen(view.events, "syncUpdate", ({ layer }) => {
       if (layer !== RenderingLayer.PaperArea) {
         return;
       }
       this.delayedPaperAdjust.runSynchronously();
     });
-    this.listener.listen(view.events, 'updateWidgets', ({ widgets }) => {
+    this.listener.listen(view.events, "updateWidgets", ({ widgets }) => {
       this.updateWidgets(widgets);
     });
 
-    this.area.addEventListener('dragover', this.onDragOver);
-    this.area.addEventListener('drop', this.onDragDrop);
-    this.area.addEventListener('scroll', this.onScroll);
-    this.area.addEventListener('wheel', this.onWheel, { passive: false });
+    this.area.addEventListener("dragover", this.onDragOver);
+    this.area.addEventListener("drop", this.onDragDrop);
+    this.area.addEventListener("scroll", this.onScroll);
+    this.area.addEventListener("wheel", this.onWheel, { passive: false });
   }
 
   componentDidUpdate(prevProps: PaperAreaProps, prevState: State) {
@@ -372,13 +372,13 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
   componentWillUnmount() {
     this.stopListeningToPointerMove();
     this.listener.stopListening();
-    this.area.removeEventListener('dragover', this.onDragOver);
-    this.area.removeEventListener('drop', this.onDragDrop);
-    this.area.removeEventListener('scroll', this.onScroll);
-    this.area.removeEventListener('wheel', this.onWheel);
+    this.area.removeEventListener("dragover", this.onDragOver);
+    this.area.removeEventListener("drop", this.onDragDrop);
+    this.area.removeEventListener("scroll", this.onScroll);
+    this.area.removeEventListener("wheel", this.onWheel);
   }
 
-  private updateWidgets(update: { [key: string]: WidgetDescription }) {
+  private updateWidgets(update: Record<string, WidgetDescription>) {
     this.widgets = { ...this.widgets, ...update };
     const renderedWidgets = Object.keys(this.widgets)
       .filter((key) => this.widgets[key])
@@ -608,9 +608,9 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       batch,
       restoreGeometry,
     };
-    document.addEventListener('mousemove', this.onPointerMove);
-    document.addEventListener('mouseup', this.stopListeningToPointerMove);
-    this.source.trigger('pointerDown', {
+    document.addEventListener("mousemove", this.onPointerMove);
+    document.addEventListener("mouseup", this.stopListeningToPointerMove);
+    this.source.trigger("pointerDown", {
       source: this,
       sourceEvent: event,
       target: cell,
@@ -630,13 +630,13 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       this.movingState.pointerMoved = true;
     }
 
-    if (typeof target === 'undefined') {
+    if (typeof target === "undefined") {
       if (panning) {
         this.area.scrollLeft =
           this.panningScrollOrigin.scrollLeft - pageOffsetX;
         this.area.scrollTop = this.panningScrollOrigin.scrollTop - pageOffsetY;
       }
-      this.source.trigger('pointerMove', {
+      this.source.trigger("pointerMove", {
         source: this,
         sourceEvent: e,
         target,
@@ -644,17 +644,13 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       });
     } else if (target instanceof Element) {
       const { x, y } = this.pageToPaperCoords(e.pageX, e.pageY);
-      const {
-        pointerX,
-        pointerY,
-        elementX,
-        elementY,
-      } = this.movingElementOrigin;
+      const { pointerX, pointerY, elementX, elementY } =
+        this.movingElementOrigin;
       target.setPosition({
         x: elementX + x - pointerX,
         y: elementY + y - pointerY,
       });
-      this.source.trigger('pointerMove', {
+      this.source.trigger("pointerMove", {
         source: this,
         sourceEvent: e,
         target,
@@ -669,7 +665,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     } else if (target instanceof LinkVertex) {
       const location = this.pageToPaperCoords(e.pageX, e.pageY);
       target.moveTo(location);
-      this.source.trigger('pointerMove', {
+      this.source.trigger("pointerMove", {
         source: this,
         sourceEvent: e,
         target,
@@ -684,13 +680,13 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     this.movingState = undefined;
 
     if (movingState) {
-      document.removeEventListener('mousemove', this.onPointerMove);
-      document.removeEventListener('mouseup', this.stopListeningToPointerMove);
+      document.removeEventListener("mousemove", this.onPointerMove);
+      document.removeEventListener("mouseup", this.stopListeningToPointerMove);
     }
 
     if (e && movingState) {
       const { pointerMoved, target, batch, restoreGeometry } = movingState;
-      this.source.trigger('pointerUp', {
+      this.source.trigger("pointerUp", {
         source: this,
         sourceEvent: e,
         target,
@@ -796,7 +792,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       return this.centerTo();
     }
 
-    let elements: ReadonlyArray<Element>;
+    let elements: readonly Element[];
     if (options.elements) {
       const selectionElements: Element[] = [];
       options.elements.forEach((el) => selectionElements.push(el));
@@ -845,7 +841,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     if (e.preventDefault) {
       e.preventDefault();
     }
-    e.dataTransfer.dropEffect = 'move';
+    e.dataTransfer.dropEffect = "move";
     const { x, y } = clientCoordsFor(this.area, e);
     return false;
   };
@@ -859,13 +855,13 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
   };
 
   private onScroll = () => {
-    this.source.trigger('scroll', { source: this });
+    this.source.trigger("scroll", { source: this });
   };
 
   private makeToSVGOptions(): ToSVGOptions {
-    const svg = this.area.querySelector('.graph-explorer-paper__canvas');
+    const svg = this.area.querySelector(".graph-explorer-paper__canvas");
     if (!svg) {
-      throw new Error('Cannot find SVG canvas to export');
+      throw new Error("Cannot find SVG canvas to export");
     }
     return {
       model: this.props.view.model,
@@ -875,7 +871,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
         this.area.querySelector(`[data-element-id='${id}']`) as HTMLElement,
       preserveDimensions: true,
       convertImagesToDataUris: true,
-      elementsToRemoveSelector: '.graph-explorer-link__vertex-tools',
+      elementsToRemoveSelector: ".graph-explorer-link__vertex-tools",
       watermarkSvg: this.props.watermarkSvg,
     };
   }
@@ -904,7 +900,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     setupChanges();
 
     const timeout =
-      typeof duration === 'number' ? duration : DEFAULT_ANIMATION_DURATION;
+      typeof duration === "number" ? duration : DEFAULT_ANIMATION_DURATION;
     return delay(timeout).then(() => this.onGraphAnimationEnd());
   }
 
@@ -924,7 +920,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     const current = this.isAnimatingGraph();
     if (previous !== current) {
       this.forceUpdate();
-      this.source.trigger('changeAnimatingGraph', { source: this, previous });
+      this.source.trigger("changeAnimatingGraph", { source: this, previous });
     }
   }
 
@@ -965,7 +961,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
         cancellation: new Cancellation(),
       };
       const durationMs =
-        typeof options.duration === 'number'
+        typeof options.duration === "number"
           ? options.duration
           : DEFAULT_ANIMATION_DURATION;
 
@@ -1032,8 +1028,8 @@ function clientCoordsFor(container: HTMLElement, e: MouseEvent) {
 }
 
 export function getContentFittingBox(
-  elements: ReadonlyArray<Element>,
-  links: ReadonlyArray<Link>
+  elements: readonly Element[],
+  links: readonly Link[]
 ): { x: number; y: number; width: number; height: number } {
   let minX = Infinity,
     minY = Infinity;

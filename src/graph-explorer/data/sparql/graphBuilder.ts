@@ -1,13 +1,13 @@
-import { keyBy } from 'lodash';
+import { keyBy } from "lodash";
 
-import { GenerateID } from '../schema';
+import { GenerateID } from "../schema";
 import {
   LayoutElement,
   LayoutLink,
   SerializedDiagram,
   makeSerializedDiagram,
-} from '../../editor/serializedDiagram';
-import { uniformGrid } from '../../viewUtils/layout';
+} from "../../editor/serializedDiagram";
+import { uniformGrid } from "../../viewUtils/layout";
 
 import {
   Dictionary,
@@ -15,10 +15,10 @@ import {
   LinkModel,
   ElementIri,
   LinkTypeIri,
-} from '../model';
-import { DataProvider } from '../provider';
-import { Triple } from './sparqlModels';
-import { parseTurtleText } from './turtle';
+} from "../model";
+import { DataProvider } from "../provider";
+import { Triple } from "./sparqlModels";
+import { parseTurtleText } from "./turtle";
 
 const GREED_STEP = 150;
 
@@ -40,9 +40,7 @@ export class GraphBuilder {
       }));
   }
 
-  getGraphFromRDFGraph(
-    graph: Triple[]
-  ): Promise<{
+  getGraphFromRDFGraph(graph: Triple[]): Promise<{
     preloadedElements: Dictionary<ElementModel>;
     diagram: SerializedDiagram;
   }> {
@@ -50,9 +48,7 @@ export class GraphBuilder {
     return this.createGraph({ elementIds, links });
   }
 
-  getGraphFromTurtleGraph(
-    graph: string
-  ): Promise<{
+  getGraphFromTurtleGraph(graph: string): Promise<{
     preloadedElements: Dictionary<ElementModel>;
     diagram: SerializedDiagram;
   }> {
@@ -62,9 +58,7 @@ export class GraphBuilder {
   }
 }
 
-export function makeGraphItems(
-  response: ReadonlyArray<Triple>
-): {
+export function makeGraphItems(response: readonly Triple[]): {
   elementIds: ElementIri[];
   links: LinkModel[];
 } {
@@ -72,15 +66,15 @@ export function makeGraphItems(
   const links: LinkModel[] = [];
 
   for (const { subject, predicate, object } of response) {
-    if (subject.type === 'uri' && !elements[subject.value]) {
+    if (subject.type === "uri" && !elements[subject.value]) {
       elements[subject.value] = true;
     }
 
-    if (object.type === 'uri' && !elements[object.value]) {
+    if (object.type === "uri" && !elements[object.value]) {
       elements[object.value] = true;
     }
 
-    if (subject.type === 'uri' && object.type === 'uri') {
+    if (subject.type === "uri" && object.type === "uri") {
       links.push({
         linkTypeId: predicate.value as LinkTypeIri,
         sourceId: subject.value as ElementIri,
@@ -92,8 +86,8 @@ export function makeGraphItems(
 }
 
 export function makeLayout(
-  elementsIds: ReadonlyArray<ElementIri>,
-  linksInfo: ReadonlyArray<LinkModel>
+  elementsIds: readonly ElementIri[],
+  linksInfo: readonly LinkModel[]
 ): SerializedDiagram {
   const rows = Math.ceil(Math.sqrt(elementsIds.length));
   const grid = uniformGrid({
@@ -105,17 +99,17 @@ export function makeLayout(
     (id, index) => {
       const { x, y } = grid(index);
       return {
-        '@type': 'Element',
-        '@id': GenerateID.forElement(),
+        "@type": "Element",
+        "@id": GenerateID.forElement(),
         iri: id,
         position: { x, y },
       };
     }
   );
 
-  const layoutElementsMap: { [iri: string]: LayoutElement } = keyBy(
+  const layoutElementsMap: Record<string, LayoutElement> = keyBy(
     elements,
-    'iri'
+    "iri"
   );
   const links: LayoutLink[] = [];
 
@@ -128,15 +122,15 @@ export function makeLayout(
     }
 
     links.push({
-      '@type': 'Link',
-      '@id': GenerateID.forLink(),
+      "@type": "Link",
+      "@id": GenerateID.forLink(),
       property: link.linkTypeId,
-      source: { '@id': source['@id'] },
-      target: { '@id': target['@id'] },
+      source: { "@id": source["@id"] },
+      target: { "@id": target["@id"] },
     });
   });
   return makeSerializedDiagram({
-    layoutData: { '@type': 'Layout', elements, links },
+    layoutData: { "@type": "Layout", elements, links },
     linkTypeOptions: [],
   });
 }

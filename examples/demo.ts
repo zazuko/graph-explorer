@@ -1,22 +1,22 @@
-import { createElement, ClassAttributes } from 'react';
-import * as ReactDOM from 'react-dom';
+import { createElement, ClassAttributes } from "react";
+import * as ReactDOM from "react-dom";
 
 import {
   Workspace,
   WorkspaceProps,
   DemoDataProvider,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 
 import {
   onPageLoad,
   tryLoadLayoutFromLocalStorage,
   saveLayoutToLocalStorage,
-} from './common';
+} from "./common";
 
-const CLASSES = require('./resources/classes.json');
-const LINK_TYPES = require('./resources/linkTypes.json');
-const ELEMENTS = require('./resources/elements.json');
-const LINKS = require('./resources/links.json');
+const CLASSES = require("./resources/classes.json");
+const LINK_TYPES = require("./resources/linkTypes.json");
+const ELEMENTS = require("./resources/elements.json");
+const LINKS = require("./resources/links.json");
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {

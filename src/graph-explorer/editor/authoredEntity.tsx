@@ -1,25 +1,25 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { TemplateProps } from '../customization/props';
+import { TemplateProps } from "../customization/props";
 
-import { ElementModel } from '../data/model';
+import { ElementModel } from "../data/model";
 
-import { DiagramView } from '../diagram/view';
+import { DiagramView } from "../diagram/view";
 import {
   PaperAreaContextTypes,
   PaperAreaContextWrapper,
-} from '../diagram/paperArea';
+} from "../diagram/paperArea";
 
-import { Cancellation, CancellationToken } from '../viewUtils/async';
-import { Listener } from '../viewUtils/events';
+import { Cancellation, CancellationToken } from "../viewUtils/async";
+import { Listener } from "../viewUtils/events";
 
 import {
   WorkspaceContextTypes,
   WorkspaceContextWrapper,
-} from '../workspace/workspaceContext';
+} from "../workspace/workspaceContext";
 
-import { AuthoringState, AuthoringKind } from './authoringState';
-import { EditorController, EditorEvents } from './editorController';
+import { AuthoringState, AuthoringKind } from "./authoringState";
+import { EditorController, EditorEvents } from "./editorController";
 
 export interface AuthoredEntityProps {
   templateProps: TemplateProps;
@@ -60,7 +60,7 @@ export class AuthoredEntity extends React.Component<
 
   componentDidMount() {
     const { editor } = this.context.workspace;
-    editor.events.on('changeAuthoringState', this.onChangeAuthoringState);
+    editor.events.on("changeAuthoringState", this.onChangeAuthoringState);
     this.queryAllowedActions();
   }
 
@@ -76,13 +76,13 @@ export class AuthoredEntity extends React.Component<
 
   componentWillUnmount() {
     const { editor } = this.context.workspace;
-    editor.events.off('changeAuthoringState', this.onChangeAuthoringState);
+    editor.events.off("changeAuthoringState", this.onChangeAuthoringState);
     this.queryCancellation.abort();
   }
 
   private onChangeAuthoringState: Listener<
     EditorEvents,
-    'changeAuthoringState'
+    "changeAuthoringState"
   > = (e) => {
     const { source: editor, previous } = e;
     const iri = this.props.templateProps.data.id;

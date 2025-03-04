@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { TemplateProps } from '../props';
-import { EmbeddedLayer } from '../../diagram/embeddedLayer';
+import { TemplateProps } from "../props";
+import { EmbeddedLayer } from "../../diagram/embeddedLayer";
 
-const CLASS = 'graph-explorer-group-template';
+const CLASS = "graph-explorer-group-template";
 
 export class GroupTemplate extends React.Component<TemplateProps, {}> {
   render() {

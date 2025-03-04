@@ -1,17 +1,17 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { LinkCount } from '../data/model';
-import { changeLinkTypeVisibility } from '../diagram/commands';
-import { Element, FatLinkType } from '../diagram/elements';
-import { CommandHistory } from '../diagram/history';
-import { DiagramView } from '../diagram/view';
+import { LinkCount } from "../data/model";
+import { changeLinkTypeVisibility } from "../diagram/commands";
+import { Element, FatLinkType } from "../diagram/elements";
+import { CommandHistory } from "../diagram/history";
+import { DiagramView } from "../diagram/view";
 
-import { EditorController } from '../editor/editorController';
+import { EditorController } from "../editor/editorController";
 
-import { Debouncer } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
-import { highlightSubstring } from './listElementView';
-import { ProgressBar, ProgressState } from './progressBar';
+import { Debouncer } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
+import { highlightSubstring } from "./listElementView";
+import { ProgressBar, ProgressState } from "./progressBar";
 
 interface LinkInToolBoxProps {
   view: DiagramView;
@@ -21,7 +21,7 @@ interface LinkInToolBoxProps {
   filterKey?: string;
 }
 
-type LinkTypeVisibility = 'invisible' | 'withoutLabels' | 'allVisible';
+type LinkTypeVisibility = "invisible" | "withoutLabels" | "allVisible";
 
 class LinkInToolBox extends React.Component<LinkInToolBoxProps, {}> {
   private onPressFilter = () => {
@@ -38,11 +38,11 @@ class LinkInToolBox extends React.Component<LinkInToolBoxProps, {}> {
   private isChecked = (stateName: LinkTypeVisibility): boolean => {
     let curState: LinkTypeVisibility;
     if (!this.props.link.visible) {
-      curState = 'invisible';
+      curState = "invisible";
     } else if (!this.props.link.showLabel) {
-      curState = 'withoutLabels';
+      curState = "withoutLabels";
     } else {
-      curState = 'allVisible';
+      curState = "allVisible";
     }
     return stateName === curState;
   };
@@ -57,13 +57,13 @@ class LinkInToolBox extends React.Component<LinkInToolBoxProps, {}> {
     const newIcon = this.props.link.isNew ? (
       <span className="linkInToolBox__new-tag">new</span>
     ) : (
-      ''
+      ""
     );
     const countIcon =
       this.props.count > 0 ? (
         <span className="graph-explorer-badge">{this.props.count}</span>
       ) : (
-        ''
+        ""
       );
     const badgeContainer =
       newIcon || countIcon ? (
@@ -72,7 +72,7 @@ class LinkInToolBox extends React.Component<LinkInToolBoxProps, {}> {
           {countIcon}
         </div>
       ) : (
-        ''
+        ""
       );
 
     return (
@@ -86,34 +86,34 @@ class LinkInToolBox extends React.Component<LinkInToolBoxProps, {}> {
         >
           <label
             className={
-              'graph-explorer-btn graph-explorer-btn-default' +
-              (this.isChecked('invisible') ? ' active' : '')
+              "graph-explorer-btn graph-explorer-btn-default" +
+              (this.isChecked("invisible") ? " active" : "")
             }
             id="invisible"
             title="Hide links and labels"
-            onClick={() => this.changeState('invisible')}
+            onClick={() => this.changeState("invisible")}
           >
             <span className="fa fa-times" aria-hidden="true" />
           </label>
           <label
             className={
-              'graph-explorer-btn graph-explorer-btn-default' +
-              (this.isChecked('withoutLabels') ? ' active' : '')
+              "graph-explorer-btn graph-explorer-btn-default" +
+              (this.isChecked("withoutLabels") ? " active" : "")
             }
             id="withoutLabels"
             title="Show links without labels"
-            onClick={() => this.changeState('withoutLabels')}
+            onClick={() => this.changeState("withoutLabels")}
           >
             <span className="fa fa-arrows-h" aria-hidden="true" />
           </label>
           <label
             className={
-              'graph-explorer-btn graph-explorer-btn-default' +
-              (this.isChecked('allVisible') ? ' active' : '')
+              "graph-explorer-btn graph-explorer-btn-default" +
+              (this.isChecked("allVisible") ? " active" : "")
             }
             id="allVisible"
             title="Show links with labels"
-            onClick={() => this.changeState('allVisible')}
+            onClick={() => this.changeState("allVisible")}
           >
             <span className="fa fa-text-width" aria-hidden="true" />
           </label>
@@ -131,8 +131,8 @@ class LinkInToolBox extends React.Component<LinkInToolBoxProps, {}> {
 
 interface LinkTypesToolboxViewProps {
   view: DiagramView;
-  links: ReadonlyArray<FatLinkType>;
-  countMap: { readonly [linkTypeId: string]: number };
+  links: readonly FatLinkType[];
+  countMap: Readonly<Record<string, number>>;
   selectedElement: Element;
   dataState: ProgressState;
   filterCallback: (type: FatLinkType) => void;
@@ -144,7 +144,7 @@ class LinkTypesToolboxView extends React.Component<
 > {
   constructor(props: LinkTypesToolboxViewProps) {
     super(props);
-    this.state = { filterKey: '' };
+    this.state = { filterKey: "" };
   }
 
   private compareLinks = (a: FatLinkType, b: FatLinkType) => {
@@ -159,7 +159,7 @@ class LinkTypesToolboxView extends React.Component<
   };
 
   private onDropFilter = () => {
-    this.setState({ filterKey: '' });
+    this.setState({ filterKey: "" });
   };
 
   private getLinks = () => {
@@ -196,7 +196,7 @@ class LinkTypesToolboxView extends React.Component<
   };
 
   render() {
-    const className = 'link-types-toolbox';
+    const className = "link-types-toolbox";
     const { view, dataState, selectedElement } = this.props;
     const history = view.model.history;
 
@@ -210,8 +210,8 @@ class LinkTypesToolboxView extends React.Component<
         selectedElement.iri
       );
       connectedTo = (
-        <h4 className="links-heading" style={{ display: 'block' }}>
-          Connected to{'\u00A0'}
+        <h4 className="links-heading" style={{ display: "block" }}>
+          Connected to{"\u00A0"}
           <span>{selectedElementLabel}</span>
         </h4>
       );
@@ -248,7 +248,7 @@ class LinkTypesToolboxView extends React.Component<
               <label
                 className="graph-explorer-btn graph-explorer-btn-default"
                 title="Hide links and labels"
-                onClick={() => changeLinkTypeState(history, 'invisible', links)}
+                onClick={() => changeLinkTypeState(history, "invisible", links)}
               >
                 <span className="fa fa-times" aria-hidden="true" />
               </label>
@@ -256,7 +256,7 @@ class LinkTypesToolboxView extends React.Component<
                 className="graph-explorer-btn graph-explorer-btn-default"
                 title="Show links without labels"
                 onClick={() =>
-                  changeLinkTypeState(history, 'withoutLabels', links)
+                  changeLinkTypeState(history, "withoutLabels", links)
                 }
               >
                 <span className="fa fa-arrows-h" aria-hidden="true" />
@@ -265,7 +265,7 @@ class LinkTypesToolboxView extends React.Component<
                 className="graph-explorer-btn graph-explorer-btn-default"
                 title="Show links with labels"
                 onClick={() =>
-                  changeLinkTypeState(history, 'allVisible', links)
+                  changeLinkTypeState(history, "allVisible", links)
                 }
               >
                 <span className="fa fa-text-width" aria-hidden="true" />
@@ -296,8 +296,8 @@ export interface LinkTypesToolboxProps {
 export interface LinkTypesToolboxState {
   readonly dataState?: ProgressState;
   readonly selectedElement?: Element;
-  readonly linksOfElement?: ReadonlyArray<FatLinkType>;
-  readonly countMap?: { readonly [linkTypeId: string]: number };
+  readonly linksOfElement?: readonly FatLinkType[];
+  readonly countMap?: Readonly<Record<string, number>>;
 }
 
 export class LinkTypesToolbox extends React.Component<
@@ -315,13 +315,13 @@ export class LinkTypesToolbox extends React.Component<
 
     const { view, editor } = this.props;
 
-    this.listener.listen(view.events, 'changeLanguage', () =>
+    this.listener.listen(view.events, "changeLanguage", () =>
       this.updateOnCurrentSelection()
     );
-    this.listener.listen(editor.model.events, 'loadingSuccess', () =>
+    this.listener.listen(editor.model.events, "loadingSuccess", () =>
       this.updateOnCurrentSelection()
     );
-    this.listener.listen(editor.events, 'changeSelection', () => {
+    this.listener.listen(editor.events, "changeSelection", () => {
       this.debounceSelection.call(this.updateOnCurrentSelection);
     });
 
@@ -357,10 +357,8 @@ export class LinkTypesToolbox extends React.Component<
           if (this.currentRequest !== request) {
             return;
           }
-          const {
-            linksOfElement,
-            countMap,
-          } = this.computeStateFromRequestResult(linkTypes);
+          const { linksOfElement, countMap } =
+            this.computeStateFromRequestResult(linkTypes);
           this.subscribeOnLinksEvents(linksOfElement);
           this.setState({
             dataState: ProgressState.completed,
@@ -372,7 +370,6 @@ export class LinkTypesToolbox extends React.Component<
           if (this.currentRequest !== request) {
             return;
           }
-          // tslint:disable-next-line:no-console
           console.error(error);
           this.setState({
             dataState: ProgressState.error,
@@ -391,9 +388,9 @@ export class LinkTypesToolbox extends React.Component<
     }
   }
 
-  private computeStateFromRequestResult(linkTypes: ReadonlyArray<LinkCount>) {
+  private computeStateFromRequestResult(linkTypes: readonly LinkCount[]) {
     const linksOfElement: FatLinkType[] = [];
-    const countMap: { [linkTypeId: string]: number } = {};
+    const countMap: Record<string, number> = {};
 
     const model = this.props.editor.model;
     for (const linkType of linkTypes) {
@@ -410,8 +407,8 @@ export class LinkTypesToolbox extends React.Component<
 
     const listener = this.linkListener;
     for (const link of linksOfElement) {
-      listener.listen(link.events, 'changeLabel', this.onLinkChanged);
-      listener.listen(link.events, 'changeVisibility', this.onLinkChanged);
+      listener.listen(link.events, "changeLabel", this.onLinkChanged);
+      listener.listen(link.events, "changeVisibility", this.onLinkChanged);
     }
   }
 
@@ -443,15 +440,15 @@ export class LinkTypesToolbox extends React.Component<
 function changeLinkTypeState(
   history: CommandHistory,
   state: LinkTypeVisibility,
-  links: ReadonlyArray<FatLinkType>
+  links: readonly FatLinkType[]
 ) {
   const batch = history.startBatch();
   const { visible, showLabel } =
-    state === 'invisible'
+    state === "invisible"
       ? { visible: false, showLabel: false }
-      : state === 'withoutLabels'
+      : state === "withoutLabels"
       ? { visible: true, showLabel: false }
-      : state === 'allVisible'
+      : state === "allVisible"
       ? { visible: true, showLabel: true }
       : undefined;
   for (const linkType of links) {

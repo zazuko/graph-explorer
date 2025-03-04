@@ -1,19 +1,19 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { PLACEHOLDER_ELEMENT_TYPE } from '../data/schema';
-import { ElementModel, ElementIri, ElementTypeIri } from '../data/model';
+import { PLACEHOLDER_ELEMENT_TYPE } from "../data/schema";
+import { ElementModel, ElementIri, ElementTypeIri } from "../data/model";
 
-import { EditorController } from '../editor/editorController';
-import { DiagramView } from '../diagram/view';
-import { MetadataApi } from '../data/metadataApi';
+import { EditorController } from "../editor/editorController";
+import { DiagramView } from "../diagram/view";
+import { MetadataApi } from "../data/metadataApi";
 
-import { createRequest } from '../widgets/instancesSearch';
-import { ListElementView } from '../widgets/listElementView';
+import { createRequest } from "../widgets/instancesSearch";
+import { ListElementView } from "../widgets/listElementView";
 
-import { Cancellation, CancellationToken } from '../viewUtils/async';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { Cancellation, CancellationToken } from "../viewUtils/async";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
-const CLASS_NAME = 'graph-explorer-edit-form';
+const CLASS_NAME = "graph-explorer-edit-form";
 
 export interface ElementValue {
   value: ElementModel;
@@ -30,14 +30,14 @@ export interface Props {
   metadataApi: MetadataApi | undefined;
   source: ElementModel;
   elementValue: ElementValue;
-  onChange: (state: Pick<ElementValue, 'value' | 'isNew' | 'loading'>) => void;
+  onChange: (state: Pick<ElementValue, "value" | "isNew" | "loading">) => void;
 }
 
 export interface State {
-  elementTypes?: ReadonlyArray<ElementTypeIri>;
+  elementTypes?: readonly ElementTypeIri[];
   searchString?: string;
   isLoading?: boolean;
-  existingElements?: ReadonlyArray<ElementModel>;
+  existingElements?: readonly ElementModel[];
 }
 
 export class ElementTypeSelector extends React.Component<Props, State> {
@@ -47,7 +47,7 @@ export class ElementTypeSelector extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { searchString: '', existingElements: [] };
+    this.state = { searchString: "", existingElements: [] };
   }
 
   componentDidMount() {
@@ -149,7 +149,7 @@ export class ElementTypeSelector extends React.Component<Props, State> {
     const { elementTypes, isLoading } = this.state;
     const value = elementValue.value.types.length
       ? elementValue.value.types[0]
-      : '';
+      : "";
     if (isLoading) {
       return <HtmlSpinner width={20} height={20} />;
     }
@@ -177,7 +177,7 @@ export class ElementTypeSelector extends React.Component<Props, State> {
             {elementValue.error}
           </span>
         ) : (
-          ''
+          ""
         )}
       </div>
     );
@@ -286,9 +286,9 @@ function makeElementTypeComparatorByLabel(view: DiagramView) {
 
 export function validateElementType(
   element: ElementModel
-): Promise<Pick<ElementValue, 'error' | 'allowChange'>> {
+): Promise<Pick<ElementValue, "error" | "allowChange">> {
   const isElementTypeSelected =
     element.types.indexOf(PLACEHOLDER_ELEMENT_TYPE) < 0;
-  const error = !isElementTypeSelected ? 'Required.' : undefined;
+  const error = !isElementTypeSelected ? "Required." : undefined;
   return Promise.resolve({ error, allowChange: true });
 }

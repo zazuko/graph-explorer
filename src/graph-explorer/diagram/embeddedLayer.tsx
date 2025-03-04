@@ -1,19 +1,19 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { Dictionary, ElementModel, ElementIri } from '../data/model';
-import { Paper, PaperTransform } from './paper';
-import { PaperAreaContextTypes, PaperAreaContextWrapper } from './paperArea';
-import { Element, Cell } from './elements';
+import { Dictionary, ElementModel, ElementIri } from "../data/model";
+import { Paper, PaperTransform } from "./paper";
+import { PaperAreaContextTypes, PaperAreaContextWrapper } from "./paperArea";
+import { Element, Cell } from "./elements";
 import {
   ElementLayer,
   ElementContextWrapper,
   ElementContextTypes,
-} from './elementLayer';
-import { EventObserver } from '../viewUtils/events';
+} from "./elementLayer";
+import { EventObserver } from "../viewUtils/events";
 
-import { Vector, Rect } from './geometry';
-import { getContentFittingBox } from './paperArea';
-import { DiagramView } from './view';
+import { Vector, Rect } from "./geometry";
+import { getContentFittingBox } from "./paperArea";
+import { DiagramView } from "./view";
 
 export interface State {
   paperWidth?: number;
@@ -35,7 +35,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
 
   private isApplyingParentMove = false;
   private isNestedElementMoving = false;
-  private previousPositions: Array<{ id: string; position: Vector }> = [];
+  private previousPositions: { id: string; position: Vector }[] = [];
 
   constructor(props: {}) {
     super(props);
@@ -48,7 +48,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
 
     this.listener.listen(
       view.model.events,
-      'changeGroupContent',
+      "changeGroupContent",
       ({ group }) => {
         if (group === element.id) {
           this.listenNestedElements(this.getNestedElements());
@@ -58,7 +58,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
       }
     );
 
-    this.listener.listen(element.events, 'changePosition', () => {
+    this.listener.listen(element.events, "changePosition", () => {
       if (this.isNestedElementMoving) {
         return;
       }
@@ -73,7 +73,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
       this.setState({ offsetX, offsetY });
     });
 
-    this.listener.listen(paperArea.events, 'pointerUp', (e) => {
+    this.listener.listen(paperArea.events, "pointerUp", (e) => {
       this.isNestedElementMoving = false;
     });
 
@@ -95,17 +95,17 @@ export class EmbeddedLayer extends React.Component<{}, State> {
     }
   }
 
-  private listenNestedElements(nestedElements: ReadonlyArray<Element>) {
+  private listenNestedElements(nestedElements: readonly Element[]) {
     const listener = new EventObserver();
     for (const nestedElement of nestedElements) {
       listener.listen(
         nestedElement.events,
-        'changePosition',
+        "changePosition",
         this.recomputeSelfBounds
       );
       listener.listen(
         nestedElement.events,
-        'changeSize',
+        "changeSize",
         this.recomputeSelfBounds
       );
     }
@@ -259,8 +259,8 @@ export class EmbeddedLayer extends React.Component<{}, State> {
 function findParentElement(layer: HTMLElement): HTMLElement {
   const parent = layer.parentElement;
   if (!parent) {
-    throw new Error('Cannot find parent diagram element for EmbeddedLayer');
-  } else if (parent.hasAttribute('data-element-id')) {
+    throw new Error("Cannot find parent diagram element for EmbeddedLayer");
+  } else if (parent.hasAttribute("data-element-id")) {
     return parent;
   } else {
     return findParentElement(parent);

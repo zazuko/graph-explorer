@@ -1,4 +1,4 @@
-import { EventSource, Events } from '../viewUtils/events';
+import { EventSource, Events } from "../viewUtils/events";
 
 export interface Command {
   readonly title?: string;
@@ -21,7 +21,7 @@ function effectAction(title: string, body: () => void): Command {
     },
   };
   const skip = {
-    title: 'Skipped effect: ' + title,
+    title: "Skipped effect: " + title,
     invoke: () => perform,
   };
   return perform;
@@ -38,8 +38,8 @@ export interface CommandHistoryEvents {
 
 export interface CommandHistory {
   readonly events: Events<CommandHistoryEvents>;
-  readonly undoStack: ReadonlyArray<Command>;
-  readonly redoStack: ReadonlyArray<Command>;
+  readonly undoStack: readonly Command[];
+  readonly redoStack: readonly Command[];
   reset(): void;
   undo(): void;
   redo(): void;
@@ -58,25 +58,25 @@ export class NonRememberingHistory implements CommandHistory {
   private readonly source = new EventSource<CommandHistoryEvents>();
   readonly events: Events<CommandHistoryEvents> = this.source;
 
-  readonly undoStack: ReadonlyArray<Command> = [];
-  readonly redoStack: ReadonlyArray<Command> = [];
+  readonly undoStack: readonly Command[] = [];
+  readonly redoStack: readonly Command[] = [];
 
   reset() {
-    this.source.trigger('historyChanged', { hasChanges: false });
+    this.source.trigger("historyChanged", { hasChanges: false });
   }
   undo() {
-    throw new Error('Undo is unsupported');
+    throw new Error("Undo is unsupported");
   }
   redo() {
-    throw new Error('Redo is unsupported');
+    throw new Error("Redo is unsupported");
   }
 
   execute(command: Command) {
     command.invoke();
-    this.source.trigger('historyChanged', { hasChanges: true });
+    this.source.trigger("historyChanged", { hasChanges: true });
   }
   registerToUndo(command: Command) {
-    this.source.trigger('historyChanged', { hasChanges: true });
+    this.source.trigger("historyChanged", { hasChanges: true });
   }
   startBatch(title?: string): Batch {
     return {

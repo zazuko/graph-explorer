@@ -1,25 +1,25 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MetadataApi } from '../data/metadataApi';
-import { ElementModel, LinkModel } from '../data/model';
+import { MetadataApi } from "../data/metadataApi";
+import { ElementModel, LinkModel } from "../data/model";
 import {
   PLACEHOLDER_ELEMENT_TYPE,
   PLACEHOLDER_LINK_TYPE,
-} from '../data/schema';
+} from "../data/schema";
 
-import { DiagramView } from '../diagram/view';
-import { LinkLayer, LinkMarkers } from '../diagram/linkLayer';
-import { Element, Link, LinkDirection } from '../diagram/elements';
-import { boundsOf, Vector, findElementAtPoint } from '../diagram/geometry';
-import { TransformedSvgCanvas } from '../diagram/paper';
-import { PaperWidgetProps } from '../diagram/paperArea';
+import { DiagramView } from "../diagram/view";
+import { LinkLayer, LinkMarkers } from "../diagram/linkLayer";
+import { Element, Link, LinkDirection } from "../diagram/elements";
+import { boundsOf, Vector, findElementAtPoint } from "../diagram/geometry";
+import { TransformedSvgCanvas } from "../diagram/paper";
+import { PaperWidgetProps } from "../diagram/paperArea";
 
-import { Cancellation, CancellationToken } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
-import { Spinner } from '../viewUtils/spinner';
+import { Cancellation, CancellationToken } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
+import { Spinner } from "../viewUtils/spinner";
 
-import { TemporaryState } from './temporaryState';
-import { EditorController } from './editorController';
+import { TemporaryState } from "./temporaryState";
+import { EditorController } from "./editorController";
 
 export enum EditLayerMode {
   establishLink,
@@ -70,21 +70,21 @@ export class EditLayer extends React.Component<Props, State> {
     ) {
       this.beginMovingLink(target as Link, point);
     } else {
-      throw new Error('Unknown edit mode');
+      throw new Error("Unknown edit mode");
     }
     this.forceUpdate();
     this.queryCanLinkFrom();
     this.queryCanDropOnCanvas();
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
   }
 
   componentWillUnmount() {
     this.listener.stopListening();
     this.cancellation.abort();
     this.canDropOnElementCancellation.abort();
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('mouseup', this.onMouseUp);
+    document.removeEventListener("mousemove", this.onMouseMove);
+    document.removeEventListener("mouseup", this.onMouseUp);
   }
 
   private beginCreatingLink = (params: { sourceId: string; point: Vector }) => {
@@ -117,7 +117,7 @@ export class EditLayer extends React.Component<Props, State> {
         mode === EditLayerMode.moveLinkTarget
       )
     ) {
-      throw new Error('Unexpected edit mode for moving link');
+      throw new Error("Unexpected edit mode for moving link");
     }
 
     this.oldLink = target;
@@ -193,8 +193,7 @@ export class EditLayer extends React.Component<Props, State> {
         this.setState({ canLinkFrom });
       },
       (error) => {
-        // tslint:disable-next-line: no-console
-        console.error('Error calling canLinkElement:', error);
+        console.error("Error calling canLinkElement:", error);
         this.setState({ canLinkFrom: false });
       }
     );
@@ -222,8 +221,7 @@ export class EditLayer extends React.Component<Props, State> {
         this.setState({ canDropOnCanvas });
       },
       (error) => {
-        // tslint:disable-next-line: no-console
-        console.error('Error calling canDropOnCanvas:', error);
+        console.error("Error calling canDropOnCanvas:", error);
         this.setState({ canDropOnCanvas: false });
       }
     );
@@ -285,12 +283,8 @@ export class EditLayer extends React.Component<Props, State> {
     const { view, editor, mode } = this.props;
 
     try {
-      const {
-        targetElement,
-        canLinkFrom,
-        canDropOnCanvas,
-        canDropOnElement,
-      } = this.state;
+      const { targetElement, canLinkFrom, canDropOnCanvas, canDropOnElement } =
+        this.state;
 
       if (this.oldLink) {
         editor.model.addLink(this.oldLink);
@@ -336,7 +330,7 @@ export class EditLayer extends React.Component<Props, State> {
             break;
           }
           default: {
-            throw new Error('Unknown edit mode');
+            throw new Error("Unknown edit mode");
           }
         }
 
@@ -457,7 +451,7 @@ export class EditLayer extends React.Component<Props, State> {
     return (
       <TransformedSvgCanvas
         paperTransform={paperTransform}
-        style={{ overflow: 'visible' }}
+        style={{ overflow: "visible" }}
       >
         <LinkMarkers view={view} />
         {this.renderHighlight()}
@@ -470,12 +464,8 @@ export class EditLayer extends React.Component<Props, State> {
   }
 
   private renderHighlight() {
-    const {
-      targetElement,
-      canLinkFrom,
-      canDropOnElement,
-      waitingForMetadata,
-    } = this.state;
+    const { targetElement, canLinkFrom, canDropOnElement, waitingForMetadata } =
+      this.state;
 
     if (!targetElement) {
       return null;
@@ -493,7 +483,7 @@ export class EditLayer extends React.Component<Props, State> {
           <rect
             width={width}
             height={height}
-            fill={'white'}
+            fill={"white"}
             fillOpacity={0.5}
           />
           <Spinner size={30} position={{ x: width / 2, y: height / 2 }} />
@@ -501,14 +491,14 @@ export class EditLayer extends React.Component<Props, State> {
       );
     }
 
-    const stroke = canLinkFrom && canDropOnElement ? '#5cb85c' : '#c9302c';
+    const stroke = canLinkFrom && canDropOnElement ? "#5cb85c" : "#c9302c";
     return (
       <rect
         x={x}
         y={y}
         width={width}
         height={height}
-        fill={'transparent'}
+        fill={"transparent"}
         stroke={stroke}
         strokeWidth={3}
       />
@@ -516,12 +506,8 @@ export class EditLayer extends React.Component<Props, State> {
   }
 
   private renderCanDropIndicator() {
-    const {
-      targetElement,
-      canLinkFrom,
-      canDropOnCanvas,
-      waitingForMetadata,
-    } = this.state;
+    const { targetElement, canLinkFrom, canDropOnCanvas, waitingForMetadata } =
+      this.state;
 
     if (targetElement) {
       return null;

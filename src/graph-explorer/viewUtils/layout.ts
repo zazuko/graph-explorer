@@ -208,7 +208,7 @@ export function calculateLayout(params: {
     }
 
     const nodes: LayoutNode[] = [];
-    const nodeById: { [id: string]: LayoutNode } = {};
+    const nodeById: Record<string, LayoutNode> = {};
     for (const element of elements) {
       const { x, y, width, height } = boundsOf(element);
       const node: LayoutNode = {
@@ -238,7 +238,7 @@ export function calculateLayout(params: {
     }
     layoutFunction(nodes, links, group);
 
-    const positions: Map<string, Vector> = new Map();
+    const positions = new Map<string, Vector>();
     for (const node of nodes) {
       positions.set(node.id, { x: node.x, y: node.y });
     }
@@ -288,9 +288,7 @@ export function applyLayout(model: DiagramModel, layout: CalculatedLayout) {
   }
 }
 
-export function calculateAveragePosition(
-  position: ReadonlyArray<Element>
-): Vector {
+export function calculateAveragePosition(position: readonly Element[]): Vector {
   let xSum = 0;
   let ySum = 0;
   for (const element of position) {
@@ -305,7 +303,7 @@ export function calculateAveragePosition(
 
 export function placeElementsAround(params: {
   model: DiagramModel;
-  elements: ReadonlyArray<Element>;
+  elements: readonly Element[];
   prefferedLinksLength: number;
   targetElement: Element;
   startAngle?: number;
@@ -431,9 +429,12 @@ export function forceLayout(params: {
   });
 }
 
-export function getContentFittingBoxForLayout(
-  nodes: ReadonlyArray<LayoutNode>
-): { x: number; y: number; width: number; height: number } {
+export function getContentFittingBoxForLayout(nodes: readonly LayoutNode[]): {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+} {
   let minX = Infinity,
     minY = Infinity;
   let maxX = -Infinity,

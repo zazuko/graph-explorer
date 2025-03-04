@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export interface Props extends React.HTMLAttributes<HTMLDivElement> {
   onBeginDragHandle: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -13,13 +13,8 @@ export class DraggableHandle extends React.Component<Props, {}> {
 
   render() {
     // remove custom handlers from `div` props
-    // tslint:disable-next-line:no-unused-variable
-    const {
-      onBeginDragHandle,
-      onDragHandle,
-      onEndDragHandle,
-      ...props
-    } = this.props;
+    const { onBeginDragHandle, onDragHandle, onEndDragHandle, ...props } =
+      this.props;
     return (
       <div {...props} onMouseDown={this.onHandleMouseDown}>
         {this.props.children}
@@ -47,8 +42,8 @@ export class DraggableHandle extends React.Component<Props, {}> {
     this.isHoldingMouse = true;
     this.originPageX = e.pageX;
     this.originPageY = e.pageY;
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onMouseUp);
+    document.addEventListener("mousemove", this.onMouseMove);
+    document.addEventListener("mouseup", this.onMouseUp);
     this.props.onBeginDragHandle(e);
   };
 
@@ -74,8 +69,8 @@ export class DraggableHandle extends React.Component<Props, {}> {
   private removeListeners() {
     if (this.isHoldingMouse) {
       this.isHoldingMouse = false;
-      document.removeEventListener('mousemove', this.onMouseMove);
-      document.removeEventListener('mouseup', this.onMouseUp);
+      document.removeEventListener("mousemove", this.onMouseMove);
+      document.removeEventListener("mouseup", this.onMouseUp);
     }
   }
 }

@@ -49,7 +49,7 @@ export abstract class BatchingScheduler {
 }
 
 export class BufferingQueue<Key extends string> extends BatchingScheduler {
-  private fetchingQueue: { [key: string]: true } = Object.create(null);
+  private fetchingQueue: Record<string, true> = Object.create(null);
 
   constructor(private onFetch: (keys: Key[]) => void, waitingTime = 200) {
     super(waitingTime);

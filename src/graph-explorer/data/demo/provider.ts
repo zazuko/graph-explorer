@@ -1,5 +1,5 @@
-import { cloneDeep, keyBy, map, each } from 'lodash';
-import { DataProvider, LinkElementsParams, FilterParams } from '../provider';
+import { cloneDeep, keyBy, map, each } from "lodash";
+import { DataProvider, LinkElementsParams, FilterParams } from "../provider";
 import {
   Dictionary,
   ClassModel,
@@ -11,7 +11,7 @@ import {
   ElementTypeIri,
   LinkTypeIri,
   PropertyTypeIri,
-} from '../model';
+} from "../model";
 
 export class DemoDataProvider implements DataProvider {
   constructor(
@@ -100,7 +100,7 @@ export class DemoDataProvider implements DataProvider {
       linkDirection: params.direction,
       limit: params.limit,
       offset: params.offset,
-      languageCode: '',
+      languageCode: "",
     });
   }
 
@@ -129,9 +129,9 @@ export class DemoDataProvider implements DataProvider {
       const nodeId = params.refElementId;
       for (const link of filteredLinks) {
         let linkedElementId: string;
-        if (link.sourceId === nodeId && params.linkDirection !== 'in') {
+        if (link.sourceId === nodeId && params.linkDirection !== "in") {
           linkedElementId = link.targetId;
-        } else if (link.targetId === nodeId && params.linkDirection !== 'out') {
+        } else if (link.targetId === nodeId && params.linkDirection !== "out") {
           linkedElementId = link.sourceId;
         }
         if (linkedElementId !== undefined) {
@@ -145,7 +145,7 @@ export class DemoDataProvider implements DataProvider {
       filtered = this.allElements; // filtering by text is done below
     } else {
       return Promise.reject(
-        new Error('This type of filter is not implemented')
+        new Error("This type of filter is not implemented")
       );
     }
 

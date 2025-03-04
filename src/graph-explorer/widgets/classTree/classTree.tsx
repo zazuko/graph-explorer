@@ -1,23 +1,23 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { ElementTypeIri, ClassModel } from '../../data/model';
-import { DataProvider } from '../../data/provider';
-import { FatClassModel } from '../../diagram/elements';
-import { Vector } from '../../diagram/geometry';
-import { DiagramView } from '../../diagram/view';
-import { EditorController } from '../../editor/editorController';
+import { ElementTypeIri, ClassModel } from "../../data/model";
+import { DataProvider } from "../../data/provider";
+import { FatClassModel } from "../../diagram/elements";
+import { Vector } from "../../diagram/geometry";
+import { DiagramView } from "../../diagram/view";
+import { EditorController } from "../../editor/editorController";
 import {
   Cancellation,
   CancellationToken,
   Debouncer,
-} from '../../viewUtils/async';
-import { cloneMap } from '../../viewUtils/collections';
-import { EventObserver } from '../../viewUtils/events';
-import { HtmlSpinner } from '../../viewUtils/spinner';
-import { ProgressBar, ProgressState } from '../progressBar';
+} from "../../viewUtils/async";
+import { cloneMap } from "../../viewUtils/collections";
+import { EventObserver } from "../../viewUtils/events";
+import { HtmlSpinner } from "../../viewUtils/spinner";
+import { ProgressBar, ProgressState } from "../progressBar";
 
-import { TreeNode } from './treeModel';
-import { Forest } from './leaf';
+import { TreeNode } from "./treeModel";
+import { Forest } from "./leaf";
 
 export interface ClassTreeProps {
   view: DiagramView;
@@ -28,8 +28,8 @@ export interface ClassTreeProps {
 
 export interface State {
   refreshingState?: ProgressState;
-  roots?: ReadonlyArray<TreeNode>;
-  filteredRoots?: ReadonlyArray<TreeNode>;
+  roots?: readonly TreeNode[];
+  filteredRoots?: readonly TreeNode[];
   requestedSearchText?: string;
   appliedSearchText?: string;
   selectedNode?: TreeNode;
@@ -37,14 +37,14 @@ export interface State {
   showOnlyConstructible?: boolean;
 }
 
-const CLASS_NAME = 'graph-explorer-class-tree';
+const CLASS_NAME = "graph-explorer-class-tree";
 const MIN_TERM_LENGTH = 3;
 
 export class ClassTree extends React.Component<ClassTreeProps, State> {
   private readonly listener = new EventObserver();
   private readonly delayedClassUpdate = new Debouncer();
   private readonly delayedSearch = new Debouncer(200 /* ms */);
-  private classTree: ReadonlyArray<ClassModel> | undefined;
+  private classTree: readonly ClassModel[] | undefined;
   private dataProvider: DataProvider | undefined;
 
   private loadClassesOperation = new Cancellation();
@@ -56,8 +56,8 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
       refreshingState: ProgressState.none,
       roots: [],
       filteredRoots: [],
-      requestedSearchText: '',
-      appliedSearchText: '',
+      requestedSearchText: "",
+      appliedSearchText: "",
       constructibleClasses: new Map(),
       showOnlyConstructible: false,
     };
@@ -97,7 +97,7 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
                   type="checkbox"
                   checked={showOnlyConstructible}
                   onChange={this.onShowOnlyCreatableChange}
-                />{' '}
+                />{" "}
                 Show only constructible
               </label>
             ) : null}
@@ -127,13 +127,13 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
 
   componentDidMount() {
     const { view, editor } = this.props;
-    this.listener.listen(view.events, 'changeLanguage', () =>
+    this.listener.listen(view.events, "changeLanguage", () =>
       this.refreshClassTree()
     );
-    this.listener.listen(editor.model.events, 'loadingStart', () => {
+    this.listener.listen(editor.model.events, "loadingStart", () => {
       this.initClassTree();
     });
-    this.listener.listen(editor.model.events, 'classEvent', ({ data }) => {
+    this.listener.listen(editor.model.events, "classEvent", ({ data }) => {
       if (data.changeLabel || data.changeCount) {
         this.delayedClassUpdate.call(this.refreshClassTree);
       }
@@ -223,33 +223,31 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
     this.refreshOperation.abort();
     this.refreshOperation = cancellation;
 
-    this.setState(
-      (state, props): State => {
-        if (!this.classTree) {
-          return { refreshingState: ProgressState.none };
-        }
-
-        let refreshingState = ProgressState.none;
-        if (editor.inAuthoringMode) {
-          const newIris = getNewClassIris(
-            state.constructibleClasses,
-            this.classTree
-          );
-
-          if (newIris.size > 0) {
-            refreshingState = ProgressState.loading;
-            this.queryCreatableTypes(newIris, cancellation.signal);
-          }
-        }
-
-        const roots = createRoots(this.classTree, props.view);
-        return applyFilters({
-          ...state,
-          roots: sortTree(roots),
-          refreshingState,
-        });
+    this.setState((state, props): State => {
+      if (!this.classTree) {
+        return { refreshingState: ProgressState.none };
       }
-    );
+
+      let refreshingState = ProgressState.none;
+      if (editor.inAuthoringMode) {
+        const newIris = getNewClassIris(
+          state.constructibleClasses,
+          this.classTree
+        );
+
+        if (newIris.size > 0) {
+          refreshingState = ProgressState.loading;
+          this.queryCreatableTypes(newIris, cancellation.signal);
+        }
+      }
+
+      const roots = createRoots(this.classTree, props.view);
+      return applyFilters({
+        ...state,
+        roots: sortTree(roots),
+        refreshingState,
+      });
+    });
   };
 
   private setClassTree(roots: ClassModel[]) {
@@ -292,21 +290,18 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
       if (result === null) {
         return;
       }
-      this.setState(
-        (state): State => {
-          const constructibleClasses = cloneMap(state.constructibleClasses);
-          typeIris.forEach((type) => {
-            constructibleClasses.set(type, result.has(type));
-          });
-          return applyFilters({
-            ...state,
-            constructibleClasses,
-            refreshingState: ProgressState.completed,
-          });
-        }
-      );
+      this.setState((state): State => {
+        const constructibleClasses = cloneMap(state.constructibleClasses);
+        typeIris.forEach((type) => {
+          constructibleClasses.set(type, result.has(type));
+        });
+        return applyFilters({
+          ...state,
+          constructibleClasses,
+          refreshingState: ProgressState.completed,
+        });
+      });
     } catch (err) {
-      // tslint:disable-next-line:no-console
       console.error(err);
       if (ct.aborted) {
         return;
@@ -319,7 +314,7 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
   }
 }
 
-function createRoots(classTree: ReadonlyArray<ClassModel>, view: DiagramView) {
+function createRoots(classTree: readonly ClassModel[], view: DiagramView) {
   const mapClass = (model: ClassModel): TreeNode => {
     const richClass = view.model.createClass(model.id);
     return {
@@ -333,7 +328,7 @@ function createRoots(classTree: ReadonlyArray<ClassModel>, view: DiagramView) {
 
 function getNewClassIris(
   existingClasses: ReadonlyMap<ElementTypeIri, boolean>,
-  classTree: ReadonlyArray<ClassModel>
+  classTree: readonly ClassModel[]
 ) {
   const classIris = new Set<ElementTypeIri>();
   const visitClass = (model: ClassModel) => {
@@ -350,8 +345,8 @@ function normalizeSearchText(text: string) {
   return text.trim().toLowerCase();
 }
 
-function sortTree(roots: ReadonlyArray<TreeNode>): ReadonlyArray<TreeNode> {
-  function mapNodes(nodes: ReadonlyArray<TreeNode>): ReadonlyArray<TreeNode> {
+function sortTree(roots: readonly TreeNode[]): readonly TreeNode[] {
+  function mapNodes(nodes: readonly TreeNode[]): readonly TreeNode[] {
     if (nodes.length === 0) {
       return nodes;
     }
@@ -383,9 +378,9 @@ function applyFilters(state: State): State {
 }
 
 function filterByKeyword(
-  roots: ReadonlyArray<TreeNode>,
+  roots: readonly TreeNode[],
   searchText: string
-): ReadonlyArray<TreeNode> {
+): readonly TreeNode[] {
   if (roots.length === 0) {
     return roots;
   }
@@ -404,9 +399,9 @@ function filterByKeyword(
 }
 
 function filterOnlyCreatable(
-  roots: ReadonlyArray<TreeNode>,
+  roots: readonly TreeNode[],
   creatableClasses: ReadonlyMap<ElementTypeIri, boolean>
-): ReadonlyArray<TreeNode> {
+): readonly TreeNode[] {
   function collectOnlyCreatable(acc: TreeNode[], node: TreeNode) {
     const derived = node.derived.reduce(collectOnlyCreatable, []);
     if (derived.length > 0 || creatableClasses.get(node.model.id)) {

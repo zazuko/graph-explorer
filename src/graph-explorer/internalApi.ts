@@ -1,23 +1,23 @@
-export { LINK_SHOW_IRI } from './customization/defaultLinkStyles';
+export { LINK_SHOW_IRI } from "./customization/defaultLinkStyles";
 
-export { TemplateProperties } from './data/schema';
+export { TemplateProperties } from "./data/schema";
 
-export * from './diagram/paper';
-export * from './diagram/paperArea';
+export * from "./diagram/paper";
+export * from "./diagram/paperArea";
 
-export * from './viewUtils/async';
-export * from './viewUtils/collections';
-export * from './viewUtils/keyedObserver';
-export * from './viewUtils/spinner';
+export * from "./viewUtils/async";
+export * from "./viewUtils/collections";
+export * from "./viewUtils/keyedObserver";
+export * from "./viewUtils/spinner";
 
-export * from './widgets/listElementView';
-export * from './widgets/searchResults';
+export * from "./widgets/listElementView";
+export * from "./widgets/searchResults";
 
 export {
   WorkspaceContext,
   WorkspaceContextWrapper,
   WorkspaceContextTypes,
-} from './workspace/workspaceContext';
+} from "./workspace/workspaceContext";
 
 export {
   groupForceLayout,
@@ -25,4 +25,4 @@ export {
   padded,
   biasFreePadded,
   getContentFittingBoxForLayout,
-} from './viewUtils/layout';
+} from "./viewUtils/layout";

@@ -1,22 +1,22 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { ElementIri, ElementTypeIri, ElementModel } from '../data/model';
+import { ElementIri, ElementTypeIri, ElementModel } from "../data/model";
 
-import { Element } from '../diagram/elements';
-import { Vector } from '../diagram/geometry';
+import { Element } from "../diagram/elements";
+import { Vector } from "../diagram/geometry";
 import {
   DiagramView,
   DropOnPaperEvent,
   WidgetAttachment,
-} from '../diagram/view';
-import { PaperArea, ZoomOptions } from '../diagram/paperArea';
+} from "../diagram/view";
+import { PaperArea, ZoomOptions } from "../diagram/paperArea";
 
-import { ClassTree } from '../widgets/classTree';
-import { InstancesSearch, SearchCriteria } from '../widgets/instancesSearch';
-import { LinkTypesToolbox } from '../widgets/linksToolbox';
+import { ClassTree } from "../widgets/classTree";
+import { InstancesSearch, SearchCriteria } from "../widgets/instancesSearch";
+import { LinkTypesToolbox } from "../widgets/linksToolbox";
 
-import { AsyncModel } from '../editor/asyncModel';
-import { EditorController } from '../editor/editorController';
+import { AsyncModel } from "../editor/asyncModel";
+import { EditorController } from "../editor/editorController";
 
 import {
   WorkspaceContextWrapper,
@@ -24,16 +24,16 @@ import {
   WorkspaceContextTypes,
   WorkspaceEventHandler,
   WorkspaceEventKey,
-} from './workspaceContext';
+} from "./workspaceContext";
 
-import { MetadataApi } from '../data/metadataApi';
-import { Cancellation, CancellationToken } from '../viewUtils/async';
+import { MetadataApi } from "../data/metadataApi";
+import { Cancellation, CancellationToken } from "../viewUtils/async";
 
 import {
   WorkspaceLayout,
   WorkspaceLayoutType,
   WorkspaceLayoutNode,
-} from './layout/layout';
+} from "./layout/layout";
 
 export interface WorkspaceMarkupProps {
   toolbar: React.ReactElement<any>;
@@ -85,7 +85,7 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
     const { hideToolbar, view, toolbar } = this.props;
     if (!hideToolbar) {
       view.setPaperWidget({
-        key: 'toolbar',
+        key: "toolbar",
         widget: <ToolbarWidget>{toolbar}</ToolbarWidget>,
         attachment: WidgetAttachment.Viewport,
       });
@@ -123,13 +123,8 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
   };
 
   private getLeftPanelLayout(): WorkspaceLayoutNode {
-    const {
-      view,
-      editor,
-      model,
-      searchCriteria,
-      onSearchCriteriaChanged,
-    } = this.props;
+    const { view, editor, model, searchCriteria, onSearchCriteriaChanged } =
+      this.props;
     const classTree = (
       <ClassTree
         view={view}
@@ -153,16 +148,16 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
       type: WorkspaceLayoutType.Column,
       children: [
         {
-          id: 'classes',
+          id: "classes",
           type: WorkspaceLayoutType.Component,
           content: classTree,
-          heading: 'Classes',
+          heading: "Classes",
         },
         {
-          id: 'instances',
+          id: "instances",
           type: WorkspaceLayoutType.Component,
           content: instancesSearch,
-          heading: 'Instances',
+          heading: "Instances",
         },
       ],
       defaultSize: 275,
@@ -176,10 +171,10 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
       type: WorkspaceLayoutType.Column,
       children: [
         {
-          id: 'connections',
+          id: "connections",
           type: WorkspaceLayoutType.Component,
           content: <LinkTypesToolbox view={view} editor={editor} />,
-          heading: 'Connections',
+          heading: "Connections",
         },
       ],
       defaultSize: 275,
@@ -189,10 +184,10 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
       rightPanel.children = [
         ...rightPanel.children,
         {
-          id: 'search',
+          id: "search",
           type: WorkspaceLayoutType.Component,
           content: React.cloneElement(elementsSearchPanel, { view, editor }),
-          heading: 'Search in diagram',
+          heading: "Search in diagram",
         },
       ];
     }
@@ -201,12 +196,12 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
 
   render() {
     const paper: WorkspaceLayoutNode = {
-      id: 'paper',
+      id: "paper",
       type: WorkspaceLayoutType.Component,
       content: (
         <div
           className="graph-explorer__main-panel"
-          style={{ flex: '1 1 0px', width: '100%' }}
+          style={{ flex: "1 1 0px", width: "100%" }}
         >
           <PaperArea
             ref={(el) => (this.paperArea = el)}
@@ -239,8 +234,8 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
             _onStartResize={(direction) =>
               this.untilMouseUp({
                 preventTextSelection: true,
-                verticalResizing: direction === 'vertical',
-                horizontalResizing: direction === 'horizontal',
+                verticalResizing: direction === "vertical",
+                horizontalResizing: direction === "horizontal",
               })
             }
           />
@@ -250,12 +245,12 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
   }
 
   componentDidMount() {
-    document.addEventListener('mouseup', this.onDocumentMouseUp);
+    document.addEventListener("mouseup", this.onDocumentMouseUp);
     this.addToolbarWidgetToPaper();
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mouseup', this.onDocumentMouseUp);
+    document.removeEventListener("mouseup", this.onDocumentMouseUp);
     this.cancellation.abort();
   }
 
@@ -270,13 +265,13 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
   }) {
     this.untilMouseUpClasses = [];
     if (params.preventTextSelection) {
-      this.untilMouseUpClasses.push('graph-explorer--unselectable');
+      this.untilMouseUpClasses.push("graph-explorer--unselectable");
     }
     if (params.horizontalResizing) {
-      this.untilMouseUpClasses.push('graph-explorer--horizontal-resizing');
+      this.untilMouseUpClasses.push("graph-explorer--horizontal-resizing");
     }
     if (params.verticalResizing) {
-      this.untilMouseUpClasses.push('graph-explorer--vertical-resizing');
+      this.untilMouseUpClasses.push("graph-explorer--vertical-resizing");
     }
 
     for (const className of this.untilMouseUpClasses) {
@@ -357,9 +352,9 @@ function tryParseDefaultDragAndDropData(e: DragEvent): ElementIri[] {
   };
 
   return (
-    tryGetIri('application/x-graph-explorer-elements') ||
-    tryGetIri('text/uri-list', true) ||
-    tryGetIri('text') || // IE11, Edge
+    tryGetIri("application/x-graph-explorer-elements") ||
+    tryGetIri("text/uri-list", true) ||
+    tryGetIri("text") || // IE11, Edge
     []
   );
 }

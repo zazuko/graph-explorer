@@ -1,8 +1,8 @@
 import {
   objectValues,
   getOrCreateArrayInMap,
-} from '../../viewUtils/collections';
-import { DataProvider, LinkElementsParams, FilterParams } from '../provider';
+} from "../../viewUtils/collections";
+import { DataProvider, LinkElementsParams, FilterParams } from "../provider";
 import {
   Dictionary,
   ClassModel,
@@ -16,7 +16,7 @@ import {
   LinkTypeIri,
   PropertyTypeIri,
   LocalizedString,
-} from '../model';
+} from "../model";
 import {
   prependAdditionalBindings,
   enrichElementsWithImages,
@@ -35,7 +35,7 @@ import {
   triplesToElementBinding,
   isDirectLink,
   isDirectProperty,
-} from './responseHandler';
+} from "./responseHandler";
 import {
   ClassBinding,
   ElementBinding,
@@ -49,15 +49,15 @@ import {
   ElementTypeBinding,
   SparqlResponse,
   Triple,
-} from './sparqlModels';
+} from "./sparqlModels";
 import {
   SparqlDataProviderSettings,
   OWLStatsSettings,
   LinkConfiguration,
   PropertyConfiguration,
-} from './sparqlDataProviderSettings';
-import * as BlankNodes from './blankNodes';
-import { parseTurtleText } from './turtle';
+} from "./sparqlDataProviderSettings";
+import * as BlankNodes from "./blankNodes";
+import { parseTurtleText } from "./turtle";
 
 export enum SparqlQueryMethod {
   GET = 1,
@@ -67,7 +67,7 @@ export enum SparqlQueryMethod {
 export type QueryFunction = (params: {
   url: string;
   body?: string;
-  headers: { [header: string]: string };
+  headers: Record<string, string>;
   method: string;
 }) => Promise<Response>;
 
@@ -161,11 +161,8 @@ export class SparqlDataProvider implements DataProvider {
   }
 
   async classTree(): Promise<ClassModel[]> {
-    const {
-      defaultPrefix,
-      schemaLabelProperty,
-      classTreeQuery,
-    } = this.settings;
+    const { defaultPrefix, schemaLabelProperty, classTreeQuery } =
+      this.settings;
     if (!classTreeQuery) {
       return [];
     }
@@ -191,18 +188,15 @@ export class SparqlDataProvider implements DataProvider {
   async propertyInfo(params: {
     propertyIds: PropertyTypeIri[];
   }): Promise<Dictionary<PropertyModel>> {
-    const {
-      defaultPrefix,
-      schemaLabelProperty,
-      propertyInfoQuery,
-    } = this.settings;
+    const { defaultPrefix, schemaLabelProperty, propertyInfoQuery } =
+      this.settings;
 
     let properties: Dictionary<PropertyModel>;
     if (propertyInfoQuery) {
       const ids = params.propertyIds
         .map(escapeIri)
         .map((id) => ` ( ${id} )`)
-        .join(' ');
+        .join(" ");
       const query =
         defaultPrefix +
         resolveTemplate(propertyInfoQuery, {
@@ -228,18 +222,15 @@ export class SparqlDataProvider implements DataProvider {
   async classInfo(params: {
     classIds: ElementTypeIri[];
   }): Promise<ClassModel[]> {
-    const {
-      defaultPrefix,
-      schemaLabelProperty,
-      classInfoQuery,
-    } = this.settings;
+    const { defaultPrefix, schemaLabelProperty, classInfoQuery } =
+      this.settings;
 
     let classes: ClassModel[];
     if (classInfoQuery) {
       const ids = params.classIds
         .map(escapeIri)
         .map((id) => ` ( ${id} )`)
-        .join(' ');
+        .join(" ");
       const query =
         defaultPrefix +
         resolveTemplate(classInfoQuery, {
@@ -264,18 +255,15 @@ export class SparqlDataProvider implements DataProvider {
   async linkTypesInfo(params: {
     linkTypeIds: LinkTypeIri[];
   }): Promise<LinkType[]> {
-    const {
-      defaultPrefix,
-      schemaLabelProperty,
-      linkTypesInfoQuery,
-    } = this.settings;
+    const { defaultPrefix, schemaLabelProperty, linkTypesInfoQuery } =
+      this.settings;
 
     let linkTypes: LinkType[];
     if (linkTypesInfoQuery) {
       const ids = params.linkTypeIds
         .map(escapeIri)
         .map((id) => ` ( ${id} )`)
-        .join(' ');
+        .join(" ");
       const query =
         defaultPrefix +
         resolveTemplate(linkTypesInfoQuery, {
@@ -339,12 +327,9 @@ export class SparqlDataProvider implements DataProvider {
       const ids = nonBlankResources
         .map(escapeIri)
         .map((id) => ` (${id})`)
-        .join(' ');
-      const {
-        defaultPrefix,
-        dataLabelProperty,
-        elementInfoQuery,
-      } = this.settings;
+        .join(" ");
+      const { defaultPrefix, dataLabelProperty, elementInfoQuery } =
+        this.settings;
       const query =
         defaultPrefix +
         resolveTemplate(elementInfoQuery, {
@@ -400,11 +385,11 @@ export class SparqlDataProvider implements DataProvider {
       .filter((id) => !BlankNodes.isEncodedBlank(id))
       .map(escapeIri)
       .map((id) => ` ( ${id} )`)
-      .join(' ');
+      .join(" ");
     const typesString = types
       .map(escapeIri)
       .map((id) => ` ( ${id} )`)
-      .join(' ');
+      .join(" ");
 
     const query =
       this.settings.defaultPrefix +
@@ -422,7 +407,6 @@ export class SparqlDataProvider implements DataProvider {
       );
       enrichElementsWithImages(bindings, elementsInfo);
     } catch (err) {
-      // tslint:disable-next-line:no-console
       console.error(err);
     }
   }
@@ -446,7 +430,7 @@ export class SparqlDataProvider implements DataProvider {
       const ids = nonBlankResources
         .map(escapeIri)
         .map((id) => ` ( ${id} )`)
-        .join(' ');
+        .join(" ");
       const linksInfoQuery =
         this.settings.defaultPrefix +
         resolveTemplate(this.settings.linksInfoQuery, {
@@ -495,8 +479,8 @@ export class SparqlDataProvider implements DataProvider {
       params.elementId,
       undefined,
       undefined,
-      '?outObject',
-      '?inObject',
+      "?outObject",
+      "?inObject",
       false
     );
     if (forAll.usePredicatePart) {
@@ -508,7 +492,7 @@ export class SparqlDataProvider implements DataProvider {
       defaultPrefix +
       resolveTemplate(linkTypesOfQuery, {
         elementIri,
-        linkConfigurations: forAll.unionParts.join('\nUNION\n'),
+        linkConfigurations: forAll.unionParts.join("\nUNION\n"),
       });
 
     const linkTypeBindings = await this.executeSparqlQuery<LinkTypeBinding>(
@@ -544,11 +528,11 @@ export class SparqlDataProvider implements DataProvider {
           linkConfigurationOut = this.formatLinkPath(
             linkConfig.path,
             elementIri,
-            '?outObject'
+            "?outObject"
           );
           linkConfigurationIn = this.formatLinkPath(
             linkConfig.path,
-            '?inObject',
+            "?inObject",
             elementIri
           );
         }
@@ -556,14 +540,14 @@ export class SparqlDataProvider implements DataProvider {
         if (linkConfig && linkConfig.domain?.length > 0) {
           const commaSeparatedDomains = linkConfig.domain
             .map(escapeIri)
-            .join(', ');
+            .join(", ");
           const restrictionOut = filterTypePattern.replace(
             /[?$]inst\b/g,
             elementIri
           );
           const restrictionIn = filterTypePattern.replace(
             /[?$]inst\b/g,
-            '?inObject'
+            "?inObject"
           );
           linkConfigurationOut += ` { ${restrictionOut} FILTER(?class IN (${commaSeparatedDomains})) }`;
           linkConfigurationIn += ` { ${restrictionIn} FILTER(?class IN (${commaSeparatedDomains})) }`;
@@ -600,7 +584,7 @@ export class SparqlDataProvider implements DataProvider {
       linkDirection: params.direction,
       limit: params.limit,
       offset: params.offset,
-      languageCode: '',
+      languageCode: "",
     });
   }
 
@@ -667,18 +651,18 @@ export class SparqlDataProvider implements DataProvider {
   private createFilterQuery(params: FilterParams): string {
     if (!params.refElementId && params.refElementLinkId) {
       throw new Error(
-        'Cannot execute refElementLink filter without refElement'
+        "Cannot execute refElementLink filter without refElement"
       );
     }
 
-    let outerProjection = '?inst ?class ?label ?blankType';
-    let innerProjection = '?inst';
+    let outerProjection = "?inst ?class ?label ?blankType";
+    let innerProjection = "?inst";
 
-    let refQueryPart = '';
-    let refQueryTypes = '';
+    let refQueryPart = "";
+    let refQueryTypes = "";
     if (params.refElementId) {
-      outerProjection += ' ?link ?direction';
-      innerProjection += ' ?link ?direction';
+      outerProjection += " ?link ?direction";
+      innerProjection += " ?link ?direction";
       refQueryPart = this.createRefQueryPart({
         elementId: params.refElementId,
         linkId: params.refElementLinkId,
@@ -686,31 +670,31 @@ export class SparqlDataProvider implements DataProvider {
       });
 
       if (this.settings.linkConfigurations.length > 0) {
-        outerProjection += ' ?classAll';
+        outerProjection += " ?classAll";
         refQueryTypes = this.settings.filterTypePattern.replace(
           /[?$]class\b/g,
-          '?classAll'
+          "?classAll"
         );
       }
     }
 
-    let elementTypePart = '';
+    let elementTypePart = "";
     if (params.elementTypeId) {
       const elementTypeIri = escapeIri(params.elementTypeId);
       elementTypePart = this.settings.filterTypePattern.replace(
         /[?$]class\b/g,
         elementTypeIri
       );
-      elementTypePart += ' .';
+      elementTypePart += " .";
     }
 
     const { defaultPrefix, fullTextSearch, dataLabelProperty } = this.settings;
 
-    let textSearchPart = '';
+    let textSearchPart = "";
     if (params.text) {
-      innerProjection += ' ?score';
+      innerProjection += " ?score";
       if (this.settings.fullTextSearch.extractLabel) {
-        textSearchPart += sparqlExtractLabel('?inst', '?extractedLabel');
+        textSearchPart += sparqlExtractLabel("?inst", "?extractedLabel");
       }
       textSearchPart = resolveTemplate(fullTextSearch.queryPattern, {
         text: params.text,
@@ -730,21 +714,21 @@ export class SparqlDataProvider implements DataProvider {
         WHERE {
             {
                 SELECT DISTINCT ${innerProjection} WHERE {
-                    ${fullTextSearch.elementFirst ? '' : textSearchPart}
+                    ${fullTextSearch.elementFirst ? "" : textSearchPart}
                     ${elementTypePart}
                     ${refQueryPart}
-                    ${fullTextSearch.elementFirst ? textSearchPart : ''}
+                    ${fullTextSearch.elementFirst ? textSearchPart : ""}
                     ${this.settings.filterAdditionalRestriction}
                 }
-                ${textSearchPart ? 'ORDER BY DESC(?score)' : ''}
+                ${textSearchPart ? "ORDER BY DESC(?score)" : ""}
                 LIMIT ${params.limit} OFFSET ${params.offset}
             }
             ${refQueryTypes}
             ${resolveTemplate(this.settings.filterElementInfoPattern, {
               dataLabelProperty,
             })}
-            ${blankNodes ? BlankNodes.BLANK_NODE_QUERY : ''}
-        } ${textSearchPart ? 'ORDER BY DESC(?score)' : ''}
+            ${blankNodes ? BlankNodes.BLANK_NODE_QUERY : ""}
+        } ${textSearchPart ? "ORDER BY DESC(?score)" : ""}
         `;
   }
 
@@ -775,7 +759,7 @@ export class SparqlDataProvider implements DataProvider {
   protected createRefQueryPart(params: {
     elementId: ElementIri;
     linkId?: LinkTypeIri;
-    direction?: 'in' | 'out';
+    direction?: "in" | "out";
   }) {
     const { elementId, linkId, direction } = params;
 
@@ -783,8 +767,8 @@ export class SparqlDataProvider implements DataProvider {
       elementId,
       linkId,
       direction,
-      '?inst',
-      '?inst',
+      "?inst",
+      "?inst",
       true
     );
 
@@ -797,19 +781,19 @@ export class SparqlDataProvider implements DataProvider {
           link && isDirectLink(link) ? escapeIri(link.path) : escapeIri(linkId);
       }
 
-      const linkPattern = refLinkType || '?link';
-      const bindType = refLinkType ? `BIND(${refLinkType} as ?link)` : '';
+      const linkPattern = refLinkType || "?link";
+      const bindType = refLinkType ? `BIND(${refLinkType} as ?link)` : "";
       // FILTER ISIRI is used to prevent blank nodes appearing in results
       const blankFilter = this.options.acceptBlankNodes
-        ? 'FILTER(isIri(?inst) || isBlank(?inst))'
-        : 'FILTER(isIri(?inst))';
+        ? "FILTER(isIri(?inst) || isBlank(?inst))"
+        : "FILTER(isIri(?inst))";
 
-      if (!direction || direction === 'out') {
+      if (!direction || direction === "out") {
         unionParts.push(
           `{ ${refElementIRI} ${linkPattern} ?inst BIND("out" as ?direction) ${bindType} ${blankFilter} }`
         );
       }
-      if (!direction || direction === 'in') {
+      if (!direction || direction === "in") {
         unionParts.push(
           `{ ?inst ${linkPattern} ${refElementIRI} BIND("in" as ?direction) ${bindType} ${blankFilter} }`
         );
@@ -817,7 +801,7 @@ export class SparqlDataProvider implements DataProvider {
     }
 
     let resultPattern =
-      unionParts.length === 0 ? 'FILTER(false)' : unionParts.join(`\nUNION\n`);
+      unionParts.length === 0 ? "FILTER(false)" : unionParts.join(`\nUNION\n`);
 
     const useAllLinksPattern =
       !linkId && this.settings.filterRefElementLinkPattern.length > 0;
@@ -831,7 +815,7 @@ export class SparqlDataProvider implements DataProvider {
   private formatLinkUnion(
     refElementIri: ElementIri,
     linkIri: LinkTypeIri | undefined,
-    direction: 'in' | 'out' | undefined,
+    direction: "in" | "out" | undefined,
     outElementVar: string,
     inElementVar: string,
     bindDirection: boolean
@@ -850,20 +834,20 @@ export class SparqlDataProvider implements DataProvider {
         hasDirectLink = true;
       } else {
         const linkType = escapeIri(link.id);
-        if (!direction || direction === 'out') {
+        if (!direction || direction === "out") {
           const path = this.formatLinkPath(link.path, fixedIri, outElementVar);
           const boundedDirection = bindDirection
             ? `BIND("out" as ?direction) `
-            : '';
+            : "";
           unionParts.push(
             `{ ${path} BIND(${linkType} as ?link) ${boundedDirection}}`
           );
         }
-        if (!direction || direction === 'in') {
+        if (!direction || direction === "in") {
           const path = this.formatLinkPath(link.path, inElementVar, fixedIri);
           const boundedDirection = bindDirection
             ? `BIND("in" as ?direction) `
-            : '';
+            : "";
           unionParts.push(
             `{ ${path} BIND(${linkType} as ?link) ${boundedDirection}}`
           );
@@ -886,8 +870,8 @@ export class SparqlDataProvider implements DataProvider {
         unionParts.push(
           `{ ${this.formatLinkPath(
             link.path,
-            '?source',
-            '?target'
+            "?source",
+            "?target"
           )} BIND(${linkType} as ?type) }`
         );
       }
@@ -898,7 +882,7 @@ export class SparqlDataProvider implements DataProvider {
       unionParts.push(`{ ?source ?type ?target }`);
     }
 
-    return unionParts.join('\nUNION\n');
+    return unionParts.join("\nUNION\n");
   }
 
   formatLinkPath(path: string, source: string, target: string): string {
@@ -917,8 +901,8 @@ export class SparqlDataProvider implements DataProvider {
         const propType = escapeIri(property.id);
         const formatted = this.formatPropertyPath(
           property.path,
-          '?inst',
-          '?propValue'
+          "?inst",
+          "?propValue"
         );
         unionParts.push(`{ ${formatted} BIND(${propType} as ?propType) }`);
       }
@@ -929,7 +913,7 @@ export class SparqlDataProvider implements DataProvider {
       unionParts.push(`{ ?inst ?propType ?propValue }`);
     }
 
-    return unionParts.join('\nUNION\n');
+    return unionParts.join("\nUNION\n");
   }
 
   formatPropertyPath(path: string, subject: string, value: string): string {
@@ -944,7 +928,7 @@ export class SparqlDataProvider implements DataProvider {
   }
 
   private async queryManyElementTypes(
-    elements: ReadonlyArray<ElementIri>
+    elements: readonly ElementIri[]
   ): Promise<Map<ElementIri, Set<ElementTypeIri>>> {
     if (elements.length === 0) {
       return new Map();
@@ -953,9 +937,11 @@ export class SparqlDataProvider implements DataProvider {
     const ids = elements
       .filter((iri) => !BlankNodes.isEncodedBlank(iri))
       .map((iri) => `(${escapeIri(iri)})`)
-      .join(' ');
+      .join(" ");
 
-    const queryTemplate = this.settings.defaultPrefix + `SELECT ?inst ?class { VALUES(?inst) { \${ids} } \${filterTypePattern} }`;
+    const queryTemplate =
+      this.settings.defaultPrefix +
+      `SELECT ?inst ?class { VALUES(?inst) { \${ids} } \${filterTypePattern} }`;
     const query = resolveTemplate(queryTemplate, { ids, filterTypePattern });
     let response = await this.executeSparqlQuery<ElementTypeBinding>(query);
 
@@ -977,8 +963,8 @@ interface LabeledItem {
 }
 
 async function attachLabels(
-  items: ReadonlyArray<LabeledItem>,
-  fetchLabels: SparqlDataProviderOptions['prepareLabels']
+  items: readonly LabeledItem[],
+  fetchLabels: SparqlDataProviderOptions["prepareLabels"]
 ): Promise<void> {
   const resources = new Set<string>();
   for (const item of items) {
@@ -996,7 +982,7 @@ async function attachLabels(
 }
 
 function prepareElementImages(
-  fetchImages: SparqlDataProviderOptions['prepareImages'],
+  fetchImages: SparqlDataProviderOptions["prepareImages"],
   elementsInfo: Dictionary<ElementModel>
 ): Promise<void> {
   return fetchImages(elementsInfo).then((images) => {
@@ -1020,7 +1006,7 @@ function resolveTemplate(template: string, values: Dictionary<string>) {
     const replaceValue = values[replaceKey];
     if (replaceValue) {
       result = result.replace(
-        new RegExp('\\${' + replaceKey + '}', 'g'),
+        new RegExp("\\${" + replaceKey + "}", "g"),
         replaceValue
       );
     }
@@ -1039,32 +1025,30 @@ export function executeSparqlQuery<Binding>(
     internalQuery = queryFunction({
       url: appendQueryParams(endpoint, { query }),
       headers: {
-        Accept: 'application/sparql-results+json',
+        Accept: "application/sparql-results+json",
       },
-      method: 'GET',
+      method: "GET",
     });
   } else {
     internalQuery = queryFunction({
       url: endpoint,
       body: query,
       headers: {
-        Accept: 'application/sparql-results+json',
-        'Content-Type': 'application/sparql-query; charset=UTF-8',
+        Accept: "application/sparql-results+json",
+        "Content-Type": "application/sparql-query; charset=UTF-8",
       },
-      method: 'POST',
+      method: "POST",
     });
   }
-  return internalQuery.then(
-    (response): Promise<SparqlResponse<Binding>> => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        const error = new Error(response.statusText);
-        (error as any).response = response;
-        throw error;
-      }
+  return internalQuery.then((response): Promise<SparqlResponse<Binding>> => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      const error = new Error(response.statusText);
+      (error as any).response = response;
+      throw error;
     }
-  );
+  });
 }
 
 export function executeSparqlConstruct(
@@ -1078,19 +1062,19 @@ export function executeSparqlConstruct(
     internalQuery = queryFunction({
       url: appendQueryParams(endpoint, { query }),
       headers: {
-        Accept: 'text/turtle',
+        Accept: "text/turtle",
       },
-      method: 'GET',
+      method: "GET",
     });
   } else {
     internalQuery = queryFunction({
       url: endpoint,
       body: query,
       headers: {
-        Accept: 'text/turtle',
-        'Content-Type': 'application/sparql-query; charset=UTF-8',
+        Accept: "text/turtle",
+        "Content-Type": "application/sparql-query; charset=UTF-8",
       },
-      method: 'POST',
+      method: "POST",
     });
   }
   return internalQuery
@@ -1108,14 +1092,14 @@ export function executeSparqlConstruct(
 
 function appendQueryParams(
   endpoint: string,
-  queryParams: { [key: string]: string } = {}
+  queryParams: Record<string, string> = {}
 ) {
-  const initialSeparator = endpoint.indexOf('?') < 0 ? '?' : '&';
+  const initialSeparator = endpoint.indexOf("?") < 0 ? "?" : "&";
   const additionalParams =
     initialSeparator +
     Object.keys(queryParams)
       .map((key) => `${key}=${encodeURIComponent(queryParams[key])}`)
-      .join('&');
+      .join("&");
   return endpoint + additionalParams;
 }
 
@@ -1128,9 +1112,9 @@ function queryInternal(params: {
   return fetch(params.url, {
     method: params.method,
     body: params.body,
-    credentials: 'same-origin',
-    mode: 'cors',
-    cache: 'default',
+    credentials: "same-origin",
+    mode: "cors",
+    cache: "default",
     headers: params.headers,
   });
 }
@@ -1149,7 +1133,7 @@ function sparqlExtractLabel(subject: string, label: string): string {
 }
 
 function escapeIri(iri: string) {
-  if (typeof iri !== 'string') {
+  if (typeof iri !== "string") {
     throw new Error(`Cannot escape IRI of type "${typeof iri}"`);
   }
   return `<${iri}>`;

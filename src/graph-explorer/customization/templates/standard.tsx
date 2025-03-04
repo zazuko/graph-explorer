@@ -1,24 +1,24 @@
-import * as React from 'react';
-import { Component } from 'react';
+import * as React from "react";
+import { Component } from "react";
 
-import { isEncodedBlank } from '../../data/sparql/blankNodes';
+import { isEncodedBlank } from "../../data/sparql/blankNodes";
 
-import { TemplateProps, PropArray } from '../props';
-import { getProperty, getPropertyValues } from './utils';
+import { TemplateProps, PropArray } from "../props";
+import { getProperty, getPropertyValues } from "./utils";
 
-import { TemplateProperties } from '../../data/schema';
+import { TemplateProperties } from "../../data/schema";
 
 import {
   AuthoredEntity,
   AuthoredEntityContext,
-} from '../../editor/authoredEntity';
-import { AuthoringState } from '../../editor/authoringState';
+} from "../../editor/authoredEntity";
+import { AuthoringState } from "../../editor/authoringState";
 
-import { HtmlSpinner } from '../../viewUtils/spinner';
+import { HtmlSpinner } from "../../viewUtils/spinner";
 
-const FOAF_NAME = 'http://xmlns.com/foaf/0.1/name';
+const FOAF_NAME = "http://xmlns.com/foaf/0.1/name";
 
-const CLASS_NAME = 'graph-explorer-standard-template';
+const CLASS_NAME = "graph-explorer-standard-template";
 
 export class StandardTemplate extends Component<TemplateProps, {}> {
   render() {
@@ -38,7 +38,7 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
       editor.authoringState,
       iri
     );
-    const leftStripeColor = isNewElement ? 'white' : color;
+    const leftStripeColor = isNewElement ? "white" : color;
     const pinnedProperties = this.findPinnedProperties(context);
 
     return (
@@ -171,7 +171,7 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
       <div>
         <div className={`${CLASS_NAME}__iri`}>
           <div className={`${CLASS_NAME}__iri-key`}>
-            IRI{context.editedIri ? '\u00A0(edited)' : ''}:
+            IRI{context.editedIri ? "\u00A0(edited)" : ""}:
           </div>
           <div className={`${CLASS_NAME}__iri-value`}>
             {isEncodedBlank(finalIri) ? (
@@ -216,7 +216,7 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
         aria-hidden="true"
         style={{ color }}
       >
-        {typeLabel.length > 0 ? typeLabel.charAt(0).toUpperCase() : '✳'}
+        {typeLabel.length > 0 ? typeLabel.charAt(0).toUpperCase() : "✳"}
       </div>
     );
   }
@@ -241,8 +241,8 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
           className="graph-explorer-btn graph-explorer-btn-default"
           title={
             canDelete
-              ? 'Delete entity'
-              : 'Deletion is unavailable for the selected element'
+              ? "Delete entity"
+              : "Deletion is unavailable for the selected element"
           }
           disabled={!canDelete}
           onClick={onDelete}
@@ -252,7 +252,7 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
           {canEdit === undefined ? (
             <HtmlSpinner width={SPINNER_WIDTH} height={SPINNER_HEIGHT} />
           ) : (
-            'Delete'
+            "Delete"
           )}
         </button>
         <button
@@ -260,8 +260,8 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
           className="graph-explorer-btn graph-explorer-btn-default"
           title={
             canEdit
-              ? 'Edit entity'
-              : 'Editing is unavailable for the selected element'
+              ? "Edit entity"
+              : "Editing is unavailable for the selected element"
           }
           disabled={!canEdit}
           onClick={onEdit}
@@ -271,7 +271,7 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
           {canEdit === undefined ? (
             <HtmlSpinner width={SPINNER_WIDTH} height={SPINNER_HEIGHT} />
           ) : (
-            'Edit'
+            "Edit"
           )}
         </button>
       </div>
@@ -279,6 +279,4 @@ export class StandardTemplate extends Component<TemplateProps, {}> {
   }
 }
 
-interface PinnedProperties {
-  [propertyId: string]: boolean;
-}
+type PinnedProperties = Record<string, boolean>;

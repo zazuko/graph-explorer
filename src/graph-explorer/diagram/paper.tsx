@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { Component, CSSProperties, SVGProps } from 'react';
+import * as React from "react";
+import { Component, CSSProperties, SVGProps } from "react";
 
-import { Cell, LinkVertex } from './elements';
-import { ElementLayer } from './elementLayer';
-import { Vector } from './geometry';
-import { LinkLayer, LinkMarkers } from './linkLayer';
-import { DiagramModel } from './model';
-import { DiagramView } from './view';
+import { Cell, LinkVertex } from "./elements";
+import { ElementLayer } from "./elementLayer";
+import { Vector } from "./geometry";
+import { LinkLayer, LinkMarkers } from "./linkLayer";
+import { DiagramModel } from "./model";
+import { DiagramView } from "./view";
 
 export interface PaperProps {
   view: DiagramView;
@@ -20,7 +20,7 @@ export interface PaperProps {
   elementLayerWidgets?: React.ReactElement<any>;
 }
 
-const CLASS_NAME = 'graph-explorer-paper';
+const CLASS_NAME = "graph-explorer-paper";
 
 export class Paper extends Component<PaperProps, {}> {
   render() {
@@ -31,15 +31,8 @@ export class Paper extends Component<PaperProps, {}> {
       linkLayerWidgets,
       elementLayerWidgets,
     } = this.props;
-    const {
-      width,
-      height,
-      originX,
-      originY,
-      scale,
-      paddingX,
-      paddingY,
-    } = paperTransform;
+    const { width, height, originX, originY, scale, paddingX, paddingY } =
+      paperTransform;
 
     const scaledWidth = width * scale;
     const scaledHeight = height * scale;
@@ -55,7 +48,7 @@ export class Paper extends Component<PaperProps, {}> {
       paddingBottom: paddingY,
     };
     const htmlTransformStyle: React.CSSProperties = {
-      position: 'absolute',
+      position: "absolute",
       left: 0,
       top: 0,
       transform: `scale(${scale},${scale})translate(${originX}px,${originY}px)`,
@@ -65,7 +58,7 @@ export class Paper extends Component<PaperProps, {}> {
       <div className={CLASS_NAME} style={style} onMouseDown={this.onMouseDown}>
         <TransformedSvgCanvas
           className={`${CLASS_NAME}__canvas`}
-          style={{ overflow: 'visible' }}
+          style={{ overflow: "visible" }}
           paperTransform={paperTransform}
         >
           <LinkMarkers view={view} />
@@ -99,15 +92,15 @@ function findCell(
   let vertexIndex: number | undefined;
   while (true) {
     if (target instanceof Element) {
-      if (target.hasAttribute('data-element-id')) {
-        return model.getElement(target.getAttribute('data-element-id'));
-      } else if (target.hasAttribute('data-link-id')) {
-        const link = model.getLinkById(target.getAttribute('data-link-id'));
-        return typeof vertexIndex === 'number'
+      if (target.hasAttribute("data-element-id")) {
+        return model.getElement(target.getAttribute("data-element-id"));
+      } else if (target.hasAttribute("data-link-id")) {
+        const link = model.getLinkById(target.getAttribute("data-link-id"));
+        return typeof vertexIndex === "number"
           ? new LinkVertex(link, vertexIndex)
           : link;
-      } else if (target.hasAttribute('data-vertex')) {
-        vertexIndex = Number(target.getAttribute('data-vertex'));
+      } else if (target.hasAttribute("data-vertex")) {
+        vertexIndex = Number(target.getAttribute("data-vertex"));
       }
     }
     if (!target || target === top) {
@@ -138,21 +131,14 @@ export class TransformedSvgCanvas extends Component<
   {}
 > {
   private static readonly SVG_STYLE: CSSProperties = {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
   };
   render() {
     const { paperTransform, style, children, ...otherProps } = this.props;
-    const {
-      width,
-      height,
-      originX,
-      originY,
-      scale,
-      paddingX,
-      paddingY,
-    } = paperTransform;
+    const { width, height, originX, originY, scale, paddingX, paddingY } =
+      paperTransform;
     const scaledWidth = width * scale;
     const scaledHeight = height * scale;
     let svgStyle = TransformedSvgCanvas.SVG_STYLE;

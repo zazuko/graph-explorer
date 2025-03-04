@@ -1,23 +1,23 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MetadataApi } from '../data/metadataApi';
-import { ElementModel, LinkModel, sameLink } from '../data/model';
+import { MetadataApi } from "../data/metadataApi";
+import { ElementModel, LinkModel, sameLink } from "../data/model";
 
-import { EditorController } from '../editor/editorController';
-import { DiagramView } from '../diagram/view';
-import { LinkDirection } from '../diagram/elements';
+import { EditorController } from "../editor/editorController";
+import { DiagramView } from "../diagram/view";
+import { LinkDirection } from "../diagram/elements";
 
-import { Cancellation } from '../viewUtils/async';
+import { Cancellation } from "../viewUtils/async";
 
-import { ProgressBar, ProgressState } from '../widgets/progressBar';
+import { ProgressBar, ProgressState } from "../widgets/progressBar";
 
 import {
   LinkTypeSelector,
   LinkValue,
   validateLinkType,
-} from './linkTypeSelector';
+} from "./linkTypeSelector";
 
-const CLASS_NAME = 'graph-explorer-edit-form';
+const CLASS_NAME = "graph-explorer-edit-form";
 
 export interface Props {
   editor: EditorController;

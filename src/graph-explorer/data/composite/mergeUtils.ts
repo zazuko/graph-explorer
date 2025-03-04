@@ -8,10 +8,10 @@ import {
   Property,
   PropertyModel,
   LocalizedString,
-} from '../model';
+} from "../model";
 
 const DATA_PROVIDER_PROPERTY =
-  'http://graph-explorer.org/property/DataProvider';
+  "http://graph-explorer.org/property/DataProvider";
 
 export interface CompositeResponse<Type> {
   dataSourceName: string;
@@ -194,8 +194,8 @@ export function mergeElementInfo(
     for (const em of list) {
       em.sources = [resp.dataSourceName];
       em.properties[DATA_PROVIDER_PROPERTY] = {
-        type: 'string',
-        values: [{ value: resp.dataSourceName, language: '' }],
+        type: "string",
+        values: [{ value: resp.dataSourceName, language: "" }],
       };
       if (!dictionary[em.id]) {
         dictionary[em.id] = em;
@@ -218,10 +218,10 @@ export function mergeProperties(
 
   function createIdForProperty(baseId: string): string {
     let counter = 1;
-    while (result[baseId + '_' + counter]) {
+    while (result[baseId + "_" + counter]) {
       counter++;
     }
-    return baseId + '_' + counter;
+    return baseId + "_" + counter;
   }
 
   for (const pKey of aLists) {

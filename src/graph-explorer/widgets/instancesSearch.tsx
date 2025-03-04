@@ -1,28 +1,28 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { ElementModel, ElementIri, Dictionary } from '../data/model';
-import { FilterParams } from '../data/provider';
+import { ElementModel, ElementIri, Dictionary } from "../data/model";
+import { FilterParams } from "../data/provider";
 
 import {
   Element as DiagramElement,
   FatLinkType,
   FatClassModel,
-} from '../diagram/elements';
-import { DiagramView } from '../diagram/view';
+} from "../diagram/elements";
+import { DiagramView } from "../diagram/view";
 
-import { AsyncModel } from '../editor/asyncModel';
-import { EventObserver } from '../viewUtils/events';
-import { ProgressBar, ProgressState } from './progressBar';
-import { SearchResults } from './searchResults';
+import { AsyncModel } from "../editor/asyncModel";
+import { EventObserver } from "../viewUtils/events";
+import { ProgressBar, ProgressState } from "./progressBar";
+import { SearchResults } from "./searchResults";
 
 import {
   WorkspaceContextTypes,
   WorkspaceContextWrapper,
   WorkspaceEventKey,
-} from '../workspace/workspaceContext';
+} from "../workspace/workspaceContext";
 
-const DirectionInImage = require('../../../images/direction-in.png');
-const DirectionOutImage = require('../../../images/direction-out.png');
+const DirectionInImage = require("../../../images/direction-in.png");
+const DirectionOutImage = require("../../../images/direction-out.png");
 
 export interface InstancesSearchProps {
   className?: string;
@@ -37,7 +37,7 @@ export interface SearchCriteria {
   readonly elementType?: FatClassModel;
   readonly refElement?: DiagramElement;
   readonly refElementLink?: FatLinkType;
-  readonly linkDirection?: 'in' | 'out';
+  readonly linkDirection?: "in" | "out";
 }
 
 export interface State {
@@ -45,12 +45,12 @@ export interface State {
   readonly quering?: boolean;
   readonly resultId?: number;
   readonly error?: any;
-  readonly items?: ReadonlyArray<ElementModel>;
+  readonly items?: readonly ElementModel[];
   readonly selection?: ReadonlySet<ElementIri>;
   readonly moreItemsAvailable?: boolean;
 }
 
-const CLASS_NAME = 'graph-explorer-instances-search';
+const CLASS_NAME = "graph-explorer-instances-search";
 
 export class InstancesSearch extends React.Component<
   InstancesSearchProps,
@@ -74,7 +74,7 @@ export class InstancesSearch extends React.Component<
   render() {
     const ENTER_KEY_CODE = 13;
 
-    const className = `${CLASS_NAME} ${this.props.className || ''}`;
+    const className = `${CLASS_NAME} ${this.props.className || ""}`;
     const progressState = this.state.quering
       ? ProgressState.loading
       : this.state.error
@@ -100,7 +100,7 @@ export class InstancesSearch extends React.Component<
               type="text"
               className="graph-explorer-form-control"
               placeholder="Search for..."
-              value={searchTerm || ''}
+              value={searchTerm || ""}
               onChange={(e) =>
                 this.setState({ inputText: e.currentTarget.value })
               }
@@ -140,7 +140,7 @@ export class InstancesSearch extends React.Component<
               className={`${CLASS_NAME}__load-more graph-explorer-btn graph-explorer-btn-primary`}
               disabled={this.state.quering}
               style={{
-                display: this.state.moreItemsAvailable ? undefined : 'none',
+                display: this.state.moreItemsAvailable ? undefined : "none",
               }}
               onClick={() => this.queryItems(true)}
             >
@@ -172,7 +172,7 @@ export class InstancesSearch extends React.Component<
               elementType: undefined,
             })
           )}
-          Has type{' '}
+          Has type{" "}
           <span
             className={`${CLASS_NAME}__criterion-class`}
             title={classInfo.id}
@@ -202,7 +202,7 @@ export class InstancesSearch extends React.Component<
               refElementLink: undefined,
             })
           )}
-          Connected to{' '}
+          Connected to{" "}
           <span
             className={`${CLASS_NAME}__criterion-element`}
             title={element ? element.iri : undefined}
@@ -211,16 +211,16 @@ export class InstancesSearch extends React.Component<
           </span>
           {linkType && (
             <span>
-              {' through '}
+              {" through "}
               <span
                 className={`${CLASS_NAME}__criterion-link-type`}
                 title={linkType ? linkType.id : undefined}
               >
                 {linkTypeLabel}
               </span>
-              {criteria.linkDirection === 'in' && (
+              {criteria.linkDirection === "in" && (
                 <span>
-                  {' as '}
+                  {" as "}
                   <img
                     className={`${CLASS_NAME}__link-direction`}
                     src={DirectionInImage}
@@ -228,9 +228,9 @@ export class InstancesSearch extends React.Component<
                   &nbsp;source
                 </span>
               )}
-              {criteria.linkDirection === 'out' && (
+              {criteria.linkDirection === "out" && (
                 <span>
-                  {' as '}
+                  {" as "}
                   <img
                     className={`${CLASS_NAME}__link-direction`}
                     src={DirectionOutImage}
@@ -269,12 +269,12 @@ export class InstancesSearch extends React.Component<
       this.state.inputText === undefined
         ? this.props.criteria.text
         : this.state.inputText;
-    text = text === '' ? undefined : text;
+    text = text === "" ? undefined : text;
     this.props.onCriteriaChanged({ ...this.props.criteria, text });
   }
 
   componentDidMount() {
-    this.listener.listen(this.props.view.events, 'changeLanguage', () =>
+    this.listener.listen(this.props.view.events, "changeLanguage", () =>
       this.forceUpdate()
     );
     this.queryItems(false);
@@ -299,7 +299,7 @@ export class InstancesSearch extends React.Component<
     let request: FilterParams;
     if (loadMoreItems) {
       if (!this.currentRequest) {
-        throw new Error('Cannot request more items without initial request.');
+        throw new Error("Cannot request more items without initial request.");
       }
       const { offset, limit } = this.currentRequest;
       request = { ...this.currentRequest, offset: offset + limit };
@@ -350,7 +350,6 @@ export class InstancesSearch extends React.Component<
         if (this.currentRequest !== request) {
           return;
         }
-        // tslint:disable-next-line:no-console
         console.error(error);
         this.setState({ quering: false, error });
       });
@@ -359,7 +358,7 @@ export class InstancesSearch extends React.Component<
   private processFilterData(elements: Dictionary<ElementModel>) {
     const requestedAdditionalItems = this.currentRequest.offset > 0;
 
-    const existingIris: { [iri: string]: true } = {};
+    const existingIris: Record<string, true> = {};
 
     if (requestedAdditionalItems) {
       this.state.items.forEach((item) => (existingIris[item.id] = true));
@@ -403,13 +402,8 @@ export function createRequest(
   criteria: SearchCriteria,
   language: string
 ): FilterParams {
-  const {
-    text,
-    elementType,
-    refElement,
-    refElementLink,
-    linkDirection,
-  } = criteria;
+  const { text, elementType, refElement, refElementLink, linkDirection } =
+    criteria;
   return {
     text,
     elementTypeId: elementType ? elementType.id : undefined,
@@ -418,6 +412,6 @@ export function createRequest(
     linkDirection,
     offset: 0,
     limit: 100,
-    languageCode: language || 'en',
+    languageCode: language || "en",
   };
 }

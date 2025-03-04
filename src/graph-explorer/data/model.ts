@@ -1,9 +1,7 @@
-import { hashFnv32a } from './utils';
-import { RdfIri } from './sparql/sparqlModels';
+import { hashFnv32a } from "./utils";
+import { RdfIri } from "./sparql/sparqlModels";
 
-export interface Dictionary<T> {
-  [key: string]: T;
-}
+export type Dictionary<T> = Record<string, T>;
 
 export interface LocalizedString {
   readonly value: string;
@@ -13,20 +11,20 @@ export interface LocalizedString {
 }
 
 export interface IriProperty {
-  type: 'uri';
-  values: ReadonlyArray<RdfIri>;
+  type: "uri";
+  values: readonly RdfIri[];
 }
 export interface LiteralProperty {
-  type: 'string';
-  values: ReadonlyArray<LocalizedString>;
+  type: "string";
+  values: readonly LocalizedString[];
 }
 export type Property = IriProperty | LiteralProperty;
 
 export function isIriProperty(e: Property): e is IriProperty {
-  return e && e.type === 'uri';
+  return e && e.type === "uri";
 }
 export function isLiteralProperty(e: Property): e is LiteralProperty {
-  return e && e.type === 'string';
+  return e && e.type === "string";
 }
 
 export type ElementIri = string & { readonly elementBrand: void };
@@ -39,7 +37,7 @@ export interface ElementModel {
   types: ElementTypeIri[];
   label: { values: LocalizedString[] };
   image?: string;
-  properties: { [id: string]: Property };
+  properties: Record<string, Property>;
   sources?: string[];
 }
 
@@ -47,7 +45,7 @@ export interface LinkModel {
   linkTypeId: LinkTypeIri;
   sourceId: ElementIri;
   targetId: ElementIri;
-  properties?: { [id: string]: Property };
+  properties?: Record<string, Property>;
 }
 
 export interface ClassModel {
@@ -117,8 +115,8 @@ function isArraysEqual(left: string[], right: string[]): boolean {
 }
 
 function isLiteralsEqual(
-  left: ReadonlyArray<LocalizedString>,
-  right: ReadonlyArray<LocalizedString>
+  left: readonly LocalizedString[],
+  right: readonly LocalizedString[]
 ): boolean {
   if (left.length !== right.length) {
     return false;
@@ -161,8 +159,8 @@ function isLiteralPropertiesEqual(left: Property, right: Property): boolean {
 }
 
 function isPropertiesEqual(
-  left: { [id: string]: Property },
-  right: { [id: string]: Property }
+  left: Record<string, Property>,
+  right: Record<string, Property>
 ) {
   if (Object.keys(left).length !== Object.keys(right).length) {
     return false;

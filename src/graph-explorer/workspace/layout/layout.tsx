@@ -1,21 +1,21 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { Accordion } from '../accordion';
-import { AccordionItem, DockSide } from '../accordionItem';
+import { Accordion } from "../accordion";
+import { AccordionItem, DockSide } from "../accordionItem";
 
 const DEFAULT_HORIZONTAL_COLLAPSED_SIZE = 28;
 
 export enum WorkspaceLayoutType {
-  Row = 'row',
-  Column = 'column',
-  Component = 'component',
+  Row = "row",
+  Column = "column",
+  Component = "component",
 }
 
 export type WorkspaceLayoutNode = Container | Component;
 
 interface Container {
   type: WorkspaceLayoutType.Row | WorkspaceLayoutType.Column;
-  children: ReadonlyArray<WorkspaceLayoutNode>;
+  children: readonly WorkspaceLayoutNode[];
   defaultSize?: number;
   defaultCollapsed?: boolean;
   collapsedSize?: number;
@@ -38,8 +38,8 @@ interface Component {
 
 export interface WorkspaceLayoutProps {
   layout: WorkspaceLayoutNode;
-  _onStartResize?: (direction: 'vertical' | 'horizontal') => void;
-  _onResize?: (direction: 'vertical' | 'horizontal') => void;
+  _onStartResize?: (direction: "vertical" | "horizontal") => void;
+  _onResize?: (direction: "vertical" | "horizontal") => void;
 }
 
 export class WorkspaceLayout extends React.Component<WorkspaceLayoutProps, {}> {
@@ -48,14 +48,14 @@ export class WorkspaceLayout extends React.Component<WorkspaceLayoutProps, {}> {
     direction,
     animationDuration,
   }: {
-    children: ReadonlyArray<WorkspaceLayoutNode>;
-    direction: 'horizontal' | 'vertical';
+    children: readonly WorkspaceLayoutNode[];
+    direction: "horizontal" | "vertical";
     animationDuration?: number;
   }) {
     const { _onStartResize, _onResize } = this.props;
     const items = children.map((child, index) => {
       let dockSide: DockSide;
-      if (direction === 'horizontal' && !child.undocked) {
+      if (direction === "horizontal" && !child.undocked) {
         if (index === 0) {
           dockSide = DockSide.Left;
         } else if (index === children.length - 1) {
@@ -63,7 +63,7 @@ export class WorkspaceLayout extends React.Component<WorkspaceLayoutProps, {}> {
         }
       }
       let collapsedSize = child.collapsedSize;
-      if (collapsedSize === undefined && direction === 'horizontal') {
+      if (collapsedSize === undefined && direction === "horizontal") {
         collapsedSize = DEFAULT_HORIZONTAL_COLLAPSED_SIZE;
       }
       return (
@@ -100,14 +100,14 @@ export class WorkspaceLayout extends React.Component<WorkspaceLayoutProps, {}> {
     if (layout.type === WorkspaceLayoutType.Row) {
       return this.renderAccordion({
         children: layout.children,
-        direction: 'horizontal',
+        direction: "horizontal",
         animationDuration: layout.animationDuration,
       });
     }
     if (layout.type === WorkspaceLayoutType.Column) {
       return this.renderAccordion({
         children: layout.children,
-        direction: 'vertical',
+        direction: "vertical",
         animationDuration: layout.animationDuration,
       });
     }

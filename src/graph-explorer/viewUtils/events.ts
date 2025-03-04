@@ -29,8 +29,8 @@ export interface Events<Data> {
 }
 
 export class EventSource<Data> implements Events<Data> {
-  private listeners = new Map<keyof Data, Array<Listener<Data, any>>>();
-  private anyListeners: Array<AnyListener<Data>> | undefined;
+  private listeners = new Map<keyof Data, Listener<Data, any>[]>();
+  private anyListeners: AnyListener<Data>[] | undefined;
 
   on<Key extends keyof Data>(
     eventKey: Key,
@@ -96,7 +96,7 @@ export class EventSource<Data> implements Events<Data> {
 
 export class EventObserver {
   private unsubscribeByKey = new Map<string, Unsubscribe[]>();
-  private onDispose: Array<Unsubscribe> = [];
+  private onDispose: Unsubscribe[] = [];
 
   listen<Data, Key extends keyof Data>(
     events: Events<Data>,

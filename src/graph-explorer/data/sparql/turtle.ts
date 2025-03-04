@@ -1,7 +1,7 @@
-import * as N3 from 'n3';
+import * as N3 from "n3";
 import * as RDF from "@rdfjs/types";
 
-import { RdfNode, Triple } from './sparqlModels';
+import { RdfNode, Triple } from "./sparqlModels";
 
 export function parseTurtleText(turtleText: string): Promise<Triple[]> {
   return new Promise<Triple[]>((resolve, reject) => {
@@ -22,16 +22,16 @@ export function parseTurtleText(turtleText: string): Promise<Triple[]> {
   });
 }
 
-export function n3toRdfNode(entity:RDF.Term): RdfNode {
+export function n3toRdfNode(entity: RDF.Term): RdfNode {
   if (N3.Util.isLiteral(entity)) {
     const literal = entity as RDF.Literal;
     return {
-      type: 'literal',
+      type: "literal",
       value: literal.value,
       datatype: literal.datatype.value,
-      'xml:lang': literal.language
+      "xml:lang": literal.language,
     };
   } else {
-    return { type: 'uri', value: entity.value };
+    return { type: "uri", value: entity.value };
   }
 }

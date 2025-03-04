@@ -5,9 +5,9 @@ import {
   PropertyTypeIri,
   LinkModel,
   ElementIri,
-} from './model';
-import { LinkDirection } from '../diagram/elements';
-import { CancellationToken } from '../viewUtils/async';
+} from "./model";
+import { LinkDirection } from "../diagram/elements";
+import { CancellationToken } from "../viewUtils/async";
 
 export interface MetadataApi {
   /**
@@ -87,7 +87,7 @@ export interface MetadataApi {
   ): Promise<boolean>;
 
   generateNewElement(
-    types: ReadonlyArray<ElementTypeIri>,
+    types: readonly ElementTypeIri[],
     ct: CancellationToken
   ): Promise<ElementModel>;
 }

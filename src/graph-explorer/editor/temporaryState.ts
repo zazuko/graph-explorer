@@ -4,9 +4,9 @@ import {
   ElementIri,
   sameLink,
   hashLink,
-} from '../data/model';
+} from "../data/model";
 
-import { HashMap, ReadonlyHashMap, cloneMap } from '../viewUtils/collections';
+import { HashMap, ReadonlyHashMap, cloneMap } from "../viewUtils/collections";
 
 export interface TemporaryState {
   readonly elements: ReadonlyMap<ElementIri, ElementModel>;

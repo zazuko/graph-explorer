@@ -1,15 +1,15 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { EventObserver } from '../viewUtils/events';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { EventObserver } from "../viewUtils/events";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
-import { Element } from '../diagram/elements';
-import { DiagramView } from '../diagram/view';
-import { Vector } from '../diagram/geometry';
+import { Element } from "../diagram/elements";
+import { DiagramView } from "../diagram/view";
+import { Vector } from "../diagram/geometry";
 
-import { EditorController } from './editorController';
-import { ElementChange } from './authoringState';
-import { ElementValidation, LinkValidation } from './validation';
+import { EditorController } from "./editorController";
+import { ElementChange } from "./authoringState";
+import { ElementValidation, LinkValidation } from "./validation";
 
 const CLASS_NAME = `graph-explorer-authoring-state`;
 
@@ -44,29 +44,29 @@ export class ElementDecorator extends React.Component<
 
   componentDidMount() {
     const { model, editor } = this.props;
-    this.listener.listen(model.events, 'changeSize', () => this.forceUpdate());
-    this.listener.listen(editor.events, 'changeAuthoringState', (e) => {
+    this.listener.listen(model.events, "changeSize", () => this.forceUpdate());
+    this.listener.listen(editor.events, "changeAuthoringState", (e) => {
       const state = editor.authoringState.elements.get(model.iri);
       if (state === e.previous.elements.get(model.iri)) {
         return;
       }
       this.setState({ state });
     });
-    this.listener.listen(editor.events, 'changeValidationState', (e) => {
+    this.listener.listen(editor.events, "changeValidationState", (e) => {
       const validation = editor.validationState.elements.get(model.iri);
       if (validation === e.previous.elements.get(model.iri)) {
         return;
       }
       this.setState({ validation });
     });
-    this.listener.listen(editor.events, 'changeTemporaryState', (e) => {
+    this.listener.listen(editor.events, "changeTemporaryState", (e) => {
       const isTemporary = editor.temporaryState.elements.has(model.iri);
       if (isTemporary === e.previous.elements.has(model.iri)) {
         return;
       }
       this.setState({ isTemporary });
     });
-    this.listener.listen(model.events, 'changeData', (e) => {
+    this.listener.listen(model.events, "changeData", (e) => {
       if (e.previous.id !== model.iri) {
         this.setState({
           isTemporary: editor.temporaryState.elements.has(model.iri),
@@ -169,7 +169,7 @@ export class ElementDecorator extends React.Component<
           return error.message;
         }
       })
-      .join('\n');
+      .join("\n");
 
     return this.renderErrorIcon(title, validation);
   }
@@ -185,14 +185,14 @@ export class ElementDecorator extends React.Component<
       let title: string;
 
       if (state.deleted) {
-        statusText = 'Delete';
-        title = 'Revert deletion of the element';
+        statusText = "Delete";
+        title = "Revert deletion of the element";
       } else if (!state.before) {
-        statusText = 'New';
-        title = 'Revert creation of the element';
+        statusText = "New";
+        title = "Revert creation of the element";
       } else {
-        statusText = 'Change';
-        title = 'Revert all changes in properties of the element';
+        statusText = "Change";
+        title = "Revert all changes in properties of the element";
       }
 
       if (statusText && title) {
@@ -241,15 +241,15 @@ export class ElementDecorator extends React.Component<
       return null;
     }
     return (
-      <div style={{ position: 'absolute', transform }}>
+      <div style={{ position: "absolute", transform }}>
         {outlines ? (
           <svg
             width={size.width}
             height={size.height}
             style={{
-              position: 'absolute',
-              pointerEvents: 'none',
-              overflow: 'visible',
+              position: "absolute",
+              pointerEvents: "none",
+              overflow: "visible",
             }}
           >
             <defs>

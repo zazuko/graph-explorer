@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { AccordionItem, Props as ItemProps } from './accordionItem';
+import { AccordionItem, Props as ItemProps } from "./accordionItem";
 
 export interface Props {
-  onStartResize?: (direction: 'vertical' | 'horizontal') => void;
-  onResize?: (direction: 'vertical' | 'horizontal') => void;
+  onStartResize?: (direction: "vertical" | "horizontal") => void;
+  onResize?: (direction: "vertical" | "horizontal") => void;
   /** AccordionItem[] */
   children?: React.ReactElement[];
-  direction?: 'vertical' | 'horizontal';
+  direction?: "vertical" | "horizontal";
   animationDuration?: number;
 }
 
@@ -36,19 +36,19 @@ export interface State {
   readonly resizing?: boolean;
 }
 
-const CLASS_NAME = 'graph-explorer-accordion';
+const CLASS_NAME = "graph-explorer-accordion";
 
 export class Accordion extends React.Component<Props, State> {
   static defaultProps: Partial<Props> = {
-    direction: 'vertical',
+    direction: "vertical",
     animationDuration: 300,
   };
 
   private element: HTMLDivElement;
 
   private items: AccordionItem[] = [];
-  private originSizes: ReadonlyArray<number>;
-  private originCollapsed: ReadonlyArray<boolean>;
+  private originSizes: readonly number[];
+  private originCollapsed: readonly boolean[];
   private originTotalSize: number;
 
   private defaultProps?: ReadonlyMap<number, DefaultProps>;
@@ -92,7 +92,7 @@ export class Accordion extends React.Component<Props, State> {
   }
 
   private get isVertical() {
-    return this.props.direction === 'vertical';
+    return this.props.direction === "vertical";
   }
 
   private clientSize(element: HTMLElement) {
@@ -109,15 +109,11 @@ export class Accordion extends React.Component<Props, State> {
     const { children } = this.props;
     const defaultProps = new Map<number, DefaultProps>();
     React.Children.forEach(children, (child, index) => {
-      if (typeof child !== 'object') {
+      if (typeof child !== "object") {
         return;
       }
-      const {
-        defaultSize,
-        defaultCollapsed,
-        collapsedSize,
-        minSize,
-      } = child.props;
+      const { defaultSize, defaultCollapsed, collapsedSize, minSize } =
+        child.props;
       // enables the scrollbar in the accordion if at least one item has min size
       if (minSize !== undefined) {
         this.isScrollable = true;
@@ -130,71 +126,69 @@ export class Accordion extends React.Component<Props, State> {
       });
     });
     this.defaultProps = defaultProps;
-    this.setState(
-      ({ collapsed }): State => {
-        const totalSize = this.clientSize(this.element.parentElement);
-        let leftSize = totalSize;
-        let leftChildCount = React.Children.count(children);
-        const newCollapsed: Array<boolean> = [];
-        this.defaultProps.forEach(
-          ({ defaultSize, defaultCollapsed = false }, index) => {
-            // preserves items collapsed by user
-            let itemCollapsed =
-              collapsed[index] === undefined
-                ? defaultCollapsed
-                : collapsed[index];
-            // if no expanded items, expands the last one
-            const isLastItem = index === this.defaultProps.size - 1;
-            const noExpandedItems = newCollapsed.findIndex((c) => !c) < 0;
-            if (isLastItem && noExpandedItems) {
-              itemCollapsed = false;
-            }
-            const size = itemCollapsed
-              ? this.sizeWhenCollapsed(index)
-              : defaultSize;
-            if (size) {
-              leftSize = leftSize - size;
-              leftChildCount = leftChildCount - 1;
-            }
-            newCollapsed.push(itemCollapsed);
+    this.setState(({ collapsed }): State => {
+      const totalSize = this.clientSize(this.element.parentElement);
+      let leftSize = totalSize;
+      let leftChildCount = React.Children.count(children);
+      const newCollapsed: boolean[] = [];
+      this.defaultProps.forEach(
+        ({ defaultSize, defaultCollapsed = false }, index) => {
+          // preserves items collapsed by user
+          let itemCollapsed =
+            collapsed[index] === undefined
+              ? defaultCollapsed
+              : collapsed[index];
+          // if no expanded items, expands the last one
+          const isLastItem = index === this.defaultProps.size - 1;
+          const noExpandedItems = newCollapsed.findIndex((c) => !c) < 0;
+          if (isLastItem && noExpandedItems) {
+            itemCollapsed = false;
           }
-        );
-        const newSizes: Array<number> = [];
-        const newPercents: Array<string> = [];
-        this.defaultProps.forEach(({ defaultSize, minSize }, index) => {
-          let size = leftSize / leftChildCount;
-          const collapsedSize = this.sizeWhenCollapsed(index);
-          if (newCollapsed[index]) {
-            size = collapsedSize;
-          } else if (defaultSize !== undefined) {
-            size = defaultSize;
-          } else if (size < minSize) {
-            size = collapsedSize + minSize;
+          const size = itemCollapsed
+            ? this.sizeWhenCollapsed(index)
+            : defaultSize;
+          if (size) {
+            leftSize = leftSize - size;
+            leftChildCount = leftChildCount - 1;
           }
-          if (size < collapsedSize) {
-            size = collapsedSize;
-            newCollapsed[index] = true;
-          }
-          const percent = `${(100 * size) / totalSize}%`;
-          newSizes.push(size);
-          newPercents.push(percent);
-        });
-        return {
-          sizes: newSizes,
-          percents: newPercents,
-          collapsed: newCollapsed,
-        };
-      }
-    );
+          newCollapsed.push(itemCollapsed);
+        }
+      );
+      const newSizes: number[] = [];
+      const newPercents: string[] = [];
+      this.defaultProps.forEach(({ defaultSize, minSize }, index) => {
+        let size = leftSize / leftChildCount;
+        const collapsedSize = this.sizeWhenCollapsed(index);
+        if (newCollapsed[index]) {
+          size = collapsedSize;
+        } else if (defaultSize !== undefined) {
+          size = defaultSize;
+        } else if (size < minSize) {
+          size = collapsedSize + minSize;
+        }
+        if (size < collapsedSize) {
+          size = collapsedSize;
+          newCollapsed[index] = true;
+        }
+        const percent = `${(100 * size) / totalSize}%`;
+        newSizes.push(size);
+        newPercents.push(percent);
+      });
+      return {
+        sizes: newSizes,
+        percents: newPercents,
+        collapsed: newCollapsed,
+      };
+    });
   };
 
   render() {
     const { direction } = this.props;
     const { resizing } = this.state;
-    const resizingClassName = resizing ? `${CLASS_NAME}--resizing` : '';
+    const resizingClassName = resizing ? `${CLASS_NAME}--resizing` : "";
     const scrollableClassName = this.isScrollable
       ? `${CLASS_NAME}--scrollable`
-      : '';
+      : "";
     return (
       <div
         className={`${CLASS_NAME} ${CLASS_NAME}--${direction} ${resizingClassName} ${scrollableClassName}`}
@@ -210,9 +204,9 @@ export class Accordion extends React.Component<Props, State> {
     const { children, direction } = this.props;
 
     return React.Children.map(children, (child, index) => {
-      if (typeof child !== 'object') {
+      if (typeof child !== "object") {
         throw new Error(
-          'Accordion should have only AccordionItem elements as children'
+          "Accordion should have only AccordionItem elements as children"
         );
       }
       const lastChild = index === React.Children.count(children) - 1;
@@ -254,7 +248,7 @@ export class Accordion extends React.Component<Props, State> {
   };
 
   private computeEffectiveItemSizes(): number[] {
-    const sizes: Array<number> = [];
+    const sizes: number[] = [];
     this.items.forEach((item, index) => {
       if (!item) {
         return;

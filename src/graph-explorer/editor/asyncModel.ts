@@ -8,9 +8,9 @@ import {
   LinkTypeIri,
   ElementTypeIri,
   PropertyTypeIri,
-} from '../data/model';
-import { DataProvider } from '../data/provider';
-import { PLACEHOLDER_LINK_TYPE } from '../data/schema';
+} from "../data/model";
+import { DataProvider } from "../data/provider";
+import { PLACEHOLDER_LINK_TYPE } from "../data/schema";
 
 import {
   Element,
@@ -19,17 +19,17 @@ import {
   RichProperty,
   FatLinkTypeEvents,
   Link,
-} from '../diagram/elements';
-import { CommandHistory, Command } from '../diagram/history';
+} from "../diagram/elements";
+import { CommandHistory, Command } from "../diagram/history";
 import {
   DiagramModel,
   DiagramModelEvents,
   placeholderDataFromIri,
-} from '../diagram/model';
+} from "../diagram/model";
 
-import { EventSource, Events, Listener } from '../viewUtils/events';
+import { EventSource, Events, Listener } from "../viewUtils/events";
 
-import { DataFetcher } from './dataFetcher';
+import { DataFetcher } from "./dataFetcher";
 import {
   LayoutData,
   LayoutElement,
@@ -40,11 +40,11 @@ import {
   SerializedDiagram,
   makeSerializedDiagram,
   emptyLayoutData,
-} from './serializedDiagram';
+} from "./serializedDiagram";
 
 export interface GroupBy {
   linkType: string;
-  linkDirection: 'in' | 'out';
+  linkDirection: "in" | "out";
 }
 
 export interface AsyncModelEvents extends DiagramModelEvents {
@@ -67,11 +67,11 @@ export class AsyncModel extends DiagramModel {
   private _dataProvider: DataProvider;
   private fetcher: DataFetcher;
 
-  private linkSettings: { [linkTypeId: string]: LinkTypeOptions } = {};
+  private linkSettings: Record<string, LinkTypeOptions> = {};
 
   constructor(
     history: CommandHistory,
-    private groupByProperties: ReadonlyArray<GroupBy>
+    private groupByProperties: readonly GroupBy[]
   ) {
     super(history);
   }
@@ -87,8 +87,8 @@ export class AsyncModel extends DiagramModel {
   subscribeGraph() {
     super.subscribeGraph();
 
-    this.graphListener.listen(this.graph.events, 'linkTypeEvent', (e) => {
-      if (e.key === 'changeVisibility') {
+    this.graphListener.listen(this.graph.events, "linkTypeEvent", (e) => {
+      if (e.key === "changeVisibility") {
         this.onLinkTypeVisibilityChanged(e.data[e.key], e.key);
       }
     });
@@ -102,7 +102,7 @@ export class AsyncModel extends DiagramModel {
   createNewDiagram(dataProvider: DataProvider): Promise<void> {
     this.resetGraph();
     this.setDataProvider(dataProvider);
-    this.asyncSource.trigger('loadingStart', { source: this });
+    this.asyncSource.trigger("loadingStart", { source: this });
 
     return this.dataProvider
       .linkTypes()
@@ -114,9 +114,8 @@ export class AsyncModel extends DiagramModel {
         });
       })
       .catch((error) => {
-        // tslint:disable-next-line:no-console
         console.error(error);
-        this.asyncSource.trigger('loadingError', { source: this, error });
+        this.asyncSource.trigger("loadingError", { source: this, error });
         return Promise.reject(error);
       });
   }
@@ -130,7 +129,7 @@ export class AsyncModel extends DiagramModel {
   }): Promise<void> {
     this.resetGraph();
     this.setDataProvider(params.dataProvider);
-    this.asyncSource.trigger('loadingStart', { source: this });
+    this.asyncSource.trigger("loadingStart", { source: this });
 
     return this.dataProvider
       .linkTypes()
@@ -151,12 +150,11 @@ export class AsyncModel extends DiagramModel {
         return Promise.all([loadingModels, requestingLinks]);
       })
       .then(() => {
-        this.asyncSource.trigger('loadingSuccess', { source: this });
+        this.asyncSource.trigger("loadingSuccess", { source: this });
       })
       .catch((error) => {
-        // tslint:disable-next-line:no-console
         console.error(error);
-        this.asyncSource.trigger('loadingError', { source: this, error });
+        this.asyncSource.trigger("loadingError", { source: this, error });
         return Promise.reject(error);
       });
   }
@@ -176,7 +174,7 @@ export class AsyncModel extends DiagramModel {
       )
       .map(
         ({ id, visible, showLabel }): LinkTypeOptions => ({
-          '@type': 'LinkTypeOptions',
+          "@type": "LinkTypeOptions",
           property: id,
           visible,
           showLabel,
@@ -195,7 +193,7 @@ export class AsyncModel extends DiagramModel {
     return types;
   }
 
-  private setLinkSettings(settings: ReadonlyArray<LinkTypeOptions>) {
+  private setLinkSettings(settings: readonly LinkTypeOptions[]) {
     if (!settings) {
       return;
     }
@@ -203,7 +201,7 @@ export class AsyncModel extends DiagramModel {
       const { visible = true, showLabel = true } = setting;
       const linkTypeId = setting.property as LinkTypeIri;
       this.linkSettings[linkTypeId] = {
-        '@type': 'LinkTypeOptions',
+        "@type": "LinkTypeOptions",
         property: linkTypeId,
         visible,
         showLabel,
@@ -219,7 +217,7 @@ export class AsyncModel extends DiagramModel {
     layoutData?: LayoutData;
     preloadedElements?: Dictionary<ElementModel>;
     markLinksAsLayoutOnly: boolean;
-    allLinkTypes: ReadonlyArray<FatLinkType>;
+    allLinkTypes: readonly FatLinkType[];
     hideUnusedLinkTypes?: boolean;
   }) {
     const {
@@ -230,11 +228,11 @@ export class AsyncModel extends DiagramModel {
     } = params;
 
     const elementIrisToRequestData: ElementIri[] = [];
-    const usedLinkTypes: { [typeId: string]: FatLinkType } = {};
+    const usedLinkTypes: Record<string, FatLinkType> = {};
 
     for (const layoutElement of layoutData.elements) {
       const {
-        '@id': id,
+        "@id": id,
         iri,
         position,
         size,
@@ -261,7 +259,7 @@ export class AsyncModel extends DiagramModel {
 
     for (const layoutLink of layoutData.links) {
       const {
-        '@id': id,
+        "@id": id,
         property,
         source,
         target,
@@ -274,8 +272,8 @@ export class AsyncModel extends DiagramModel {
         new Link({
           id,
           typeId: linkType.id,
-          sourceId: source['@id'],
-          targetId: target['@id'],
+          sourceId: source["@id"],
+          targetId: target["@id"],
           vertices,
           linkState,
         })
@@ -296,8 +294,8 @@ export class AsyncModel extends DiagramModel {
   }
 
   private hideUnusedLinkTypes(
-    allTypes: ReadonlyArray<FatLinkType>,
-    usedTypes: { [typeId: string]: FatLinkType }
+    allTypes: readonly FatLinkType[],
+    usedTypes: Record<string, FatLinkType>
   ) {
     for (const linkType of allTypes) {
       if (!usedTypes[linkType.id]) {
@@ -309,7 +307,7 @@ export class AsyncModel extends DiagramModel {
     }
   }
 
-  requestElementData(elementIris: ReadonlyArray<ElementIri>): Promise<void> {
+  requestElementData(elementIris: readonly ElementIri[]): Promise<void> {
     return this.fetcher.fetchElementData(elementIris);
   }
 
@@ -362,7 +360,7 @@ export class AsyncModel extends DiagramModel {
 
   private onLinkTypeVisibilityChanged: Listener<
     FatLinkTypeEvents,
-    'changeVisibility'
+    "changeVisibility"
   > = (e) => {
     if (e.source.visible) {
       if (!e.preventLoading) {
@@ -384,7 +382,7 @@ export class AsyncModel extends DiagramModel {
     for (const linkModel of links) {
       this.createLinkType(linkModel.linkTypeId);
       allowToCreate = true;
-      this.asyncSource.trigger('createLoadedLink', {
+      this.asyncSource.trigger("createLoadedLink", {
         source: this,
         model: linkModel,
         cancel,
@@ -432,15 +430,15 @@ export class AsyncModel extends DiagramModel {
 
 export function requestElementData(
   model: AsyncModel,
-  elementIris: ReadonlyArray<ElementIri>
+  elementIris: readonly ElementIri[]
 ): Command {
-  return Command.effect('Fetch element data', () => {
+  return Command.effect("Fetch element data", () => {
     model.requestElementData(elementIris);
   });
 }
 
 export function restoreLinksBetweenElements(model: AsyncModel): Command {
-  return Command.effect('Restore links between elements', () => {
+  return Command.effect("Restore links between elements", () => {
     model.requestLinksOfType();
   });
 }

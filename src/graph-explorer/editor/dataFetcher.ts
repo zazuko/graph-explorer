@@ -7,13 +7,13 @@ import {
   ElementTypeIri,
   LinkTypeIri,
   PropertyTypeIri,
-} from '../data/model';
-import { DataProvider } from '../data/provider';
+} from "../data/model";
+import { DataProvider } from "../data/provider";
 
-import { FatClassModel, FatLinkType, RichProperty } from '../diagram/elements';
-import { Graph } from '../diagram/graph';
+import { FatClassModel, FatLinkType, RichProperty } from "../diagram/elements";
+import { Graph } from "../diagram/graph";
 
-import { BufferingQueue } from '../viewUtils/async';
+import { BufferingQueue } from "../viewUtils/async";
 
 export class DataFetcher {
   private classQueue = new BufferingQueue<ElementTypeIri>((classIds) => {
@@ -34,7 +34,7 @@ export class DataFetcher {
 
   constructor(private graph: Graph, private dataProvider: DataProvider) {}
 
-  fetchElementData(elementIris: ReadonlyArray<ElementIri>): Promise<void> {
+  fetchElementData(elementIris: readonly ElementIri[]): Promise<void> {
     if (elementIris.length === 0) {
       return Promise.resolve();
     }
@@ -43,9 +43,7 @@ export class DataFetcher {
       .then(this.onElementInfoLoaded);
   }
 
-  private onElementInfoLoaded = (elements: {
-    [elementId: string]: ElementModel;
-  }) => {
+  private onElementInfoLoaded = (elements: Record<string, ElementModel>) => {
     for (const element of this.graph.getElements()) {
       const loadedModel = elements[element.iri];
       if (loadedModel) {
@@ -65,7 +63,7 @@ export class DataFetcher {
         continue;
       }
       model.setLabel(label.values);
-      if (typeof count === 'number') {
+      if (typeof count === "number") {
         model.setCount(count);
       }
     }
@@ -92,9 +90,9 @@ export class DataFetcher {
     this.propertyTypeQueue.push(propertyType.id);
   }
 
-  private onPropertyTypesLoaded = (propertyModels: {
-    [propertyId: string]: PropertyModel;
-  }) => {
+  private onPropertyTypesLoaded = (
+    propertyModels: Record<string, PropertyModel>
+  ) => {
     for (const propId in propertyModels) {
       if (!Object.prototype.hasOwnProperty.call(propertyModels, propId)) {
         continue;

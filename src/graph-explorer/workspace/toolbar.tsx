@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { WorkspaceLanguage } from './workspace';
+import { WorkspaceLanguage } from "./workspace";
 
 export interface ToolbarProps {
   canSaveDiagram?: boolean;
@@ -15,13 +15,13 @@ export interface ToolbarProps {
   onExportSVG?: (fileName?: string) => void;
   onExportPNG?: (fileName?: string) => void;
   onPrint?: () => void;
-  languages?: ReadonlyArray<WorkspaceLanguage>;
+  languages?: readonly WorkspaceLanguage[];
   selectedLanguage?: string;
   onChangeLanguage?: (language: string) => void;
   hidePanels?: boolean;
 }
 
-const CLASS_NAME = 'graph-explorer-toolbar';
+const CLASS_NAME = "graph-explorer-toolbar";
 
 export class DefaultToolbar extends React.Component<ToolbarProps, {}> {
   private onChangeLanguage = (
