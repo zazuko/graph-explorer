@@ -1,8 +1,6 @@
-// @ts-check
-
 import eslint from "@eslint/js";
-import prettierConfig from 'eslint-config-prettier';
-import stylisticTs from '@stylistic/eslint-plugin-ts';
+import prettierConfig from "eslint-config-prettier";
+import stylisticTs from "@stylistic/eslint-plugin-ts";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -11,16 +9,16 @@ export default tseslint.config(
   tseslint.configs.stylistic,
   {
     plugins: {
-      '@stylistic/ts': stylisticTs
+      "@stylistic/ts": stylisticTs
     },
     ignores: [
-      'node_modules',
-      'dist',
-      'webpack.config.js',
+      "node_modules",
+      "dist",
+      "webpack.config.js",
     ],
     rules: {
-      '@stylistic/ts/indent': ['error', 2],
-      '@stylistic/ts/semi': ['error', 'always'],
+      "@stylistic/ts/indent": ["error", 2],
+      "@stylistic/ts/semi": ["error", "always"],
       "@typescript-eslint/no-unused-vars": ["error", {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",
@@ -29,6 +27,7 @@ export default tseslint.config(
       }],
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/prefer-literal-enum-member": "off",
     }
   },
   prettierConfig,

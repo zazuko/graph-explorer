@@ -36,8 +36,8 @@ interface ElementState {
 enum RedrawFlags {
   None = 0,
   Render = 1,
-  RecomputeTemplate = 2,
-  RecomputeBlurred = 4,
+  RecomputeTemplate = 1 | 2,
+  RecomputeBlurred = 1 | 4,
 }
 
 interface RedrawBatch {

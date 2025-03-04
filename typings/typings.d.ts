@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path='local/file-saverjs/index.d.ts' />
 
 // placeholders for webcola

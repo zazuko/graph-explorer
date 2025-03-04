@@ -80,8 +80,8 @@ export enum RenderingLayer {
   Link,
   Editor,
 
-  FirstToUpdate,
-  LastToUpdate,
+  FirstToUpdate = Element,
+  LastToUpdate = Editor,
 }
 
 export interface DiagramViewEvents {
