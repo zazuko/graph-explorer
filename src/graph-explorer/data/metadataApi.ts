@@ -4,7 +4,6 @@ import {
   LinkTypeIri,
   PropertyTypeIri,
   LinkModel,
-  ElementIri,
 } from "./model";
 import { LinkDirection } from "../diagram/elements";
 import { CancellationToken } from "../viewUtils/async";

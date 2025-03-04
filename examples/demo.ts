@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import { createElement, ClassAttributes } from "react";
 import * as ReactDOM from "react-dom";
 

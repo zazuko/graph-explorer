@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import * as React from "react";
 
 import { ElementTypeIri } from "../../data/model";

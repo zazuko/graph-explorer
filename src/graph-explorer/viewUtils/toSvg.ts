@@ -1,12 +1,11 @@
+/* eslint-disable @typescript-eslint/prefer-for-of */
+
 import { uniqueId } from "lodash";
 
 import { DiagramModel } from "../diagram/model";
 import { Rect, Vector, boundsOf } from "../diagram/geometry";
 
-const canvg = require("canvg-fixed");
-
-const SVG_NAMESPACE: "http://www.w3.org/2000/svg" =
-  "http://www.w3.org/2000/svg";
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg" as const;
 
 export interface ToSVGOptions {
   model: DiagramModel;
@@ -142,9 +141,8 @@ function addWatermark(svg: SVGElement, viewBox: Rect, watermarkSvg: string) {
   svg.insertBefore(image, svg.firstChild);
 }
 
-function clearAttributes(svg: SVGElement) {
+function _clearAttributes(svg: SVGElement) {
   const availableIds: Record<string, boolean> = {};
-  const prohibitedIds: Record<string, boolean> = {};
   const defss = svg.querySelectorAll("defs");
   foreachNode(defss, (defs) => {
     foreachNode(defs.childNodes, (def) => {
@@ -188,7 +186,7 @@ function extractCSSFromDocument(targetSubtree: Element): string {
       if (!rules) {
         continue;
       }
-    } catch (e) {
+    } catch (_e) {
       continue;
     }
 
@@ -296,7 +294,7 @@ function exportAsDataUri(original: HTMLImageElement): Promise<string> {
       const mimeType = "image/" + (extension === "jpg" ? "jpeg" : extension);
       const dataUri = canvas.toDataURL(mimeType);
       return Promise.resolve(dataUri);
-    } catch (e) {
+    } catch (_e) {
       if (extension !== "svg") {
         return Promise.reject("Failed to convert image to data URI");
       }
@@ -344,7 +342,7 @@ const MAX_CANVAS_LENGTH = 4096;
 export async function toDataURL(
   options: ToSVGOptions & ToDataURLOptions
 ): Promise<string> {
-  const { paper, mimeType = "image/png" } = options;
+  const { paper: _paper, mimeType = "image/png" } = options;
   const svgOptions = {
     ...options,
     convertImagesToDataUris: true,

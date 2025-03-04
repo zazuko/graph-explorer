@@ -2,7 +2,6 @@ import {
   Dictionary,
   ElementModel,
   LinkModel,
-  ClassModel,
   LinkType,
   ElementIri,
   LinkTypeIri,
@@ -32,9 +31,7 @@ import { EventSource, Events, Listener } from "../viewUtils/events";
 import { DataFetcher } from "./dataFetcher";
 import {
   LayoutData,
-  LayoutElement,
   makeLayoutData,
-  convertToSerializedDiagram,
   emptyDiagram,
   LinkTypeOptions,
   SerializedDiagram,

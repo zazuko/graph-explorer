@@ -27,10 +27,10 @@ export function isLiteralProperty(e: Property): e is LiteralProperty {
   return e && e.type === "string";
 }
 
-export type ElementIri = string & { readonly elementBrand: void };
-export type ElementTypeIri = string & { readonly classBrand: void };
-export type LinkTypeIri = string & { readonly linkTypeBrand: void };
-export type PropertyTypeIri = string & { readonly propertyTypeBrand: void };
+export type ElementIri = string & { readonly elementBrand: any };
+export type ElementTypeIri = string & { readonly classBrand: any };
+export type LinkTypeIri = string & { readonly linkTypeBrand: any };
+export type PropertyTypeIri = string & { readonly propertyTypeBrand: any };
 
 export interface ElementModel {
   id: ElementIri;

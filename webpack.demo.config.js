@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
@@ -17,7 +19,6 @@ if (!SUPPORT_IE) {
     'graph-explorer',
     'emptyModule.ts'
   );
-  aliases['canvg-fixed'] = emptyModule;
   aliases['es6-promise/auto'] = emptyModule;
 }
 
@@ -132,8 +133,8 @@ module.exports = {
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
       "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
     },
-   proxy: [ 
-       {
+    proxy: [
+      {
         context: ['/sparql**'],
         target: SPARQL_ENDPOINT,
         pathRewrite: { '/sparql': '' },

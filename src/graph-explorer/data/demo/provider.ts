@@ -10,7 +10,6 @@ import {
   ElementIri,
   ElementTypeIri,
   LinkTypeIri,
-  PropertyTypeIri,
 } from "../model";
 
 export class DemoDataProvider implements DataProvider {
@@ -81,7 +80,11 @@ export class DemoDataProvider implements DataProvider {
         const linkCount = counts[link.linkTypeId];
         const isSource = link.sourceId === params.elementId;
         if (linkCount) {
-          isSource ? linkCount.outCount++ : linkCount.inCount++;
+          if (isSource) {
+            linkCount.outCount++;
+          } else {
+            linkCount.inCount++;
+          }
         } else {
           counts[link.linkTypeId] = isSource
             ? { id: link.linkTypeId, inCount: 0, outCount: 1 }

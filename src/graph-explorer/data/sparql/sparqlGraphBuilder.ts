@@ -1,4 +1,4 @@
-import { LayoutData, SerializedDiagram } from "../../editor/serializedDiagram";
+import { SerializedDiagram } from "../../editor/serializedDiagram";
 
 import { Dictionary, ElementModel } from "../model";
 

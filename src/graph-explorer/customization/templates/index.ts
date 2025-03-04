@@ -4,5 +4,5 @@ export * from "./default";
 export * from "./group";
 export * from "./standard";
 
-export const DefaultElementTemplateBundle: TemplateResolver = (types) =>
+export const DefaultElementTemplateBundle: TemplateResolver = (_types) =>
   undefined;

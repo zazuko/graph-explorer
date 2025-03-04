@@ -6,7 +6,6 @@ import {
   LocalizedString,
   PropertyTypeIri,
   Property,
-  isIriProperty,
   LiteralProperty,
   isLiteralProperty,
   ElementIri,

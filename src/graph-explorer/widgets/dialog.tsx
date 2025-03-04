@@ -238,7 +238,7 @@ export class Dialog extends React.Component<Props, State> {
   }
 
   private startSize: Vector;
-  private onStartDragging = (e: React.MouseEvent<HTMLDivElement>) => {
+  private onStartDragging = (_e: React.MouseEvent<HTMLDivElement>) => {
     this.preventSelection();
     const { size } = this.props;
     this.startSize = {

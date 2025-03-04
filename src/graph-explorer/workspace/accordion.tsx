@@ -231,7 +231,7 @@ export class Accordion extends React.Component<Props, State> {
     });
   }
 
-  private onBeginDragHandle = (itemIndex: number) => {
+  private onBeginDragHandle = (_itemIndex: number) => {
     this.originTotalSize = this.clientSize(this.element);
     this.originSizes = this.computeEffectiveItemSizes();
     this.originCollapsed = [...this.state.collapsed];

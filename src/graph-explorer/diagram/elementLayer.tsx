@@ -1,4 +1,3 @@
-/* eslint-disable react/no-find-dom-node */
 import * as React from "react";
 import { findDOMNode } from "react-dom";
 import { hcl } from "d3-color";
@@ -37,8 +36,8 @@ interface ElementState {
 enum RedrawFlags {
   None = 0,
   Render = 1,
-  RecomputeTemplate = 1 | 2,
-  RecomputeBlurred = 1 | 4,
+  RecomputeTemplate = 2,
+  RecomputeBlurred = 4,
 }
 
 interface RedrawBatch {

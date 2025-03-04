@@ -1000,7 +1000,7 @@ function prepareElementImages(
 function resolveTemplate(template: string, values: Dictionary<string>) {
   let result = template;
   for (const replaceKey in values) {
-    if (!values.hasOwnProperty(replaceKey)) {
+    if (!Object.prototype.hasOwnProperty.call(values, replaceKey)) {
       continue;
     }
     const replaceValue = values[replaceKey];

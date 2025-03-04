@@ -11,9 +11,7 @@ import {
   ValidationEvent,
   ElementError,
   LinkError,
-  Property,
   LiteralProperty,
-  LocalizedString,
   DirectedLinkType,
   CancellationToken,
 } from "../../src/graph-explorer/index";
@@ -102,8 +100,8 @@ export class ExampleMetadataApi implements MetadataApi {
   }
 
   async propertiesForType(
-    type: ElementTypeIri,
-    ct: CancellationToken
+    _type: ElementTypeIri,
+    _ct: CancellationToken
   ): Promise<PropertyTypeIri[]> {
     //await delay(SIMULATED_DELAY, ct);
     return [];
@@ -119,7 +117,7 @@ export class ExampleMetadataApi implements MetadataApi {
 
   async filterConstructibleTypes(
     types: ReadonlySet<ElementTypeIri>,
-    ct: CancellationToken
+    _ct: CancellationToken
   ): Promise<ReadonlySet<ElementTypeIri>> {
     //await delay(SIMULATED_DELAY, ct);
     const result = new Set<ElementTypeIri>();
@@ -140,28 +138,28 @@ export class ExampleMetadataApi implements MetadataApi {
   }
 
   async canLinkElement(
-    element: ElementModel,
-    ct: CancellationToken
+    _element: ElementModel,
+    _ct: CancellationToken
   ): Promise<boolean> {
     //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
   async canDeleteLink(
-    link: LinkModel,
-    source: ElementModel,
-    target: ElementModel,
-    ct: CancellationToken
+    _link: LinkModel,
+    _source: ElementModel,
+    _target: ElementModel,
+    _ct: CancellationToken
   ): Promise<boolean> {
     //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
   async canEditLink(
-    link: LinkModel,
-    source: ElementModel,
-    target: ElementModel,
-    ct: CancellationToken
+    _link: LinkModel,
+    _source: ElementModel,
+    _target: ElementModel,
+    _ct: CancellationToken
   ): Promise<boolean> {
     //await delay(SIMULATED_DELAY, ct);
     return true;

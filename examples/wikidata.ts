@@ -6,7 +6,6 @@ import {
   WorkspaceProps,
   SparqlDataProvider,
   WikidataSettings,
-  SparqlQueryMethod,
   PropertySuggestionParams,
   PropertyScore,
 } from "../src/graph-explorer/index";

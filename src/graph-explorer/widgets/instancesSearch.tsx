@@ -21,7 +21,9 @@ import {
   WorkspaceEventKey,
 } from "../workspace/workspaceContext";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const DirectionInImage = require("../../../images/direction-in.png");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const DirectionOutImage = require("../../../images/direction-out.png");
 
 export interface InstancesSearchProps {
@@ -366,7 +368,7 @@ export class InstancesSearch extends React.Component<
 
     const items = requestedAdditionalItems ? [...this.state.items] : [];
     for (const iri in elements) {
-      if (!elements.hasOwnProperty(iri)) {
+      if (!Object.prototype.hasOwnProperty.call(elements, iri)) {
         continue;
       }
       if (existingIris[iri]) {

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { ElementIri, ElementTypeIri, ElementModel } from "../data/model";
+import { ElementIri, ElementTypeIri } from "../data/model";
 
 import { Element } from "../diagram/elements";
 import { Vector } from "../diagram/geometry";
@@ -342,11 +342,11 @@ function tryParseDefaultDragAndDropData(e: DragEvent): ElementIri[] {
       let iris: ElementIri[];
       try {
         iris = JSON.parse(iriString);
-      } catch (e) {
+      } catch (_e) {
         iris = [(decode ? decodeURI(iriString) : iriString) as ElementIri];
       }
       return iris.length === 0 ? undefined : iris;
-    } catch (e) {
+    } catch (_e) {
       return undefined;
     }
   };

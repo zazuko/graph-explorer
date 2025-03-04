@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { PLACEHOLDER_ELEMENT_TYPE } from "../data/schema";
-import { ElementModel, ElementIri, ElementTypeIri } from "../data/model";
+import { ElementModel, ElementTypeIri } from "../data/model";
 
 import { EditorController } from "../editor/editorController";
 import { DiagramView } from "../diagram/view";

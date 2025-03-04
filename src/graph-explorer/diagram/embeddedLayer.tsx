@@ -1,19 +1,13 @@
 import * as React from "react";
 
-import { Dictionary, ElementModel, ElementIri } from "../data/model";
 import { Paper, PaperTransform } from "./paper";
 import { PaperAreaContextTypes, PaperAreaContextWrapper } from "./paperArea";
 import { Element, Cell } from "./elements";
-import {
-  ElementLayer,
-  ElementContextWrapper,
-  ElementContextTypes,
-} from "./elementLayer";
+import { ElementContextWrapper, ElementContextTypes } from "./elementLayer";
 import { EventObserver } from "../viewUtils/events";
 
 import { Vector, Rect } from "./geometry";
 import { getContentFittingBox } from "./paperArea";
-import { DiagramView } from "./view";
 
 export interface State {
   paperWidth?: number;
@@ -73,7 +67,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
       this.setState({ offsetX, offsetY });
     });
 
-    this.listener.listen(paperArea.events, "pointerUp", (e) => {
+    this.listener.listen(paperArea.events, "pointerUp", (_e) => {
       this.isNestedElementMoving = false;
     });
 

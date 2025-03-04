@@ -191,7 +191,6 @@ export class SearchResults extends React.Component<SearchResultProps, {}> {
     event.preventDefault();
 
     const { items, selection, onSelectionChanged } = this.props;
-    const previouslySelected = selection.has(model.id);
     const modelIndex = items.indexOf(model);
 
     let newSelection: Set<ElementIri>;

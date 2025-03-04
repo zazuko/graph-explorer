@@ -419,14 +419,14 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
   }
 
   scrollablePaneToPaperCoords(paneX: number, paneY: number) {
-    const { scale, paddingX, paddingY, originX, originY } = this.state;
+    const { scale, originX, originY } = this.state;
     const paperX = paneX / scale - originX;
     const paperY = paneY / scale - originY;
     return { x: paperX, y: paperY };
   }
 
   paperToScrollablePaneCoords(paperX: number, paperY: number) {
-    const { scale, paddingX, paddingY, originX, originY } = this.state;
+    const { scale, originX, originY } = this.state;
     const paneX = (paperX + originX) * scale;
     const paneY = (paperY + originY) * scale;
     return { x: paneX, y: paneY };
@@ -557,7 +557,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     this.movingElementOrigin = { pointerX, pointerY, elementX, elementY };
   }
 
-  private startPanning(event: React.MouseEvent<any>) {
+  private startPanning(_event: React.MouseEvent<any>) {
     const { scrollLeft, scrollTop } = this.area;
     this.panningScrollOrigin = { scrollLeft, scrollTop };
     this.clearTextSelectionInArea();
@@ -842,7 +842,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       e.preventDefault();
     }
     e.dataTransfer.dropEffect = "move";
-    const { x, y } = clientCoordsFor(this.area, e);
+    const { x: _x, y: _y } = clientCoordsFor(this.area, e);
     return false;
   };
 

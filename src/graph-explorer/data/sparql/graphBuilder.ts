@@ -113,7 +113,7 @@ export function makeLayout(
   );
   const links: LayoutLink[] = [];
 
-  linksInfo.forEach((link, index) => {
+  linksInfo.forEach((link, _index) => {
     const source = layoutElementsMap[link.sourceId];
     const target = layoutElementsMap[link.targetId];
 

@@ -71,6 +71,7 @@ export class QueryExecutor {
     } else {
       this.queryDictionary[query] = this.queryFunction(query).then(
         (response) => {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete this.queryDictionary[query];
           return response;
         }
@@ -182,7 +183,7 @@ export function encodeId(blankBindings: BlankBinding[]): string {
   const bindingSet: Dictionary<BlankBinding> = {};
   for (const binding of blankBindings) {
     // leave out instance unique ID
-    const { inst, ...exceptInst } = binding;
+    const { inst: _inst, ...exceptInst } = binding;
     const encodedBinding = JSON.stringify(exceptInst);
     bindingSet[encodedBinding] = exceptInst as BlankBinding;
   }
@@ -206,7 +207,7 @@ export function decodeId(id: string): BlankBinding[] {
       return binding;
     });
     return bindings;
-  } catch (error) {
+  } catch (_error) {
     /* silent */
     return undefined;
   }
@@ -604,7 +605,6 @@ function getLinkBinding(ids: string[]): LinkBinding[] {
 function getLinkCountBinding(id: string): LinkCountBinding[] {
   const blankElements = decodeId(id);
 
-  const bindings: LinkBinding[] = [];
   const dictionary: Dictionary<LinkCountBinding> = {};
 
   for (const be of blankElements) {

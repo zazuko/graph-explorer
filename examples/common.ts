@@ -29,7 +29,7 @@ export function tryLoadLayoutFromLocalStorage(): SerializedDiagram | undefined {
           linkTypeOptions: [],
         });
       }
-    } catch (e) {
+    } catch (_e) {
       /* ignore */
     }
   }

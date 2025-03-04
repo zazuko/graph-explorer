@@ -2,13 +2,7 @@ import * as React from "react";
 
 import { MetadataApi } from "../data/metadataApi";
 import { ValidationApi } from "../data/validationApi";
-import {
-  ElementModel,
-  LinkModel,
-  ElementIri,
-  sameLink,
-  sameElement,
-} from "../data/model";
+import { ElementModel, LinkModel, ElementIri, sameLink } from "../data/model";
 
 import {
   setElementExpanded,
@@ -413,9 +407,13 @@ export class EditorController {
       this.renderDefaultHalo();
     });
 
-    this.listener.listen(this.events, "toggleDialog", ({ isOpened }) => {
-      this.renderDefaultHalo();
-    });
+    this.listener.listen(
+      this.events,
+      "toggleDialog",
+      ({ isOpened: _isOpened }) => {
+        this.renderDefaultHalo();
+      }
+    );
 
     this.renderDefaultHalo();
   }
@@ -887,7 +885,7 @@ export class EditorController {
     return this.model.loadEmbeddedElements(element.iri).then((models) => {
       const batch = this.model.history.startBatch();
       const elementIris = Object.keys(models) as ElementIri[];
-      const elements = elementIris.map((key) =>
+      elementIris.map((key) =>
         this.model.createElement(models[key], element.id)
       );
       batch.discard();

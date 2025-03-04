@@ -13,8 +13,12 @@ export class DraggableHandle extends React.Component<Props, {}> {
 
   render() {
     // remove custom handlers from `div` props
-    const { onBeginDragHandle, onDragHandle, onEndDragHandle, ...props } =
-      this.props;
+    const {
+      onBeginDragHandle: _onBeginDragHandle,
+      onDragHandle: _onDragHandle,
+      onEndDragHandle: _onEndDragHandle,
+      ...props
+    } = this.props;
     return (
       <div {...props} onMouseDown={this.onHandleMouseDown}>
         {this.props.children}

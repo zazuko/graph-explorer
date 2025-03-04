@@ -1,6 +1,6 @@
 import { ElementModel, ElementIri, LinkModel, sameLink } from "../data/model";
 
-import { Element, Link, FatLinkType, Cell, LinkVertex } from "./elements";
+import { Element, Link, FatLinkType } from "./elements";
 import { Vector, isPolylineEqual } from "./geometry";
 import { Command } from "./history";
 import { DiagramModel } from "./model";

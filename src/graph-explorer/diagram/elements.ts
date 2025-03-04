@@ -547,7 +547,7 @@ export class LinkVertex {
 
   remove() {
     const vertices = [...this.link.vertices];
-    const [location] = vertices.splice(this.vertexIndex, 1);
+    vertices.splice(this.vertexIndex, 1);
     this.link.setVertices(vertices);
   }
 }

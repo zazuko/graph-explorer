@@ -6,7 +6,7 @@ import { RdfNode, Triple } from "./sparqlModels";
 export function parseTurtleText(turtleText: string): Promise<Triple[]> {
   return new Promise<Triple[]>((resolve, reject) => {
     const triples: Triple[] = [];
-    new N3.Parser().parse(turtleText, (error, triple, hash) => {
+    new N3.Parser().parse(turtleText, (error, triple, _hash) => {
       if (error) {
         reject(error);
       } else if (triple) {

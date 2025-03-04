@@ -80,8 +80,8 @@ export enum RenderingLayer {
   Link,
   Editor,
 
-  FirstToUpdate = Element,
-  LastToUpdate = Editor,
+  FirstToUpdate,
+  LastToUpdate,
 }
 
 export interface DiagramViewEvents {
@@ -164,16 +164,24 @@ export class DiagramView {
     this.listener.listen(this.model.events, "changeCells", () =>
       this.updateRoutings()
     );
-    this.listener.listen(this.model.events, "linkEvent", ({ key, data }) => {
-      if (data.changeVertices) {
-        this.updateRoutings();
+    this.listener.listen(
+      this.model.events,
+      "linkEvent",
+      ({ key: _key, data }) => {
+        if (data.changeVertices) {
+          this.updateRoutings();
+        }
       }
-    });
-    this.listener.listen(this.model.events, "elementEvent", ({ key, data }) => {
-      if (data.changePosition || data.changeSize) {
-        this.updateRoutings();
+    );
+    this.listener.listen(
+      this.model.events,
+      "elementEvent",
+      ({ key: _key, data }) => {
+        if (data.changePosition || data.changeSize) {
+          this.updateRoutings();
+        }
       }
-    });
+    );
   }
 
   private updateRoutings() {

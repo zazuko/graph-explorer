@@ -14,11 +14,7 @@ import { ValidationApi } from "../data/validationApi";
 
 import { Rect } from "../diagram/geometry";
 import { RestoreGeometry } from "../diagram/commands";
-import {
-  Command,
-  CommandHistory,
-  NonRememberingHistory,
-} from "../diagram/history";
+import { CommandHistory, NonRememberingHistory } from "../diagram/history";
 import {
   PaperArea,
   ZoomOptions,
@@ -277,22 +273,26 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
       this.markup.paperArea.centerContent();
     });
 
-    this.listener.listen(this.model.events, "elementEvent", ({ key, data }) => {
-      if (!data.requestedAddToFilter) {
-        return;
+    this.listener.listen(
+      this.model.events,
+      "elementEvent",
+      ({ key: _key, data }) => {
+        if (!data.requestedAddToFilter) {
+          return;
+        }
+        const { source, linkType, direction } = data.requestedAddToFilter;
+        this.setState({
+          criteria: {
+            refElement: source,
+            refElementLink: linkType,
+            linkDirection: direction,
+          },
+        });
+        if (onWorkspaceEvent) {
+          onWorkspaceEvent(WorkspaceEventKey.searchUpdateCriteria);
+        }
       }
-      const { source, linkType, direction } = data.requestedAddToFilter;
-      this.setState({
-        criteria: {
-          refElement: source,
-          refElementLink: linkType,
-          linkDirection: direction,
-        },
-      });
-      if (onWorkspaceEvent) {
-        onWorkspaceEvent(WorkspaceEventKey.searchUpdateCriteria);
-      }
-    });
+    );
 
     this.listener.listen(this.markup.paperArea.events, "pointerUp", (e) => {
       if (this.props.onPointerUp) {

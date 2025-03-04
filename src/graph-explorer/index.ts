@@ -1,6 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require("../../styles/main.scss");
-
-require("whatwg-fetch");
 
 export * from "./customization/props";
 export * from "./customization/templates";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component, CSSProperties, SVGProps } from "react";
+import { Component, CSSProperties } from "react";
 
 import { Cell, LinkVertex } from "./elements";
 import { ElementLayer } from "./elementLayer";
@@ -137,8 +137,7 @@ export class TransformedSvgCanvas extends Component<
   };
   render() {
     const { paperTransform, style, children, ...otherProps } = this.props;
-    const { width, height, originX, originY, scale, paddingX, paddingY } =
-      paperTransform;
+    const { width, height, originX, originY, scale } = paperTransform;
     const scaledWidth = width * scale;
     const scaledHeight = height * scale;
     let svgStyle = TransformedSvgCanvas.SVG_STYLE;

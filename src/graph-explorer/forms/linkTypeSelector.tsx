@@ -126,7 +126,7 @@ export class LinkTypeSelector extends React.Component<Props, State> {
     }: { fatLinkType: FatLinkType; direction: LinkDirection },
     index: number
   ) => {
-    const { view, linkValue, source, target } = this.props;
+    const { view, source, target } = this.props;
     const label = view.formatLabel(fatLinkType.label, fatLinkType.id);
     let [sourceLabel, targetLabel] = [source, target].map((element) =>
       view.formatLabel(element.label.values, element.id)

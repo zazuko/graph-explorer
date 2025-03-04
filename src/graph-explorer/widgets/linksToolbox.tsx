@@ -447,10 +447,10 @@ function changeLinkTypeState(
     state === "invisible"
       ? { visible: false, showLabel: false }
       : state === "withoutLabels"
-      ? { visible: true, showLabel: false }
-      : state === "allVisible"
-      ? { visible: true, showLabel: true }
-      : undefined;
+        ? { visible: true, showLabel: false }
+        : state === "allVisible"
+          ? { visible: true, showLabel: true }
+          : undefined;
   for (const linkType of links) {
     history.execute(changeLinkTypeVisibility({ linkType, visible, showLabel }));
   }

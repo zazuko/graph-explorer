@@ -128,12 +128,12 @@ export class AccordionItem extends React.Component<Props, State> {
         {shouldRenderHandle ? (
           <DraggableHandle
             className={`${CLASS_NAME}__handle ${CLASS_NAME}__handle-${direction}`}
-            onBeginDragHandle={(e) => {
+            onBeginDragHandle={(_e) => {
               this.setState({ resizing: true });
               onBeginDragHandle();
             }}
-            onDragHandle={(e, x, y) => onDragHandle(x, y)}
-            onEndDragHandle={(e) => {
+            onDragHandle={(_e, x, y) => onDragHandle(x, y)}
+            onEndDragHandle={(_e) => {
               this.setState({ resizing: false });
               onEndDragHandle();
             }}

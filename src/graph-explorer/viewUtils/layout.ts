@@ -160,7 +160,7 @@ export function biasFreePadded(
   }
 }
 
-export type CalculatedLayout = object & { readonly layoutBrand: void };
+export type CalculatedLayout = object & { readonly layoutBrand: any };
 
 export interface UnzippedCalculatedLayout extends CalculatedLayout {
   group?: string;

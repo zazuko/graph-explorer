@@ -709,10 +709,6 @@ interface LinkInPopupMenuProps {
 }
 
 class LinkInPopupMenu extends React.Component<LinkInPopupMenuProps, {}> {
-  constructor(props: LinkInPopupMenuProps) {
-    super(props);
-  }
-
   private onExpandLink = (expectedCount: number, direction?: "in" | "out") => {
     this.props.onExpandLink({
       link: this.props.link,

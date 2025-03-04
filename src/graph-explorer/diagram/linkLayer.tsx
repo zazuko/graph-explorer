@@ -54,10 +54,6 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
   /** List of link IDs to update at the next flush event */
   private scheduledToUpdate = new Set<string>();
 
-  constructor(props: LinkLayerProps, context: any) {
-    super(props, context);
-  }
-
   componentDidMount() {
     const { view } = this.props;
 
@@ -272,7 +268,7 @@ class LinkView extends Component<LinkViewProps, {}> {
     }
   }
 
-  shouldComponentUpdate(nextProps: LinkViewProps, nextState: {}) {
+  shouldComponentUpdate(nextProps: LinkViewProps, _nextState: {}) {
     return nextProps.shouldUpdate;
   }
 
@@ -620,14 +616,14 @@ class LinkLabel extends Component<LinkLabelProps, LinkLabelState> {
     onBoundsUpdate(undefined);
   }
 
-  componentDidUpdate(nextProps: LinkLabelProps) {
+  componentDidUpdate(_nextProps: LinkLabelProps) {
     this.shouldUpdateBounds = true;
   }
   UNSAFE_componentWillReceiveProps() {
     this.recomputeBounds(this.props);
   }
 
-  private recomputeBounds(props: LinkLabelProps) {
+  private recomputeBounds(_props: LinkLabelProps) {
     if (this.shouldUpdateBounds) {
       const { onBoundsUpdate } = this.props;
       this.shouldUpdateBounds = false;
@@ -659,7 +655,7 @@ class VertexTools extends Component<
   {}
 > {
   render() {
-    const { className, vertexIndex, vertexRadius, x, y } = this.props;
+    const { className, vertexRadius, x, y } = this.props;
     const transform = `translate(${x + 2 * vertexRadius},${
       y - 2 * vertexRadius
     })scale(${vertexRadius})`;
@@ -753,8 +749,7 @@ export class LinkMarkers extends Component<{ view: DiagramView }, {}> {
   }
 }
 
-const SVG_NAMESPACE: "http://www.w3.org/2000/svg" =
-  "http://www.w3.org/2000/svg";
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg" as const;
 
 interface LinkMarkerProps {
   linkTypeIndex: number;

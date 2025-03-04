@@ -213,7 +213,7 @@ export function getClassInfo(
 
   const classesList: ClassModel[] = [];
   for (const id in classes) {
-    if (!classes.hasOwnProperty(id)) {
+    if (!Object.prototype.hasOwnProperty.call(classes, id)) {
       continue;
     }
     const model = classes[id];
@@ -579,6 +579,7 @@ export function getFilteredData(
           linkByPredicateType
         );
       if (!doesMatchesDomain) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete instancesMap[id];
       }
     }

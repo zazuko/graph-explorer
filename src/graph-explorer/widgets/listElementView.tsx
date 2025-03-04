@@ -79,7 +79,7 @@ export function startDragElements(
       "application/x-graph-explorer-elements",
       JSON.stringify(iris)
     );
-  } catch (ex) {
+  } catch (_ex) {
     // IE fix
     e.dataTransfer.setData("text", JSON.stringify(iris));
   }

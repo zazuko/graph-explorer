@@ -63,6 +63,7 @@ export function mergeClassTree(
 
   for (const m of models) {
     m.children = (childrenMap[m.id] || []).map((id) => {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete topLevelModels[id];
       return dictionary[id];
     });
@@ -180,9 +181,6 @@ export function mergeElementInfo(
     };
   };
 
-  const dictionaries = response
-    .filter((r) => r.response)
-    .map((r) => r.response);
   const dictionary: Dictionary<ElementModel> = {};
 
   for (const resp of response) {

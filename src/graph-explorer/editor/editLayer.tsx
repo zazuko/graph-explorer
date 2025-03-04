@@ -122,7 +122,7 @@ export class EditLayer extends React.Component<Props, State> {
 
     this.oldLink = target;
     editor.model.removeLink(target.id);
-    const { id, typeId, sourceId, targetId, ...otherProps } = target;
+    const { id: _id, typeId, sourceId, targetId, ...otherProps } = target;
 
     const temporaryElement = this.createTemporaryElement(startingPoint);
     const linkTemplate = new Link({

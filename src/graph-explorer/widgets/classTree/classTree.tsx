@@ -188,7 +188,7 @@ export class ClassTree extends React.Component<ClassTreeProps, State> {
   };
 
   private onShowOnlyCreatableChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    _e: React.ChangeEvent<HTMLInputElement>
   ) => {
     this.setState(
       (state): State =>

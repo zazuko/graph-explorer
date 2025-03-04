@@ -75,10 +75,10 @@ export class NonRememberingHistory implements CommandHistory {
     command.invoke();
     this.source.trigger("historyChanged", { hasChanges: true });
   }
-  registerToUndo(command: Command) {
+  registerToUndo(_command: Command) {
     this.source.trigger("historyChanged", { hasChanges: true });
   }
-  startBatch(title?: string): Batch {
+  startBatch(_title?: string): Batch {
     return {
       history: this,
       store: this.storeBatch,

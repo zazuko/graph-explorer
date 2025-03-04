@@ -84,13 +84,13 @@ export class AuthoredEntity extends React.Component<
     EditorEvents,
     "changeAuthoringState"
   > = (e) => {
-    const { source: editor, previous } = e;
-    const iri = this.props.templateProps.data.id;
-    const current = editor.authoringState;
-    if (current.elements.get(iri) !== previous.elements.get(iri)) {
-      this.queryAllowedActions();
-    }
-  };
+      const { source: editor, previous } = e;
+      const iri = this.props.templateProps.data.id;
+      const current = editor.authoringState;
+      if (current.elements.get(iri) !== previous.elements.get(iri)) {
+        this.queryAllowedActions();
+      }
+    };
 
   private queryAllowedActions() {
     const { isExpanded, data } = this.props.templateProps;
