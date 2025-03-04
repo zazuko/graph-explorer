@@ -135,13 +135,13 @@ module.exports = {
    proxy: [ 
        {
         context: ['/sparql**'],
-
         target: SPARQL_ENDPOINT,
         pathRewrite: { '/sparql': '' },
         changeOrigin: true,
         secure: false,
       },
-      '/update**': {
+      {
+        context: ['/update**'],
         target: SPARQL_UPDATEENDPOINT,
         pathRewrite: { '/update': '' },
         changeOrigin: true,
