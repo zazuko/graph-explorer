@@ -1,14 +1,14 @@
-import { ElementIri, LinkModel, hashLink, sameLink } from '../data/model';
+import { ElementIri, LinkModel, hashLink, sameLink } from "../data/model";
 import {
   ValidationApi,
   ValidationEvent,
   ElementError,
   LinkError,
-} from '../data/validationApi';
-import { CancellationToken } from '../viewUtils/async';
-import { HashMap, ReadonlyHashMap, cloneMap } from '../viewUtils/collections';
-import { AuthoringState } from './authoringState';
-import { EditorController } from './editorController';
+} from "../data/validationApi";
+import { CancellationToken } from "../viewUtils/async";
+import { HashMap, ReadonlyHashMap, cloneMap } from "../viewUtils/collections";
+import { AuthoringState } from "./authoringState";
+import { EditorController } from "./editorController";
 
 export interface ValidationState {
   readonly elements: ReadonlyMap<ElementIri, ElementValidation>;
@@ -17,12 +17,12 @@ export interface ValidationState {
 
 export interface ElementValidation {
   readonly loading: boolean;
-  readonly errors: ReadonlyArray<ElementError>;
+  readonly errors: readonly ElementError[];
 }
 
 export interface LinkValidation {
   readonly loading: boolean;
-  readonly errors: ReadonlyArray<LinkError>;
+  readonly errors: readonly LinkError[];
 }
 
 const empty: ValidationState = createMutable();
@@ -39,7 +39,7 @@ function createMutable() {
 function setElementErrors(
   state: ValidationState,
   target: ElementIri,
-  errors: ReadonlyArray<ElementError>
+  errors: readonly ElementError[]
 ): ValidationState {
   const elements = cloneMap(state.elements);
   if (errors.length > 0) {
@@ -53,7 +53,7 @@ function setElementErrors(
 function setLinkErrors(
   state: ValidationState,
   target: LinkModel,
-  errors: ReadonlyArray<LinkError>
+  errors: readonly LinkError[]
 ): ValidationState {
   const links = state.links.clone();
   if (errors.length > 0) {
@@ -174,13 +174,13 @@ export function validateElements(
 }
 
 async function processValidationResult(
-  result: Promise<Array<ElementError | LinkError> | null>,
+  result: Promise<(ElementError | LinkError)[] | null>,
   previousElement: ElementValidation,
   previousLink: LinkValidation,
   e: ValidationEvent,
   editor: EditorController
 ) {
-  let allErrors: Array<ElementError | LinkError> | null;
+  let allErrors: (ElementError | LinkError)[] | null;
   try {
     allErrors = await result;
     if (allErrors === null) {
@@ -188,11 +188,10 @@ async function processValidationResult(
       return;
     }
   } catch (err) {
-    // tslint:disable-next-line:no-console
     console.error(`Failed to validate element`, e.target, err);
     allErrors = [
       {
-        type: 'element',
+        type: "element",
         target: e.target.id,
         message: `Failed to validate element`,
       },
@@ -204,9 +203,9 @@ async function processValidationResult(
   e.outboundLinks.forEach((link) => linkErrors.set(link, []));
 
   for (const error of allErrors) {
-    if (error.type === 'element' && error.target === e.target.id) {
+    if (error.type === "element" && error.target === e.target.id) {
       elementErrors.push(error);
-    } else if (error.type === 'link' && linkErrors.has(error.target)) {
+    } else if (error.type === "link" && linkErrors.has(error.target)) {
       linkErrors.get(error.target).push(error);
     }
   }

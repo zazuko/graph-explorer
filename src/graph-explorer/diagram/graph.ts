@@ -1,11 +1,11 @@
-import { ElementTypeIri, LinkTypeIri, PropertyTypeIri } from '../data/model';
-import { OrderedMap } from '../viewUtils/collections';
+import { ElementTypeIri, LinkTypeIri, PropertyTypeIri } from "../data/model";
+import { OrderedMap } from "../viewUtils/collections";
 import {
   EventSource,
   Events,
   AnyEvent,
   AnyListener,
-} from '../viewUtils/events';
+} from "../viewUtils/events";
 
 import {
   Element as DiagramElement,
@@ -17,7 +17,7 @@ import {
   FatClassModel,
   FatClassModelEvents,
   RichProperty,
-} from './elements';
+} from "./elements";
 
 export interface GraphEvents {
   changeCells: CellsChangedEvent;
@@ -30,7 +30,7 @@ export interface GraphEvents {
 export interface CellsChangedEvent {
   readonly updateAll: boolean;
   readonly changedElement?: DiagramElement;
-  readonly changedLinks?: ReadonlyArray<DiagramLink>;
+  readonly changedLinks?: readonly DiagramLink[];
 }
 
 export class Graph {
@@ -92,14 +92,14 @@ export class Graph {
     }
     element.events.onAny(this.onElementEvent);
     this.elements.push(element.id, element);
-    this.source.trigger('changeCells', {
+    this.source.trigger("changeCells", {
       updateAll: false,
       changedElement: element,
     });
   }
 
   private onElementEvent: AnyListener<ElementEvents> = (data, key) => {
-    this.source.trigger('elementEvent', { key, data });
+    this.source.trigger("elementEvent", { key, data });
   };
 
   removeElement(elementId: string): void {
@@ -113,7 +113,7 @@ export class Graph {
       }
       this.elements.delete(elementId);
       element.events.offAny(this.onElementEvent);
-      this.source.trigger('changeCells', {
+      this.source.trigger("changeCells", {
         updateAll: false,
         changedElement: element,
         changedLinks,
@@ -140,14 +140,14 @@ export class Graph {
 
     link.events.onAny(this.onLinkEvent);
     this.links.push(link.id, link);
-    this.source.trigger('changeCells', {
+    this.source.trigger("changeCells", {
       updateAll: false,
       changedLinks: [link],
     });
   }
 
   private onLinkEvent: AnyListener<LinkEvents> = (data, key) => {
-    this.source.trigger('linkEvent', { key, data });
+    this.source.trigger("linkEvent", { key, data });
   };
 
   removeLink(linkId: string, options?: { silent?: boolean }) {
@@ -157,7 +157,7 @@ export class Graph {
       link.events.offAny(this.onLinkEvent);
       this.removeLinkReferences(typeId, sourceId, targetId);
       if (!(options && options.silent)) {
-        this.source.trigger('changeCells', {
+        this.source.trigger("changeCells", {
           updateAll: false,
           changedLinks: [link],
         });
@@ -200,7 +200,7 @@ export class Graph {
   }
 
   private onLinkTypeEvent: AnyListener<FatLinkTypeEvents> = (data, key) => {
-    this.source.trigger('linkTypeEvent', { key, data });
+    this.source.trigger("linkTypeEvent", { key, data });
   };
 
   getProperty(propertyId: PropertyTypeIri): RichProperty | undefined {
@@ -233,7 +233,7 @@ export class Graph {
   }
 
   private onClassEvent: AnyListener<FatClassModelEvents> = (data, key) => {
-    this.source.trigger('classEvent', { key, data });
+    this.source.trigger("classEvent", { key, data });
   };
 }
 

@@ -1,80 +1,74 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MetadataApi } from '../data/metadataApi';
-import { ValidationApi } from '../data/validationApi';
-import {
-  ElementModel,
-  LinkModel,
-  ElementIri,
-  sameLink,
-  sameElement,
-} from '../data/model';
+import { MetadataApi } from "../data/metadataApi";
+import { ValidationApi } from "../data/validationApi";
+import { ElementModel, LinkModel, ElementIri, sameLink } from "../data/model";
 
 import {
   setElementExpanded,
   setElementData,
   setLinkData,
   changeLinkTypeVisibility,
-} from '../diagram/commands';
-import { Element, Link, LinkVertex, FatLinkType } from '../diagram/elements';
-import { Vector, boundsOf } from '../diagram/geometry';
-import { Command } from '../diagram/history';
+} from "../diagram/commands";
+import { Element, Link, LinkVertex, FatLinkType } from "../diagram/elements";
+import { Vector, boundsOf } from "../diagram/geometry";
+import { Command } from "../diagram/history";
 import {
   PaperArea,
   PointerUpEvent,
   PaperWidgetProps,
-} from '../diagram/paperArea';
-import { DiagramView, IriClickIntent, WidgetAttachment } from '../diagram/view';
+} from "../diagram/paperArea";
+import { DiagramView, IriClickIntent, WidgetAttachment } from "../diagram/view";
 
 import {
   Events,
   EventSource,
   EventObserver,
   PropertyChange,
-} from '../viewUtils/events';
+} from "../viewUtils/events";
 
-import { Dialog } from '../widgets/dialog';
+import { Dialog } from "../widgets/dialog";
 import {
   ConnectionsMenu,
   PropertySuggestionHandler,
-} from '../widgets/connectionsMenu';
-import { EditEntityForm } from '../forms/editEntityForm';
-import { EditElementTypeForm } from '../forms/editElementTypeForm';
-import { EditLinkForm } from '../forms/editLinkForm';
-import { EditLinkLabelForm } from '../forms/editLinkLabelForm';
-import { Halo } from '../widgets/halo';
-import { HaloLink } from '../widgets/haloLink';
-import { LinkStateWidget } from './linkStateWidget';
-import { ElementDecorator } from './elementDecorator';
+} from "../widgets/connectionsMenu";
+import { EditEntityForm } from "../forms/editEntityForm";
+import { EditElementTypeForm } from "../forms/editElementTypeForm";
+import { EditLinkForm } from "../forms/editLinkForm";
+import { EditLinkLabelForm } from "../forms/editLinkLabelForm";
+import { Halo } from "../widgets/halo";
+import { HaloLink } from "../widgets/haloLink";
+import { LinkStateWidget } from "./linkStateWidget";
+import { ElementDecorator } from "./elementDecorator";
 
 import {
   placeElementsAround,
   forceLayout,
   applyLayout,
-} from '../viewUtils/layout';
-import { Spinner, SpinnerProps } from '../viewUtils/spinner';
+} from "../viewUtils/layout";
+import { Spinner, SpinnerProps } from "../viewUtils/spinner";
 
 import {
   AsyncModel,
   requestElementData,
   restoreLinksBetweenElements,
-} from './asyncModel';
+} from "./asyncModel";
 import {
   AuthoringState,
   AuthoringKind,
   AuthoringEvent,
   ElementChange,
-} from './authoringState';
-import { TemporaryState } from './temporaryState';
-import { EditLayer, EditLayerMode } from './editLayer';
+} from "./authoringState";
+import { TemporaryState } from "./temporaryState";
+import { EditLayer, EditLayerMode } from "./editLayer";
 import {
   ValidationState,
   changedElementsToValidate,
   validateElements,
-} from './validation';
+} from "./validation";
 
-import { Cancellation } from '../viewUtils/async';
-import { makeMoveComparator, MoveDirection } from '../viewUtils/collections';
+import { Cancellation } from "../viewUtils/async";
+import { makeMoveComparator, MoveDirection } from "../viewUtils/collections";
 
 export interface PropertyEditorOptions {
   elementData: ElementModel;
@@ -109,15 +103,12 @@ export interface EditorOptions {
 
 export interface EditorEvents {
   changeMode: { source: EditorController };
-  changeSelection: PropertyChange<
-    EditorController,
-    ReadonlyArray<SelectionItem>
-  >;
+  changeSelection: PropertyChange<EditorController, readonly SelectionItem[]>;
   changeAuthoringState: PropertyChange<EditorController, AuthoringState>;
   changeValidationState: PropertyChange<EditorController, ValidationState>;
   changeTemporaryState: PropertyChange<EditorController, TemporaryState>;
   toggleDialog: { isOpened: boolean };
-  addElements: { elements: ReadonlyArray<Element> };
+  addElements: { elements: readonly Element[] };
 }
 
 export class EditorController {
@@ -133,7 +124,7 @@ export class EditorController {
   private _authoringState = AuthoringState.empty;
   private _validationState = ValidationState.empty;
   private _temporaryState = TemporaryState.empty;
-  private _selection: ReadonlyArray<SelectionItem> = [];
+  private _selection: readonly SelectionItem[] = [];
 
   private dialogType: DialogTypes;
   private dialogTarget: SelectionItem;
@@ -146,7 +137,7 @@ export class EditorController {
     this.view = view;
     this.options = options;
 
-    this.listener.listen(this.events, 'changeValidationState', (e) => {
+    this.listener.listen(this.events, "changeValidationState", (e) => {
       for (const element of this.model.elements) {
         const previous = e.previous.elements.get(element.iri);
         const current = this.validationState.elements.get(element.iri);
@@ -155,7 +146,7 @@ export class EditorController {
         }
       }
     });
-    this.listener.listen(this.events, 'changeAuthoringState', (e) => {
+    this.listener.listen(this.events, "changeAuthoringState", (e) => {
       if (this.options.validationApi) {
         const changedElements = changedElementsToValidate(e.previous, this);
         validateElements(
@@ -178,41 +169,41 @@ export class EditorController {
   }
 
   _initializePaperComponents(paperArea: PaperArea) {
-    this.listener.listen(paperArea.events, 'pointerUp', (e) =>
+    this.listener.listen(paperArea.events, "pointerUp", (e) =>
       this.onPaperPointerUp(e)
     );
-    this.listener.listen(this.model.events, 'changeCells', () =>
+    this.listener.listen(this.model.events, "changeCells", () =>
       this.onCellsChanged()
     );
-    this.listener.listen(this.model.events, 'elementEvent', (e) => {
-      if (e.key === 'requestedGroupContent') {
+    this.listener.listen(this.model.events, "elementEvent", (e) => {
+      if (e.key === "requestedGroupContent") {
         this.loadGroupContent(e.data.requestedGroupContent.source);
       }
     });
 
-    this.listener.listen(this.model.events, 'loadingStart', () =>
+    this.listener.listen(this.model.events, "loadingStart", () =>
       this.setSpinner({})
     );
-    this.listener.listen(this.model.events, 'loadingSuccess', () => {
+    this.listener.listen(this.model.events, "loadingSuccess", () => {
       this.setSpinner(undefined);
 
       const widget = <LinkStateWidget view={this.view} editor={this} />;
       this.view.setPaperWidget({
-        key: 'states',
+        key: "states",
         widget,
         attachment: WidgetAttachment.OverLinks,
       });
     });
-    this.listener.listen(this.model.events, 'loadingError', ({ error }) => {
+    this.listener.listen(this.model.events, "loadingError", ({ error }) => {
       const statusText = error ? error.message : undefined;
       this.setSpinner({ statusText, errorOccured: true });
     });
 
     if (!this.options.disableHalo) {
       this.configureHalo();
-      document.addEventListener('keyup', this.onKeyUp);
-      this.listener.listen(this.view.events, 'dispose', () => {
-        document.removeEventListener('keyup', this.onKeyUp);
+      document.addEventListener("keyup", this.onKeyUp);
+      this.listener.listen(this.view.events, "dispose", () => {
+        document.removeEventListener("keyup", this.onKeyUp);
       });
     }
   }
@@ -232,7 +223,7 @@ export class EditorController {
     this._metadataApi = value;
     if (Boolean(value) !== Boolean(previous)) {
       // authoring mode changed
-      this.source.trigger('changeMode', { source: this });
+      this.source.trigger("changeMode", { source: this });
     }
   }
 
@@ -249,9 +240,9 @@ export class EditorController {
 
   private updateAuthoringState(state: AuthoringState): Command {
     const previous = this._authoringState;
-    return Command.create('Create or delete entities and links', () => {
+    return Command.create("Create or delete entities and links", () => {
       this._authoringState = state;
-      this.source.trigger('changeAuthoringState', { source: this, previous });
+      this.source.trigger("changeAuthoringState", { source: this, previous });
       return this.updateAuthoringState(previous);
     });
   }
@@ -265,7 +256,7 @@ export class EditorController {
       return;
     }
     this._validationState = value;
-    this.source.trigger('changeValidationState', { source: this, previous });
+    this.source.trigger("changeValidationState", { source: this, previous });
   }
 
   get temporaryState() {
@@ -277,19 +268,19 @@ export class EditorController {
       return;
     }
     this._temporaryState = value;
-    this.source.trigger('changeTemporaryState', { source: this, previous });
+    this.source.trigger("changeTemporaryState", { source: this, previous });
   }
 
   get selection() {
     return this._selection;
   }
-  setSelection(value: ReadonlyArray<SelectionItem>) {
+  setSelection(value: readonly SelectionItem[]) {
     const previous = this._selection;
     if (previous === value) {
       return;
     }
     this._selection = value;
-    this.source.trigger('changeSelection', { source: this, previous });
+    this.source.trigger("changeSelection", { source: this, previous });
   }
 
   cancelSelection() {
@@ -300,7 +291,7 @@ export class EditorController {
     const DELETE_KEY_CODE = 46;
     if (
       e.keyCode === DELETE_KEY_CODE &&
-      document.activeElement.localName !== 'input'
+      document.activeElement.localName !== "input"
     ) {
       this.removeSelectedElements();
     }
@@ -316,7 +307,7 @@ export class EditorController {
     this.removeItems(itemsToRemove);
   }
 
-  removeItems(items: ReadonlyArray<SelectionItem>) {
+  removeItems(items: readonly SelectionItem[]) {
     const batch = this.model.history.startBatch();
     const deletedElementIris = new Set<ElementIri>();
 
@@ -406,7 +397,7 @@ export class EditorController {
       return;
     }
 
-    this.listener.listen(this.events, 'changeSelection', () => {
+    this.listener.listen(this.events, "changeSelection", () => {
       const selected =
         this.selection.length === 1 ? this.selection[0] : undefined;
       if (this.dialogTarget && selected !== this.dialogTarget) {
@@ -416,9 +407,13 @@ export class EditorController {
       this.renderDefaultHalo();
     });
 
-    this.listener.listen(this.events, 'toggleDialog', ({ isOpened }) => {
-      this.renderDefaultHalo();
-    });
+    this.listener.listen(
+      this.events,
+      "toggleDialog",
+      ({ isOpened: _isOpened }) => {
+        this.renderDefaultHalo();
+      }
+    );
 
     this.renderDefaultHalo();
   }
@@ -450,6 +445,8 @@ export class EditorController {
           target={selected}
           onRemove={() => this.removeSelectedElements()}
           onExpand={() => {
+            console.log("model", this.model);
+            console.log("selected", selected);
             this.model.history.execute(
               setElementExpanded(selected, !selected.isExpanded)
             );
@@ -513,7 +510,7 @@ export class EditorController {
     }
 
     this.view.setPaperWidget({
-      key: 'halo',
+      key: "halo",
       widget: halo,
       attachment: WidgetAttachment.OverElements,
     });
@@ -633,7 +630,7 @@ export class EditorController {
           this.removeTemporaryLink(link);
 
           const batch = this.model.history.startBatch(
-            isNewElement ? 'Create new entity' : 'Link to entity'
+            isNewElement ? "Create new entity" : "Link to entity"
           );
 
           this.model.addElement(target);
@@ -675,7 +672,7 @@ export class EditorController {
       target,
       dialogType,
       content,
-      caption: 'Establish New Connection',
+      caption: "Establish New Connection",
       onClose: onCancel,
     });
   }
@@ -721,8 +718,8 @@ export class EditorController {
       />
     );
     const caption = this.temporaryState.links.has(link.data)
-      ? 'Establish New Connection'
-      : 'Edit Connection';
+      ? "Establish New Connection"
+      : "Edit Connection";
     this.showDialog({
       target: link,
       dialogType,
@@ -754,7 +751,7 @@ export class EditorController {
         />
       ),
       size,
-      caption: 'Edit Link Label',
+      caption: "Edit Link Label",
       offset: { x: 25, y: -size.height / 2 },
       calculatePosition: () => {
         const { x, y, width, height } = link.labelBounds;
@@ -802,11 +799,11 @@ export class EditorController {
       </Dialog>
     );
     this.view.setPaperWidget({
-      key: 'dialog',
+      key: "dialog",
       widget: dialog,
       attachment: WidgetAttachment.OverElements,
     });
-    this.source.trigger('toggleDialog', { isOpened: true });
+    this.source.trigger("toggleDialog", { isOpened: true });
   }
 
   hideDialog() {
@@ -823,19 +820,19 @@ export class EditorController {
       this.dialogType = undefined;
       this.dialogTarget = undefined;
       this.view.setPaperWidget({
-        key: 'dialog',
+        key: "dialog",
         widget: undefined,
         attachment: WidgetAttachment.OverElements,
       });
-      this.source.trigger('toggleDialog', { isOpened: false });
+      this.source.trigger("toggleDialog", { isOpened: false });
     }
   }
 
   onDragDrop(
-    dragged: ReadonlyArray<ElementIri | ElementModel>,
+    dragged: readonly (ElementIri | ElementModel)[],
     paperPosition: Vector
   ) {
-    const batch = this.model.history.startBatch('Drag and drop onto diagram');
+    const batch = this.model.history.startBatch("Drag and drop onto diagram");
     const placedElements = placeElements(this.view, dragged, paperPosition);
     const irisToLoad = placedElements.map((elem) => elem.iri);
     batch.history.execute(requestElementData(this.model, irisToLoad));
@@ -848,7 +845,7 @@ export class EditorController {
 
     this.setSelection(placedElements);
 
-    this.source.trigger('addElements', { elements: placedElements });
+    this.source.trigger("addElements", { elements: placedElements });
   }
 
   onAddElementsInConnectionMenu(
@@ -867,7 +864,7 @@ export class EditorController {
       targetElement,
       prefferedLinksLength: 300,
     }).then(() => {
-      this.source.trigger('addElements', { elements });
+      this.source.trigger("addElements", { elements });
     });
 
     if (linkType && !linkType.visible) {
@@ -890,7 +887,7 @@ export class EditorController {
     return this.model.loadEmbeddedElements(element.iri).then((models) => {
       const batch = this.model.history.startBatch();
       const elementIris = Object.keys(models) as ElementIri[];
-      const elements = elementIris.map((key) =>
+      elementIris.map((key) =>
         this.model.createElement(models[key], element.id)
       );
       batch.discard();
@@ -919,7 +916,7 @@ export class EditorController {
     elementModel: ElementModel;
     temporary?: boolean;
   }): Element {
-    const batch = this.model.history.startBatch('Create new entity');
+    const batch = this.model.history.startBatch("Create new entity");
 
     const element = this.model.createElement(elementModel);
     element.setExpanded(true);
@@ -944,7 +941,7 @@ export class EditorController {
       return;
     }
     const oldData = elements[0].data;
-    const batch = this.model.history.startBatch('Edit entity');
+    const batch = this.model.history.startBatch("Edit entity");
 
     const newState = AuthoringState.changeElement(
       this._authoringState,
@@ -969,7 +966,7 @@ export class EditorController {
       return;
     }
 
-    const batch = this.model.history.startBatch('Delete entity');
+    const batch = this.model.history.startBatch("Delete entity");
     const model = elements[0].data;
 
     const event = state.elements.get(elementIri);
@@ -999,10 +996,10 @@ export class EditorController {
       base.targetId
     );
     if (existingLink) {
-      throw Error('The link already exists');
+      throw Error("The link already exists");
     }
 
-    const batch = this.model.history.startBatch('Create new link');
+    const batch = this.model.history.startBatch("Create new link");
 
     const addedLink = this.model.addLink(base);
     if (!temporary) {
@@ -1032,7 +1029,7 @@ export class EditorController {
   }
 
   changeLink(oldData: LinkModel, newData: LinkModel) {
-    const batch = this.model.history.startBatch('Change link');
+    const batch = this.model.history.startBatch("Change link");
     if (sameLink(oldData, newData)) {
       this.model.history.execute(setLinkData(this.model, oldData, newData));
       this.setAuthoringState(
@@ -1056,7 +1053,7 @@ export class EditorController {
 
   moveLinkSource(params: { link: Link; newSource: Element }): Link {
     const { link, newSource } = params;
-    const batch = this.model.history.startBatch('Move link to another element');
+    const batch = this.model.history.startBatch("Move link to another element");
     this.changeLink(link.data, { ...link.data, sourceId: newSource.iri });
     const newLink = this.model.findLink(
       link.typeId,
@@ -1070,7 +1067,7 @@ export class EditorController {
 
   moveLinkTarget(params: { link: Link; newTarget: Element }): Link {
     const { link, newTarget } = params;
-    const batch = this.model.history.startBatch('Move link to another element');
+    const batch = this.model.history.startBatch("Move link to another element");
     this.changeLink(link.data, { ...link.data, targetId: newTarget.iri });
     const newLink = this.model.findLink(
       link.typeId,
@@ -1087,7 +1084,7 @@ export class EditorController {
     if (AuthoringState.isDeletedLink(state, model)) {
       return;
     }
-    const batch = this.model.history.startBatch('Delete link');
+    const batch = this.model.history.startBatch("Delete link");
     const newState = AuthoringState.deleteLink(state, model);
     if (AuthoringState.isNewLink(state, model)) {
       this.model.links
@@ -1106,7 +1103,7 @@ export class EditorController {
     const { target, mode, point } = params;
     const onFinishEditing = () => {
       this.view.setPaperWidget({
-        key: 'editLayer',
+        key: "editLayer",
         widget: undefined,
         attachment: WidgetAttachment.OverElements,
       });
@@ -1123,7 +1120,7 @@ export class EditorController {
       />
     );
     this.view.setPaperWidget({
-      key: 'editLayer',
+      key: "editLayer",
       widget: editLayer,
       attachment: WidgetAttachment.OverElements,
     });
@@ -1168,7 +1165,7 @@ export class EditorController {
       return;
     }
 
-    const batch = this.model.history.startBatch('Discard change');
+    const batch = this.model.history.startBatch("Discard change");
     if (event.type === AuthoringKind.ChangeElement) {
       if (event.deleted) {
         /* nothing */
@@ -1204,7 +1201,7 @@ interface LoadingWidgetProps extends PaperWidgetProps {
 }
 
 class LoadingWidget extends React.Component<LoadingWidgetProps, {}> {
-  static readonly Key = 'loadingWidget';
+  static readonly Key = "loadingWidget";
 
   render() {
     const { spinnerProps, paperArea } = this.props;
@@ -1226,7 +1223,7 @@ class LoadingWidget extends React.Component<LoadingWidgetProps, {}> {
 
 function placeElements(
   view: DiagramView,
-  dragged: ReadonlyArray<ElementIri | ElementModel>,
+  dragged: readonly (ElementIri | ElementModel)[],
   position: Vector
 ): Element[] {
   const elements = dragged.map((item) => view.model.createElement(item));
@@ -1268,7 +1265,7 @@ function makeLinkWithDirection(original: Link, data: LinkModel): Link {
       data.sourceId === original.data.targetId
     )
   ) {
-    throw new Error('New link source IRI is unrelated to original link');
+    throw new Error("New link source IRI is unrelated to original link");
   }
   if (
     !(
@@ -1276,7 +1273,7 @@ function makeLinkWithDirection(original: Link, data: LinkModel): Link {
       data.targetId === original.data.targetId
     )
   ) {
-    throw new Error('New link target IRI is unrelated to original link');
+    throw new Error("New link target IRI is unrelated to original link");
   }
   const sourceId =
     data.sourceId === original.data.sourceId

@@ -1,20 +1,20 @@
 export type RdfNode = RdfIri | RdfLiteral | RdfBlank;
 
 export interface RdfIri {
-  type: 'uri';
+  type: "uri";
   value: string;
 }
 
 export interface RdfBlank {
-  type: 'bnode';
+  type: "bnode";
   value: string;
 }
 
 export interface RdfLiteral {
-  type: 'literal';
+  type: "literal";
   value: string;
   datatype?: string;
-  'xml:lang': string;
+  "xml:lang": string;
 }
 
 export interface Triple {
@@ -24,20 +24,20 @@ export interface Triple {
 }
 
 export function isRdfBlank(e: RdfNode): e is RdfBlank {
-  return e && e.type === 'bnode';
+  return e && e.type === "bnode";
 }
 
 export function isRdfIri(e: RdfNode): e is RdfIri {
-  return e && e.type === 'uri';
+  return e && e.type === "uri";
 }
 
 export function isRdfLiteral(e: RdfNode): e is RdfLiteral {
-  return e && e.type === 'literal';
+  return e && e.type === "literal";
 }
 
 export interface BlankBinding extends ElementBinding {
   blankType: {
-    value: 'listHead' | 'blankNode';
+    value: "listHead" | "blankNode";
   };
   blankTrgProp: RdfNode;
   blankTrg: RdfNode;

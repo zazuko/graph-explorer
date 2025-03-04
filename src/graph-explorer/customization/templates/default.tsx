@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { TemplateProps } from '../props';
+import { TemplateProps } from "../props";
 
-import { getPropertyValues } from './utils';
+import { getPropertyValues } from "./utils";
 
-const CLASS_NAME = 'graph-explorer-default-template';
+const CLASS_NAME = "graph-explorer-default-template";
 
 export class DefaultElementTemplate extends React.Component<TemplateProps, {}> {
   render() {
@@ -104,7 +104,7 @@ export class DefaultElementTemplate extends React.Component<TemplateProps, {}> {
                 className="graph-explorer-default-template_body_expander_property-table_row"
               >
                 <div
-                  title={prop.name + ' (' + prop.id + ')'}
+                  title={prop.name + " (" + prop.id + ")"}
                   className="graph-explorer-default-template_body_expander_property-table_row__key"
                 >
                   {prop.name}

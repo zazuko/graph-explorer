@@ -1,4 +1,4 @@
-import { Element } from './elements';
+import { Element } from "./elements";
 
 export interface Vector {
   readonly x: number;
@@ -93,8 +93,8 @@ function intersectRayFromRectangleCenter(sourceRect: Rect, rayTarget: Vector) {
 }
 
 export function isPolylineEqual(
-  left: ReadonlyArray<Vector>,
-  right: ReadonlyArray<Vector>
+  left: readonly Vector[],
+  right: readonly Vector[]
 ) {
   if (left === right) {
     return true;
@@ -115,7 +115,7 @@ export function isPolylineEqual(
 export function computePolyline(
   source: Element,
   target: Element,
-  vertices: ReadonlyArray<Vector>
+  vertices: readonly Vector[]
 ): Vector[] {
   const sourceRect = boundsOf(source);
   const targetRect = boundsOf(target);
@@ -132,7 +132,7 @@ export function computePolyline(
   return [startPoint, ...vertices, endPoint];
 }
 
-export function computePolylineLength(polyline: ReadonlyArray<Vector>): number {
+export function computePolylineLength(polyline: readonly Vector[]): number {
   let previous: Vector;
   return polyline.reduce((acc, point) => {
     const segmentLength = previous
@@ -144,11 +144,11 @@ export function computePolylineLength(polyline: ReadonlyArray<Vector>): number {
 }
 
 export function getPointAlongPolyline(
-  polyline: ReadonlyArray<Vector>,
+  polyline: readonly Vector[],
   offset: number
 ): Vector {
   if (polyline.length === 0) {
-    throw new Error('Cannot compute a point for empty polyline');
+    throw new Error("Cannot compute a point for empty polyline");
   }
   if (offset < 0) {
     return polyline[0];
@@ -174,7 +174,7 @@ export function getPointAlongPolyline(
 }
 
 export function findNearestSegmentIndex(
-  polyline: ReadonlyArray<Vector>,
+  polyline: readonly Vector[],
   location: Vector
 ): number {
   let minDistance = Infinity;
@@ -204,7 +204,7 @@ export function findNearestSegmentIndex(
 }
 
 export function findElementAtPoint(
-  elements: ReadonlyArray<Element>,
+  elements: readonly Element[],
   point: Vector
 ): Element | undefined {
   for (let i = elements.length - 1; i >= 0; i--) {
@@ -228,12 +228,12 @@ export function findElementAtPoint(
 }
 
 export function computeGrouping(
-  elements: ReadonlyArray<Element>
+  elements: readonly Element[]
 ): Map<string, Element[]> {
   const grouping = new Map<string, Element[]>();
   for (const element of elements) {
     const group = element.group;
-    if (typeof group === 'string') {
+    if (typeof group === "string") {
       let children = grouping.get(group);
       if (!children) {
         children = [];

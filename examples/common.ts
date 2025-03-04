@@ -1,12 +1,12 @@
 import {
   SerializedDiagram,
   convertToSerializedDiagram,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 
 export function onPageLoad(callback: (container: HTMLDivElement) => void) {
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.createElement('div');
-    container.id = 'root';
+  document.addEventListener("DOMContentLoaded", () => {
+    const container = document.createElement("div");
+    container.id = "root";
     document.body.appendChild(container);
     callback(container);
   });
@@ -21,7 +21,7 @@ export function tryLoadLayoutFromLocalStorage(): SerializedDiagram | undefined {
 
       // backward compatibility test. If we encounder old diagram,
       // wrap it into Diagram interface, jsonld - pass through
-      if (entry['@context']) {
+      if (entry["@context"]) {
         return entry;
       } else {
         return convertToSerializedDiagram({
@@ -29,7 +29,7 @@ export function tryLoadLayoutFromLocalStorage(): SerializedDiagram | undefined {
           linkTypeOptions: [],
         });
       }
-    } catch (e) {
+    } catch (_e) {
       /* ignore */
     }
   }

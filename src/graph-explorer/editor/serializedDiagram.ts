@@ -1,39 +1,39 @@
-import { pick } from 'lodash';
+import { pick } from "lodash";
 
-import { ElementIri, LinkTypeIri } from '../data/model';
-import { DIAGRAM_CONTEXT_URL_V1 } from '../data/schema';
+import { ElementIri, LinkTypeIri } from "../data/model";
+import { DIAGRAM_CONTEXT_URL_V1 } from "../data/schema";
 
 import {
   Element,
   ElementTemplateState,
   Link,
   LinkTemplateState,
-} from '../diagram/elements';
-import { Vector, Size } from '../diagram/geometry';
+} from "../diagram/elements";
+import { Vector, Size } from "../diagram/geometry";
 
 export interface SerializedDiagram {
-  '@context': any;
-  '@type': 'Diagram';
+  "@context": any;
+  "@type": "Diagram";
   layoutData: LayoutData;
-  linkTypeOptions?: ReadonlyArray<LinkTypeOptions>;
+  linkTypeOptions?: readonly LinkTypeOptions[];
 }
 
 export interface LinkTypeOptions {
-  '@type': 'LinkTypeOptions';
+  "@type": "LinkTypeOptions";
   property: LinkTypeIri;
   visible: boolean;
   showLabel?: boolean;
 }
 
 export interface LayoutData {
-  '@type': 'Layout';
-  elements: ReadonlyArray<LayoutElement>;
-  links: ReadonlyArray<LayoutLink>;
+  "@type": "Layout";
+  elements: readonly LayoutElement[];
+  links: readonly LayoutLink[];
 }
 
 export interface LayoutElement {
-  '@type': 'Element';
-  '@id': string;
+  "@type": "Element";
+  "@id": string;
   iri: ElementIri;
   position: Vector;
   size?: Size;
@@ -44,44 +44,44 @@ export interface LayoutElement {
 }
 
 export interface LayoutLink {
-  '@type': 'Link';
-  '@id': string;
+  "@type": "Link";
+  "@id": string;
   property: LinkTypeIri;
-  source: { '@id': string };
-  target: { '@id': string };
-  vertices?: ReadonlyArray<Vector>;
+  source: { "@id": string };
+  target: { "@id": string };
+  vertices?: readonly Vector[];
   linkState?: LinkTemplateState;
 }
 
 const serializedCellProperties = [
   // common properties
-  'id',
-  'type',
+  "id",
+  "type",
   // element properties
-  'size',
-  'angle',
-  'isExpanded',
-  'position',
-  'iri',
-  'group',
+  "size",
+  "angle",
+  "isExpanded",
+  "position",
+  "iri",
+  "group",
   // link properties
-  'typeId',
-  'source',
-  'target',
-  'vertices',
+  "typeId",
+  "source",
+  "target",
+  "vertices",
 ];
 
 export function emptyDiagram(): SerializedDiagram {
   return {
-    '@context': DIAGRAM_CONTEXT_URL_V1,
-    '@type': 'Diagram',
+    "@context": DIAGRAM_CONTEXT_URL_V1,
+    "@type": "Diagram",
     layoutData: emptyLayoutData(),
     linkTypeOptions: [],
   };
 }
 
 export function emptyLayoutData(): LayoutData {
-  return { '@type': 'Layout', elements: [], links: [] };
+  return { "@type": "Layout", elements: [], links: [] };
 }
 
 export function convertToSerializedDiagram(params: {
@@ -97,15 +97,15 @@ export function convertToSerializedDiagram(params: {
 
     // normalize type
     if (
-      newCell.type === 'GraphExplorer.Element' ||
-      newCell.type === 'element'
+      newCell.type === "GraphExplorer.Element" ||
+      newCell.type === "element"
     ) {
-      newCell.type = 'Element';
+      newCell.type = "Element";
     }
 
     // normalize type
-    if (newCell.type === 'link') {
-      newCell.type = 'Link';
+    if (newCell.type === "link") {
+      newCell.type = "Link";
     }
 
     if (!newCell.iri) {
@@ -113,22 +113,22 @@ export function convertToSerializedDiagram(params: {
     }
 
     // rename to @id and @type to match JSON-LD
-    newCell['@id'] = newCell.id;
+    newCell["@id"] = newCell.id;
     delete newCell.id;
 
-    newCell['@type'] = newCell.type;
+    newCell["@type"] = newCell.type;
     delete newCell.type;
 
     // make two separate lists
-    switch (newCell['@type']) {
-      case 'Element':
+    switch (newCell["@type"]) {
+      case "Element":
         elements.push(newCell);
         break;
-      case 'Link':
+      case "Link":
         // rename internal IDs
-        newCell.source['@id'] = newCell.source.id;
+        newCell.source["@id"] = newCell.source.id;
         delete newCell.source.id;
-        newCell.target['@id'] = newCell.target.id;
+        newCell.target["@id"] = newCell.target.id;
         delete newCell.target.id;
         // rename typeID to property
         newCell.property = newCell.typeId;
@@ -140,14 +140,14 @@ export function convertToSerializedDiagram(params: {
 
   return {
     ...emptyDiagram(),
-    layoutData: { '@type': 'Layout', elements, links },
+    layoutData: { "@type": "Layout", elements, links },
     linkTypeOptions: params.linkTypeOptions,
   };
 }
 
 export function makeSerializedDiagram(params: {
   layoutData?: LayoutData;
-  linkTypeOptions?: ReadonlyArray<LinkTypeOptions>;
+  linkTypeOptions?: readonly LinkTypeOptions[];
 }): SerializedDiagram {
   const diagram: SerializedDiagram = {
     ...emptyDiagram(),
@@ -161,13 +161,13 @@ export function makeSerializedDiagram(params: {
 }
 
 export function makeLayoutData(
-  modelElements: ReadonlyArray<Element>,
-  modelLinks: ReadonlyArray<Link>
+  modelElements: readonly Element[],
+  modelLinks: readonly Link[]
 ): LayoutData {
   const elements = modelElements.map(
     (element): LayoutElement => ({
-      '@type': 'Element',
-      '@id': element.id,
+      "@type": "Element",
+      "@id": element.id,
       iri: element.iri,
       position: element.position,
       size: element.size,
@@ -178,14 +178,14 @@ export function makeLayoutData(
   );
   const links = modelLinks.map(
     (link): LayoutLink => ({
-      '@type': 'Link',
-      '@id': link.id,
+      "@type": "Link",
+      "@id": link.id,
       property: link.typeId,
-      source: { '@id': link.sourceId },
-      target: { '@id': link.targetId },
+      source: { "@id": link.sourceId },
+      target: { "@id": link.targetId },
       vertices: [...link.vertices],
       linkState: link.linkState,
     })
   );
-  return { '@type': 'Layout', elements, links };
+  return { "@type": "Layout", elements, links };
 }

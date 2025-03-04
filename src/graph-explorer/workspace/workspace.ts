@@ -1,54 +1,50 @@
-import { Component, createElement, ReactElement, cloneElement } from 'react';
-import * as ReactDOM from 'react-dom';
-import * as saveAs from 'file-saverjs';
+import { Component, createElement, ReactElement, cloneElement } from "react";
+import * as ReactDOM from "react-dom";
+import * as saveAs from "file-saverjs";
 
 import {
   LinkRouter,
   LinkTemplateResolver,
   TemplateResolver,
   TypeStyleResolver,
-} from '../customization/props';
+} from "../customization/props";
 
-import { MetadataApi } from '../data/metadataApi';
-import { ValidationApi } from '../data/validationApi';
+import { MetadataApi } from "../data/metadataApi";
+import { ValidationApi } from "../data/validationApi";
 
-import { Rect } from '../diagram/geometry';
-import { RestoreGeometry } from '../diagram/commands';
-import {
-  Command,
-  CommandHistory,
-  NonRememberingHistory,
-} from '../diagram/history';
+import { Rect } from "../diagram/geometry";
+import { RestoreGeometry } from "../diagram/commands";
+import { CommandHistory, NonRememberingHistory } from "../diagram/history";
 import {
   PaperArea,
   ZoomOptions,
   PointerEvent,
   PointerUpEvent,
-} from '../diagram/paperArea';
+} from "../diagram/paperArea";
 import {
   DiagramView,
   IriClickHandler,
   LabelLanguageSelector,
   WidgetAttachment,
-} from '../diagram/view';
+} from "../diagram/view";
 
-import { AsyncModel, GroupBy } from '../editor/asyncModel';
-import { AuthoringState } from '../editor/authoringState';
-import { EditorController, PropertyEditor } from '../editor/editorController';
+import { AsyncModel, GroupBy } from "../editor/asyncModel";
+import { AuthoringState } from "../editor/authoringState";
+import { EditorController, PropertyEditor } from "../editor/editorController";
 
-import { EventObserver } from '../viewUtils/events';
-import { dataURLToBlob } from '../viewUtils/toSvg';
+import { EventObserver } from "../viewUtils/events";
+import { dataURLToBlob } from "../viewUtils/toSvg";
 
-import { PropertySuggestionHandler } from '../widgets/connectionsMenu';
-import { SearchCriteria } from '../widgets/instancesSearch';
-import { Navigator } from '../widgets/navigator';
+import { PropertySuggestionHandler } from "../widgets/connectionsMenu";
+import { SearchCriteria } from "../widgets/instancesSearch";
+import { Navigator } from "../widgets/navigator";
 
-import { DefaultToolbar, ToolbarProps } from './toolbar';
-import { WorkspaceMarkup, WorkspaceMarkupProps } from './workspaceMarkup';
-import { WorkspaceEventHandler, WorkspaceEventKey } from './workspaceContext';
-import { forceLayout, applyLayout } from '../viewUtils/layout';
+import { DefaultToolbar, ToolbarProps } from "./toolbar";
+import { WorkspaceMarkup, WorkspaceMarkupProps } from "./workspaceMarkup";
+import { WorkspaceEventHandler, WorkspaceEventKey } from "./workspaceContext";
+import { forceLayout, applyLayout } from "../viewUtils/layout";
 
-const GRAPH_EXPLORER_WEBSITE = 'https://graph-explorer.org/';
+const GRAPH_EXPLORER_WEBSITE = "https://graph-explorer.org/";
 const GRAPH_EXPLORER_LOGO_SVG: string | undefined = undefined;
 
 export interface WorkspaceProps {
@@ -86,7 +82,7 @@ export interface WorkspaceProps {
   /**
    * Set of languages to display diagram data.
    */
-  languages?: ReadonlyArray<WorkspaceLanguage>;
+  languages?: readonly WorkspaceLanguage[];
   /**
    * Currently selected language.
    */
@@ -151,10 +147,10 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
     leftPanelInitiallyOpen: true,
     rightPanelInitiallyOpen: false,
     languages: [
-      { code: 'en', label: 'English' },
-      { code: 'ru', label: 'Russian' },
+      { code: "en", label: "English" },
+      { code: "ru", label: "Russian" },
     ],
-    language: 'en',
+    language: "en",
   };
 
   private readonly listener = new EventObserver();
@@ -272,52 +268,56 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
     this.editor._initializePaperComponents(this.markup.paperArea);
     this.updateNavigator(!this.props.hideNavigator);
 
-    this.listener.listen(this.model.events, 'loadingSuccess', () => {
+    this.listener.listen(this.model.events, "loadingSuccess", () => {
       this.view.performSyncUpdate();
       this.markup.paperArea.centerContent();
     });
 
-    this.listener.listen(this.model.events, 'elementEvent', ({ key, data }) => {
-      if (!data.requestedAddToFilter) {
-        return;
+    this.listener.listen(
+      this.model.events,
+      "elementEvent",
+      ({ key: _key, data }) => {
+        if (!data.requestedAddToFilter) {
+          return;
+        }
+        const { source, linkType, direction } = data.requestedAddToFilter;
+        this.setState({
+          criteria: {
+            refElement: source,
+            refElementLink: linkType,
+            linkDirection: direction,
+          },
+        });
+        if (onWorkspaceEvent) {
+          onWorkspaceEvent(WorkspaceEventKey.searchUpdateCriteria);
+        }
       }
-      const { source, linkType, direction } = data.requestedAddToFilter;
-      this.setState({
-        criteria: {
-          refElement: source,
-          refElementLink: linkType,
-          linkDirection: direction,
-        },
-      });
-      if (onWorkspaceEvent) {
-        onWorkspaceEvent(WorkspaceEventKey.searchUpdateCriteria);
-      }
-    });
+    );
 
-    this.listener.listen(this.markup.paperArea.events, 'pointerUp', (e) => {
+    this.listener.listen(this.markup.paperArea.events, "pointerUp", (e) => {
       if (this.props.onPointerUp) {
         this.props.onPointerUp(e);
       }
     });
-    this.listener.listen(this.markup.paperArea.events, 'pointerMove', (e) => {
+    this.listener.listen(this.markup.paperArea.events, "pointerMove", (e) => {
       if (this.props.onPointerMove) {
         this.props.onPointerMove(e);
       }
     });
-    this.listener.listen(this.markup.paperArea.events, 'pointerDown', (e) => {
+    this.listener.listen(this.markup.paperArea.events, "pointerDown", (e) => {
       if (this.props.onPointerDown) {
         this.props.onPointerDown(e);
       }
     });
 
     if (onWorkspaceEvent) {
-      this.listener.listen(this.editor.events, 'changeSelection', () =>
+      this.listener.listen(this.editor.events, "changeSelection", () =>
         onWorkspaceEvent(WorkspaceEventKey.editorChangeSelection)
       );
-      this.listener.listen(this.editor.events, 'toggleDialog', () =>
+      this.listener.listen(this.editor.events, "toggleDialog", () =>
         onWorkspaceEvent(WorkspaceEventKey.editorToggleDialog)
       );
-      this.listener.listen(this.editor.events, 'addElements', () =>
+      this.listener.listen(this.editor.events, "addElements", () =>
         onWorkspaceEvent(WorkspaceEventKey.editorAddElements)
       );
     }
@@ -350,13 +350,13 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
         expanded: !this.props.collapseNavigator,
       });
       this.view.setPaperWidget({
-        key: 'navigator',
+        key: "navigator",
         widget,
         attachment: WidgetAttachment.Viewport,
       });
     } else {
       this.view.setPaperWidget({
-        key: 'navigator',
+        key: "navigator",
         widget: undefined,
         attachment: WidgetAttachment.Viewport,
       });
@@ -397,10 +397,9 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
           this.editor.setSpinner(undefined);
         })
         .catch((error) => {
-          // tslint:disable-next-line:no-console
           console.error(error);
           this.editor.setSpinner({
-            statusText: 'Unknown error occured',
+            statusText: "Unknown error occured",
             errorOccured: true,
           });
         });
@@ -408,7 +407,7 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
   }
 
   forceLayout = () => {
-    const batch = this.model.history.startBatch('Force layout');
+    const batch = this.model.history.startBatch("Force layout");
     batch.history.registerToUndo(RestoreGeometry.capture(this.model));
 
     applyLayout(this.model, forceLayout({ model: this.model }));
@@ -422,19 +421,19 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
 
   exportSvg = (fileName?: string) => {
     this.markup.paperArea.exportSVG().then((svg) => {
-      fileName = fileName || 'diagram.svg';
+      fileName = fileName || "diagram.svg";
       const xmlEncodingHeader = '<?xml version="1.0" encoding="UTF-8"?>';
       const blob = new Blob([xmlEncodingHeader + svg], {
-        type: 'image/svg+xml',
+        type: "image/svg+xml",
       });
       saveAs(blob, fileName);
     });
   };
 
   exportPng = (fileName?: string) => {
-    fileName = fileName || 'diagram.png';
+    fileName = fileName || "diagram.png";
     this.markup.paperArea
-      .exportPNG({ backgroundColor: 'white' })
+      .exportPNG({ backgroundColor: "white" })
       .then((dataUri) => {
         const blob = dataURLToBlob(dataUri);
         saveAs(blob, fileName);
@@ -463,7 +462,7 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
 
   print = () => {
     this.markup.paperArea.exportSVG().then((svg) => {
-      const printWindow = window.open('', undefined, 'width=1280,height=720');
+      const printWindow = window.open("", undefined, "width=1280,height=720");
       printWindow.document.write(svg);
       printWindow.document.close();
       printWindow.print();
@@ -498,13 +497,8 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
     const { workspace } = this.props;
     const view = workspace.getDiagram();
     const editor = workspace.getEditor();
-    const {
-      languages,
-      onSaveDiagram,
-      onPersistChanges,
-      hidePanels,
-      toolbar,
-    } = workspace.props;
+    const { languages, onSaveDiagram, onPersistChanges, hidePanels, toolbar } =
+      workspace.props;
 
     const canPersistChanges = onPersistChanges
       ? !AuthoringState.isEmpty(editor.authoringState)
@@ -549,7 +543,7 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
   componentDidMount() {
     const { workspace } = this.props;
     const editor = workspace.getEditor();
-    this.listener.listen(editor.events, 'changeAuthoringState', () => {
+    this.listener.listen(editor.events, "changeAuthoringState", () => {
       this.forceUpdate();
     });
   }

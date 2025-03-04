@@ -1,8 +1,8 @@
-import { Dictionary } from '../model';
-import { FilterParams } from '../provider';
-import { getUriLocalName } from '../utils';
+import { Dictionary } from "../model";
+import { FilterParams } from "../provider";
+import { getUriLocalName } from "../utils";
 
-import { SparqlDataProviderSettings } from './sparqlDataProviderSettings';
+import { SparqlDataProviderSettings } from "./sparqlDataProviderSettings";
 import {
   ElementBinding,
   LinkBinding,
@@ -15,14 +15,14 @@ import {
   isRdfIri,
   isRdfBlank,
   isBlankBinding,
-} from './sparqlModels';
+} from "./sparqlModels";
 
 export const MAX_RECURSION_DEEP = 3;
 
-export const ENCODED_PREFIX = 'sparql-blank:';
+export const ENCODED_PREFIX = "sparql-blank:";
 
 export const BLANK_NODE_QUERY_PARAMETERS =
-  '?blankTrgProp ?blankTrg ?blankSrc ?blankSrcProp ?listHead';
+  "?blankTrgProp ?blankTrg ?blankSrc ?blankSrcProp ?listHead";
 
 export const BLANK_NODE_QUERY = `
     OPTIONAL {
@@ -71,6 +71,7 @@ export class QueryExecutor {
     } else {
       this.queryDictionary[query] = this.queryFunction(query).then(
         (response) => {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete this.queryDictionary[query];
           return response;
         }
@@ -85,8 +86,8 @@ export function updateFilterResults(
   queryFunction: (query: string) => Promise<SparqlResponse<BlankBinding>>,
   settings: SparqlDataProviderSettings
 ): Promise<SparqlResponse<ElementBinding & FilterBinding>> {
-  const completeBindings: Array<ElementBinding & FilterBinding> = [];
-  const blankBindings: Array<BlankBinding & FilterBinding> = [];
+  const completeBindings: (ElementBinding & FilterBinding)[] = [];
+  const blankBindings: (BlankBinding & FilterBinding)[] = [];
 
   for (const binding of result.results.bindings) {
     if (isBlankBinding(binding)) {
@@ -182,7 +183,7 @@ export function encodeId(blankBindings: BlankBinding[]): string {
   const bindingSet: Dictionary<BlankBinding> = {};
   for (const binding of blankBindings) {
     // leave out instance unique ID
-    const { inst, ...exceptInst } = binding;
+    const { inst: _inst, ...exceptInst } = binding;
     const encodedBinding = JSON.stringify(exceptInst);
     bindingSet[encodedBinding] = exceptInst as BlankBinding;
   }
@@ -202,30 +203,30 @@ export function decodeId(id: string): BlankBinding[] {
     const parsedBindings: BlankBinding[] = JSON.parse(decodeURI(clearId));
     const bindings = parsedBindings.map((binding) => {
       // restore instance unique ID
-      binding.inst = { type: 'uri', value: id };
+      binding.inst = { type: "uri", value: id };
       return binding;
     });
     return bindings;
-  } catch (error) {
+  } catch (_error) {
     /* silent */
     return undefined;
   }
 }
 
 export function createLabelForBlankBinding(bn: BlankBinding): RdfLiteral {
-  if (bn.blankType.value === 'listHead') {
+  if (bn.blankType.value === "listHead") {
     return {
-      type: 'literal',
-      value: 'RDFList',
-      'xml:lang': '',
+      type: "literal",
+      value: "RDFList",
+      "xml:lang": "",
     };
   } else {
     return {
-      type: 'literal',
+      type: "literal",
       value: bn.class
         ? getUriLocalName(bn.class.value) || bn.class.value
-        : 'anonymous',
-      'xml:lang': '',
+        : "anonymous",
+      "xml:lang": "",
     };
   }
 }
@@ -324,24 +325,24 @@ function getQueryForChain(
     // if blankNode has type 'listHead' then his target and targetProperty is artificial,
     // and we can't include this id in chain
     const trustableTrgProp =
-      index === 0 || blankNode.blankType.value !== 'listHead';
+      index === 0 || blankNode.blankType.value !== "listHead";
 
     const sourceId =
-      index > 0 ? '?inst' + (index - 1) : '<' + blankNode.blankSrc.value + '>';
+      index > 0 ? "?inst" + (index - 1) : "<" + blankNode.blankSrc.value + ">";
     const sourcePropId = trustableTrgProp
       ? index > 0
-        ? '?blankTrgProp' + (index - 1)
-        : '<' + blankNode.blankSrcProp.value + '>'
-      : '?anyType' + index;
+        ? "?blankTrgProp" + (index - 1)
+        : "<" + blankNode.blankSrcProp.value + ">"
+      : "?anyType" + index;
 
-    const instPostfix = index === maxIndex ? '' : index.toString();
+    const instPostfix = index === maxIndex ? "" : index.toString();
 
     const targetPropId = trustableTrgProp
-      ? '<' + blankNode.blankTrgProp.value + '>'
-      : '?anyType0' + index;
+      ? "<" + blankNode.blankTrgProp.value + ">"
+      : "?anyType0" + index;
 
     const firstRelation =
-      index === 0 && blankNode.blankType.value === 'listHead'
+      index === 0 && blankNode.blankType.value === "listHead"
         ? `
             ?blankSrc${index} rdf:rest*/rdf:first ?inst${instPostfix}.
             `
@@ -373,7 +374,7 @@ function getQueryForChain(
 
   const body = blankNodes
     .map((bn, index) => getQueryBlock(bn, index, blankNodes.length - 1))
-    .join('\n');
+    .join("\n");
   const query = `${sparqlDataProviderSettings.defaultPrefix}
     SELECT ?inst ?class ?label ?blankTrgProp ?blankTrg ?blankType
         WHERE {
@@ -443,7 +444,7 @@ export function filter(params: FilterParams): SparqlResponse<ElementBinding> {
 }
 
 export function getElementTypes(
-  elementIds: ReadonlyArray<string>
+  elementIds: readonly string[]
 ): SparqlResponse<ElementTypeBinding> {
   const bindings: ElementTypeBinding[] = [];
   for (const id of elementIds) {
@@ -470,7 +471,7 @@ function getAllRelatedByLinkTypeElements(
   let bindings: ElementBinding[] = [];
   if (blankElements.length > 0) {
     for (const be of blankElements) {
-      if (linkDirection === 'in') {
+      if (linkDirection === "in") {
         if (
           be.inst.value === refElementId &&
           (isRdfIri(be.blankSrc) || isRdfBlank(be.blankSrc)) &&
@@ -604,7 +605,6 @@ function getLinkBinding(ids: string[]): LinkBinding[] {
 function getLinkCountBinding(id: string): LinkCountBinding[] {
   const blankElements = decodeId(id);
 
-  const bindings: LinkBinding[] = [];
   const dictionary: Dictionary<LinkCountBinding> = {};
 
   for (const be of blankElements) {
@@ -621,14 +621,14 @@ function getLinkCountBinding(id: string): LinkCountBinding[] {
             dictionary[be.blankSrcProp.value] = {
               link: be.blankSrcProp,
               inCount: {
-                type: 'literal',
-                value: '1',
-                'xml:lang': '',
+                type: "literal",
+                value: "1",
+                "xml:lang": "",
               },
               outCount: {
-                type: 'literal',
-                value: '0',
-                'xml:lang': '',
+                type: "literal",
+                value: "0",
+                "xml:lang": "",
               },
             };
           }
@@ -637,14 +637,14 @@ function getLinkCountBinding(id: string): LinkCountBinding[] {
           dictionary[be.blankTrgProp.value] = {
             link: be.blankTrgProp,
             inCount: {
-              type: 'literal',
-              value: '0',
-              'xml:lang': '',
+              type: "literal",
+              value: "0",
+              "xml:lang": "",
             },
             outCount: {
-              type: 'literal',
-              value: '1',
-              'xml:lang': '',
+              type: "literal",
+              value: "1",
+              "xml:lang": "",
             },
           };
         } else {

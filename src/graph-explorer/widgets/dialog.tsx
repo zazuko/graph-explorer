@@ -1,17 +1,17 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { DiagramView } from '../diagram/view';
-import { Element, Link } from '../diagram/elements';
-import { EventObserver, Unsubscribe } from '../viewUtils/events';
-import { PaperWidgetProps } from '../diagram/paperArea';
+import { DiagramView } from "../diagram/view";
+import { Element, Link } from "../diagram/elements";
+import { EventObserver, Unsubscribe } from "../viewUtils/events";
+import { PaperWidgetProps } from "../diagram/paperArea";
 import {
   boundsOf,
   computePolyline,
   computePolylineLength,
   getPointAlongPolyline,
   Vector,
-} from '../diagram/geometry';
-import { DraggableHandle } from '../workspace/draggableHandle';
+} from "../diagram/geometry";
+import { DraggableHandle } from "../workspace/draggableHandle";
 
 const DEFAULT_WIDTH = 300;
 const DEFAULT_HEIGHT = 300;
@@ -24,7 +24,7 @@ const ELEMENT_OFFSET = 40;
 const LINK_OFFSET = 20;
 const FOCUS_OFFSET = 20;
 
-const CLASS_NAME = 'graph-explorer-dialog';
+const CLASS_NAME = "graph-explorer-dialog";
 
 export interface Props extends PaperWidgetProps {
   view: DiagramView;
@@ -86,7 +86,7 @@ export class Dialog extends React.Component<Props, State> {
         this.listenToLink(target);
       }
 
-      this.handler.listen(view.events, 'changeLanguage', this.updateAll);
+      this.handler.listen(view.events, "changeLanguage", this.updateAll);
 
       this.unsubscribeFromTarget = () => {
         this.handler.stopListening();
@@ -95,8 +95,8 @@ export class Dialog extends React.Component<Props, State> {
   }
 
   private listenToElement(element: Element) {
-    this.handler.listen(element.events, 'changePosition', this.updateAll);
-    this.handler.listen(element.events, 'changeSize', this.updateAll);
+    this.handler.listen(element.events, "changePosition", this.updateAll);
+    this.handler.listen(element.events, "changeSize", this.updateAll);
   }
 
   private listenToLink(link: Link) {
@@ -108,8 +108,8 @@ export class Dialog extends React.Component<Props, State> {
     this.listenToElement(source);
     this.listenToElement(target);
 
-    this.handler.listen(link.events, 'changeVertices', this.updateAll);
-    this.handler.listen(link.events, 'changeLabelBounds', this.updateAll);
+    this.handler.listen(link.events, "changeVertices", this.updateAll);
+    this.handler.listen(link.events, "changeLabelBounds", this.updateAll);
   }
 
   private calculatePositionForElement(element: Element): Vector {
@@ -135,7 +135,7 @@ export class Dialog extends React.Component<Props, State> {
     const target = view.model.getElement(link.targetId);
 
     if (!source || !target) {
-      throw new Error('Source and target are not specified');
+      throw new Error("Source and target are not specified");
     }
 
     const route = view.getRouting(link.id);
@@ -174,7 +174,7 @@ export class Dialog extends React.Component<Props, State> {
       return this.calculatePositionForLink(target);
     }
 
-    throw new Error('Unknown target type');
+    throw new Error("Unknown target type");
   }
 
   private getViewPortScrollablePoints(): { min: Vector; max: Vector } {
@@ -204,10 +204,8 @@ export class Dialog extends React.Component<Props, State> {
 
   private focusOn() {
     const { paperArea } = this.props;
-    const {
-      min: viewPortMin,
-      max: viewPortMax,
-    } = this.getViewPortScrollablePoints();
+    const { min: viewPortMin, max: viewPortMax } =
+      this.getViewPortScrollablePoints();
     const { min, max } = this.getDialogScrollablePoints();
 
     let xOffset = 0;
@@ -240,7 +238,7 @@ export class Dialog extends React.Component<Props, State> {
   }
 
   private startSize: Vector;
-  private onStartDragging = (e: React.MouseEvent<HTMLDivElement>) => {
+  private onStartDragging = (_e: React.MouseEvent<HTMLDivElement>) => {
     this.preventSelection();
     const { size } = this.props;
     this.startSize = {
@@ -281,11 +279,11 @@ export class Dialog extends React.Component<Props, State> {
 
   private preventSelection = () => {
     const onMouseUp = () => {
-      document.body.classList.remove('graph-explorer--unselectable');
-      document.removeEventListener('mouseup', onMouseUp);
+      document.body.classList.remove("graph-explorer--unselectable");
+      document.removeEventListener("mouseup", onMouseUp);
     };
-    document.addEventListener('mouseup', onMouseUp);
-    document.body.classList.add('graph-explorer--unselectable');
+    document.addEventListener("mouseup", onMouseUp);
+    document.body.classList.add("graph-explorer--unselectable");
   };
 
   render() {

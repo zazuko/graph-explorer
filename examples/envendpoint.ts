@@ -1,5 +1,5 @@
-import { createElement, ClassAttributes } from 'react';
-import * as ReactDOM from 'react-dom';
+import { createElement, ClassAttributes } from "react";
+import * as ReactDOM from "react-dom";
 
 import {
   Workspace,
@@ -7,13 +7,13 @@ import {
   SparqlDataProvider,
   SparqlQueryMethod,
   OWLRDFSSettings,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 
 import {
   onPageLoad,
   tryLoadLayoutFromLocalStorage,
   saveLayoutToLocalStorage,
-} from './common';
+} from "./common";
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {
@@ -26,25 +26,25 @@ function onWorkspaceMounted(workspace: Workspace) {
     validateLinks: true,
     dataProvider: new SparqlDataProvider(
       {
-
         // this goes to process.env.SPARQL_ENDPOINT via devServer proxy rule in webpack.demo.config.js
-        endpointUrl: '../sparql',
-        
+        endpointUrl: "../sparql",
+
         imagePropertyUris: [
-          'http://xmlns.com/foaf/0.1/depiction',
-          'http://xmlns.com/foaf/0.1/img',
+          "http://xmlns.com/foaf/0.1/depiction",
+          "http://xmlns.com/foaf/0.1/img",
         ],
         queryMethod: SparqlQueryMethod.GET,
       },
-      {...OWLRDFSSettings,
-      ...{
-        classTreeQuery: `        
+      {
+        ...OWLRDFSSettings,
+        ...{
+          classTreeQuery: `        
           SELECT distinct ?class ?label ?parent WHERE {
             ?class a owl:Class.
             OPTIONAL {?class rdfs:label ?label.}
             OPTIONAL {?class rdfs:subClassOf ?parent}
-          }`
-        }
+          }`,
+        },
       }
     ),
   });

@@ -3,11 +3,11 @@ import {
   Property,
   isIriProperty,
   isLiteralProperty,
-} from '../../data/model';
+} from "../../data/model";
 
 export function getProperty(props: Dictionary<Property>, id: string) {
   if (props && props[id]) {
-    return getPropertyValues(props[id]).join(', ');
+    return getPropertyValues(props[id]).join(", ");
   } else {
     return undefined;
   }

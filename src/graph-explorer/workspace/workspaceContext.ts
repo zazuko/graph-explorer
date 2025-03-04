@@ -1,16 +1,16 @@
-import { PropTypes } from '../viewUtils/react';
-import { EditorController } from '../editor/editorController';
+import { PropTypes } from "../viewUtils/react";
+import { EditorController } from "../editor/editorController";
 
 export type WorkspaceEventHandler = (key: WorkspaceEventKey) => void;
 export enum WorkspaceEventKey {
-  searchUpdateCriteria = 'search:updateCriteria',
-  searchQueryItem = 'search:queryItems',
-  connectionsLoadLinks = 'connections:loadLinks',
-  connectionsExpandLink = 'connections:expandLink',
-  connectionsLoadElements = 'connections:loadElements',
-  editorChangeSelection = 'editor:changeSelection',
-  editorToggleDialog = 'editor:toggleDialog',
-  editorAddElements = 'editor:addElements',
+  searchUpdateCriteria = "search:updateCriteria",
+  searchQueryItem = "search:queryItems",
+  connectionsLoadLinks = "connections:loadLinks",
+  connectionsExpandLink = "connections:expandLink",
+  connectionsLoadElements = "connections:loadElements",
+  editorChangeSelection = "editor:changeSelection",
+  editorToggleDialog = "editor:toggleDialog",
+  editorAddElements = "editor:addElements",
 }
 
 export interface WorkspaceContextWrapper {

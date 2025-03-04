@@ -1,7 +1,7 @@
-import { LinkRouter, RoutedLinks, Vertex } from '../customization/props';
-import { DiagramModel } from './model';
-import { Link as DiagramLink, Element as DiagramElement } from './elements';
-import { Vector } from './geometry';
+import { LinkRouter, RoutedLinks, Vertex } from "../customization/props";
+import { DiagramModel } from "./model";
+import { Link as DiagramLink, Element as DiagramElement } from "./elements";
+import { Vector } from "./geometry";
 
 export class DefaultLinkRouter implements LinkRouter {
   constructor(private gap = 20) {}
@@ -126,7 +126,7 @@ export class DefaultLinkRouter implements LinkRouter {
     connectionDirection: Vector,
     siblingIndex: number,
     siblingCount: number
-  ): 'start' | 'middle' | 'end' {
+  ): "start" | "middle" | "end" {
     // offset direction angle in [0; 2 Pi] interval
     const angle = Math.atan2(connectionDirection.y, connectionDirection.x);
     const absoluteAngle = Math.abs(angle);
@@ -143,16 +143,16 @@ export class DefaultLinkRouter implements LinkRouter {
         (isTop && siblingIndex === secondOuter) ||
         (isBottom && siblingIndex === firstOuter)
       ) {
-        return 'end';
+        return "end";
       } else if (
         (isTop && siblingIndex === firstOuter) ||
         (isBottom && siblingIndex === secondOuter)
       ) {
-        return 'start';
+        return "start";
       }
     }
 
-    return 'middle';
+    return "middle";
   }
 }
 

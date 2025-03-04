@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Component, ReactElement, SVGAttributes, CSSProperties } from 'react';
+import * as React from "react";
+import { Component, ReactElement, SVGAttributes, CSSProperties } from "react";
 
-import { LocalizedString } from '../data/model';
+import { LocalizedString } from "../data/model";
 import {
   LinkTemplate,
   LinkStyle,
@@ -9,18 +9,18 @@ import {
   LinkMarkerStyle,
   RoutedLink,
   RoutedLinks,
-} from '../customization/props';
-import { Debouncer } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
+} from "../customization/props";
+import { Debouncer } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
 
-import { restoreCapturedLinkGeometry } from './commands';
+import { restoreCapturedLinkGeometry } from "./commands";
 import {
   Element as DiagramElement,
   Link as DiagramLink,
   LinkVertex,
   linkMarkerKey,
   FatLinkType,
-} from './elements';
+} from "./elements";
 import {
   Vector,
   computePolyline,
@@ -28,12 +28,12 @@ import {
   getPointAlongPolyline,
   computeGrouping,
   Rect,
-} from './geometry';
-import { DiagramView, RenderingLayer } from './view';
+} from "./geometry";
+import { DiagramView, RenderingLayer } from "./view";
 
 export interface LinkLayerProps {
   view: DiagramView;
-  links: ReadonlyArray<DiagramLink>;
+  links: readonly DiagramLink[];
   group?: string;
 }
 
@@ -44,7 +44,7 @@ enum UpdateRequest {
   All,
 }
 
-const CLASS_NAME = 'graph-explorer-link-layer';
+const CLASS_NAME = "graph-explorer-link-layer";
 
 export class LinkLayer extends Component<LinkLayerProps, {}> {
   private readonly listener = new EventObserver();
@@ -54,10 +54,6 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
   /** List of link IDs to update at the next flush event */
   private scheduledToUpdate = new Set<string>();
 
-  constructor(props: LinkLayerProps, context: any) {
-    super(props, context);
-  }
-
   componentDidMount() {
     const { view } = this.props;
 
@@ -66,10 +62,10 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
         this.scheduleUpdateLink(link.id);
       }
     };
-    this.listener.listen(view.events, 'changeLanguage', this.scheduleUpdateAll);
+    this.listener.listen(view.events, "changeLanguage", this.scheduleUpdateAll);
     this.listener.listen(
       view.events,
-      'changeHighlight',
+      "changeHighlight",
       this.scheduleUpdateAll
     );
     const updateChangedRoutes = (
@@ -82,12 +78,12 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
         }
       });
     };
-    this.listener.listen(view.events, 'updateRoutings', ({ previous }) => {
+    this.listener.listen(view.events, "updateRoutings", ({ previous }) => {
       const newRoutes = view.getRoutings();
       updateChangedRoutes(newRoutes, previous);
       updateChangedRoutes(previous, newRoutes);
     });
-    this.listener.listen(view.model.events, 'changeCells', (e) => {
+    this.listener.listen(view.model.events, "changeCells", (e) => {
       if (e.updateAll) {
         this.scheduleUpdateAll();
       } else {
@@ -101,14 +97,14 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
         }
       }
     });
-    this.listener.listen(view.model.events, 'elementEvent', ({ data }) => {
+    this.listener.listen(view.model.events, "elementEvent", ({ data }) => {
       const elementEvent = data.changePosition || data.changeSize;
       if (!elementEvent) {
         return;
       }
       scheduleUpdateElementLinks(elementEvent.source);
     });
-    this.listener.listen(view.model.events, 'linkEvent', ({ data }) => {
+    this.listener.listen(view.model.events, "linkEvent", ({ data }) => {
       const linkEvent =
         data.changeData ||
         data.changeLayoutOnly ||
@@ -118,7 +114,7 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
         this.scheduleUpdateLink(linkEvent.source.id);
       }
     });
-    this.listener.listen(view.model.events, 'linkTypeEvent', ({ data }) => {
+    this.listener.listen(view.model.events, "linkTypeEvent", ({ data }) => {
       const linkTypeEvent = data.changeLabel || data.changeVisibility;
       if (!linkTypeEvent) {
         return;
@@ -128,7 +124,7 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
         this.scheduleUpdateLink(link.id);
       }
     });
-    this.listener.listen(view.events, 'syncUpdate', ({ layer }) => {
+    this.listener.listen(view.events, "syncUpdate", ({ layer }) => {
       if (layer !== RenderingLayer.Link) {
         return;
       }
@@ -223,8 +219,8 @@ export class LinkLayer extends Component<LinkLayerProps, {}> {
 function computeDeepNestedElements(
   grouping: Map<string, DiagramElement[]>,
   groupId: string
-): { [id: string]: true } {
-  const deepChildren: { [elementId: string]: true } = {};
+): Record<string, true> {
+  const deepChildren: Record<string, true> = {};
 
   function collectNestedItems(parentId: string) {
     deepChildren[parentId] = true;
@@ -251,7 +247,7 @@ interface LinkViewProps {
   route?: RoutedLink;
 }
 
-const LINK_CLASS = 'graph-explorer-link';
+const LINK_CLASS = "graph-explorer-link";
 const LABEL_GROUPING_PRECISION = 100;
 // temporary, cleared-before-render map to hold line numbers for labels
 // grouped on the same link offset
@@ -272,7 +268,7 @@ class LinkView extends Component<LinkViewProps, {}> {
     }
   }
 
-  shouldComponentUpdate(nextProps: LinkViewProps, nextState: {}) {
+  shouldComponentUpdate(nextProps: LinkViewProps, _nextState: {}) {
     return nextProps.shouldUpdate;
   }
 
@@ -293,7 +289,7 @@ class LinkView extends Component<LinkViewProps, {}> {
     const vertices = route ? route.vertices : verticesDefinedByUser;
     const polyline = computePolyline(source, target, vertices);
 
-    const path = 'M' + polyline.map(({ x, y }) => `${x},${y}`).join(' L');
+    const path = "M" + polyline.map(({ x, y }) => `${x},${y}`).join(" L");
 
     const { index: typeIndex, showLabel } = this.linkType;
     const style = this.template.renderLink(model);
@@ -301,7 +297,7 @@ class LinkView extends Component<LinkViewProps, {}> {
 
     const isBlurred = view.highlighter && !view.highlighter(model);
     const className = `${LINK_CLASS} ${
-      isBlurred ? `${LINK_CLASS}--blurred` : ''
+      isBlurred ? `${LINK_CLASS}--blurred` : ""
     }`;
     return (
       <g
@@ -324,7 +320,7 @@ class LinkView extends Component<LinkViewProps, {}> {
     );
   }
 
-  private renderVertices(vertices: ReadonlyArray<Vector>, fill: string) {
+  private renderVertices(vertices: readonly Vector[], fill: string) {
     const elements: ReactElement<any>[] = [];
 
     const vertexClass = `${LINK_CLASS}__vertex`;
@@ -372,12 +368,12 @@ class LinkView extends Component<LinkViewProps, {}> {
     model.setLabelBounds(newBounds);
   };
 
-  private renderLabels(polyline: ReadonlyArray<Vector>, style: LinkStyle) {
+  private renderLabels(polyline: readonly Vector[], style: LinkStyle) {
     const { view, model, route } = this.props;
 
     const labels = computeLinkLabels(model, style, view);
 
-    let textAnchor: 'start' | 'middle' | 'end' = 'middle';
+    let textAnchor: "start" | "middle" | "end" = "middle";
     if (route && route.labelTextAnchor) {
       textAnchor = route.labelTextAnchor;
     }
@@ -435,7 +431,7 @@ function computeLinkLabels(
     const type = view.model.getLinkType(model.typeId);
     text = view.selectLabel(type.label) || {
       value: view.formatLabel(type.label, type.id),
-      language: '',
+      language: "",
     };
     if (title === undefined) {
       title = `${text.value} ${view.formatIri(model.typeId)}`;
@@ -478,25 +474,26 @@ function getPathAttributes(
   model: DiagramLink,
   style: LinkStyle
 ): SVGAttributes<SVGPathElement> {
-  const connectionAttributes: LinkStyle['connection'] = style.connection || {};
-  const defaultStrokeDasharray = model.layoutOnly ? '5,5' : undefined;
+  const connectionAttributes: LinkStyle["connection"] = style.connection || {};
+  const defaultStrokeDasharray = model.layoutOnly ? "5,5" : undefined;
   const {
-    fill = 'none',
-    stroke = 'black',
-    'stroke-width': strokeWidth,
-    'stroke-dasharray': strokeDasharray = defaultStrokeDasharray,
+    fill = "none",
+    stroke = "black",
+    "stroke-width": strokeWidth,
+    "stroke-dasharray": strokeDasharray = defaultStrokeDasharray,
   } = connectionAttributes;
   return { fill, stroke, strokeWidth, strokeDasharray };
 }
 
 function getLabelTextAttributes(label: LinkLabelProperties): CSSProperties {
   const {
-    fill = 'black',
-    stroke = 'none',
-    'stroke-width': strokeWidth = 0,
-    'font-family': fontFamily = '"Helvetica Neue", "Helvetica", "Arial", sans-serif',
-    'font-size': fontSize = 'inherit',
-    'font-weight': fontWeight = 'bold',
+    fill = "black",
+    stroke = "none",
+    "stroke-width": strokeWidth = 0,
+    "font-family":
+      fontFamily = '"Helvetica Neue", "Helvetica", "Arial", sans-serif',
+    "font-size": fontSize = "inherit",
+    "font-weight": fontWeight = "bold",
   } = label.attrs ? label.attrs.text : {};
   return {
     fill,
@@ -504,13 +501,16 @@ function getLabelTextAttributes(label: LinkLabelProperties): CSSProperties {
     strokeWidth,
     fontFamily,
     fontSize,
-    fontWeight: fontWeight as CSSProperties['fontWeight'],
+    fontWeight: fontWeight as CSSProperties["fontWeight"],
   };
 }
 
 function getLabelRectAttributes(label: LinkLabelProperties): CSSProperties {
-  const { fill = 'white', stroke = 'none', 'stroke-width': strokeWidth = 0 } =
-    label.attrs && label.attrs.rect ? label.attrs.rect : {};
+  const {
+    fill = "white",
+    stroke = "none",
+    "stroke-width": strokeWidth = 0,
+  } = label.attrs && label.attrs.rect ? label.attrs.rect : {};
   return { fill, stroke, strokeWidth };
 }
 
@@ -529,7 +529,7 @@ interface LinkLabelProps {
   y: number;
   line: number;
   label: LabelAttributes;
-  textAnchor: 'start' | 'middle' | 'end';
+  textAnchor: "start" | "middle" | "end";
   onBoundsUpdate?: (newBounds: Rect) => void;
 }
 
@@ -559,7 +559,7 @@ class LinkLabel extends Component<LinkLabelProps, LinkLabelState> {
         ? undefined
         : `translate(0, ${line * (height + GROUPED_LABEL_MARGIN)}px)`;
     // HACK: 'alignment-baseline' and 'dominant-baseline' are not supported in Edge and IE
-    const dy = '0.6ex';
+    const dy = "0.6ex";
 
     return (
       <g style={transform ? { transform } : undefined}>
@@ -589,9 +589,9 @@ class LinkLabel extends Component<LinkLabelProps, LinkLabelState> {
     const { x, y, textAnchor } = this.props;
 
     let xOffset = 0;
-    if (textAnchor === 'middle') {
+    if (textAnchor === "middle") {
       xOffset = -width / 2;
-    } else if (textAnchor === 'end') {
+    } else if (textAnchor === "end") {
       xOffset = -width;
     }
 
@@ -616,14 +616,14 @@ class LinkLabel extends Component<LinkLabelProps, LinkLabelState> {
     onBoundsUpdate(undefined);
   }
 
-  componentDidUpdate(nextProps: LinkLabelProps) {
+  componentDidUpdate(_nextProps: LinkLabelProps) {
     this.shouldUpdateBounds = true;
   }
   UNSAFE_componentWillReceiveProps() {
     this.recomputeBounds(this.props);
   }
 
-  private recomputeBounds(props: LinkLabelProps) {
+  private recomputeBounds(_props: LinkLabelProps) {
     if (this.shouldUpdateBounds) {
       const { onBoundsUpdate } = this.props;
       this.shouldUpdateBounds = false;
@@ -655,7 +655,7 @@ class VertexTools extends Component<
   {}
 > {
   render() {
-    const { className, vertexIndex, vertexRadius, x, y } = this.props;
+    const { className, vertexRadius, x, y } = this.props;
     const transform = `translate(${x + 2 * vertexRadius},${
       y - 2 * vertexRadius
     })scale(${vertexRadius})`;
@@ -692,7 +692,7 @@ export class LinkMarkers extends Component<{ view: DiagramView }, {}> {
 
   render() {
     const { view } = this.props;
-    const markers: Array<ReactElement<LinkMarkerProps>> = [];
+    const markers: ReactElement<LinkMarkerProps>[] = [];
 
     view.getLinkTemplates().forEach((template, linkTypeId) => {
       const type = view.model.getLinkType(linkTypeId);
@@ -728,13 +728,13 @@ export class LinkMarkers extends Component<{ view: DiagramView }, {}> {
 
   componentDidMount() {
     const { view } = this.props;
-    this.listener.listen(view.events, 'syncUpdate', ({ layer }) => {
+    this.listener.listen(view.events, "syncUpdate", ({ layer }) => {
       if (layer !== RenderingLayer.Link) {
         return;
       }
       this.delayedUpdate.runSynchronously();
     });
-    this.listener.listen(view.events, 'changeLinkTemplates', () => {
+    this.listener.listen(view.events, "changeLinkTemplates", () => {
       this.delayedUpdate.call(() => this.forceUpdate());
     });
   }
@@ -749,8 +749,7 @@ export class LinkMarkers extends Component<{ view: DiagramView }, {}> {
   }
 }
 
-const SVG_NAMESPACE: 'http://www.w3.org/2000/svg' =
-  'http://www.w3.org/2000/svg';
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg" as const;
 
 interface LinkMarkerProps {
   linkTypeIndex: number;
@@ -774,26 +773,26 @@ class LinkMarker extends Component<LinkMarkerProps, {}> {
 
     const { linkTypeIndex, isStartMarker, style } = this.props;
 
-    marker.setAttribute('id', linkMarkerKey(linkTypeIndex, isStartMarker));
-    marker.setAttribute('markerWidth', style.width.toString());
-    marker.setAttribute('markerHeight', style.height.toString());
-    marker.setAttribute('orient', 'auto');
+    marker.setAttribute("id", linkMarkerKey(linkTypeIndex, isStartMarker));
+    marker.setAttribute("markerWidth", style.width.toString());
+    marker.setAttribute("markerHeight", style.height.toString());
+    marker.setAttribute("orient", "auto");
 
     const xOffset = isStartMarker ? 0 : style.width - 1;
-    marker.setAttribute('refX', xOffset.toString());
-    marker.setAttribute('refY', (style.height / 2).toString());
-    marker.setAttribute('markerUnits', 'userSpaceOnUse');
+    marker.setAttribute("refX", xOffset.toString());
+    marker.setAttribute("refY", (style.height / 2).toString());
+    marker.setAttribute("markerUnits", "userSpaceOnUse");
 
-    const path = document.createElementNS(SVG_NAMESPACE, 'path');
-    path.setAttribute('d', style.d);
+    const path = document.createElementNS(SVG_NAMESPACE, "path");
+    path.setAttribute("d", style.d);
     if (style.fill !== undefined) {
-      path.setAttribute('fill', style.fill);
+      path.setAttribute("fill", style.fill);
     }
     if (style.stroke !== undefined) {
-      path.setAttribute('stroke', style.stroke);
+      path.setAttribute("stroke", style.stroke);
     }
     if (style.strokeWidth !== undefined) {
-      path.setAttribute('stroke-width', style.strokeWidth);
+      path.setAttribute("stroke-width", style.strokeWidth);
     }
 
     marker.appendChild(path);

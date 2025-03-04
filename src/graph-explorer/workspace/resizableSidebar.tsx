@@ -1,6 +1,6 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { DraggableHandle } from './draggableHandle';
+import { DraggableHandle } from "./draggableHandle";
 
 export interface Props {
   className?: string;
@@ -26,7 +26,7 @@ export interface State {
   readonly length?: number;
 }
 
-const CLASS_NAME = 'graph-explorer-drag-resizable-column';
+const CLASS_NAME = "graph-explorer-drag-resizable-column";
 
 export class ResizableSidebar extends React.Component<Props, State> {
   static readonly defaultProps: Partial<Props> = {
@@ -69,7 +69,7 @@ export class ResizableSidebar extends React.Component<Props, State> {
       case DockSide.Bottom:
         return `${CLASS_NAME}--docked-bottom`;
       default:
-        return 'docked-right';
+        return "docked-right";
     }
   }
 
@@ -86,11 +86,11 @@ export class ResizableSidebar extends React.Component<Props, State> {
     const className =
       `${CLASS_NAME} ` +
       `${this.getSideClass()} ` +
-      `${CLASS_NAME}--${open ? 'opened' : 'closed'} ` +
-      `${this.props.className || ''}`;
+      `${CLASS_NAME}--${open ? "opened" : "closed"} ` +
+      `${this.props.className || ""}`;
 
     const style: any = {};
-    style[this.isHorizontal ? 'height' : 'width'] = open ? length : 0;
+    style[this.isHorizontal ? "height" : "width"] = open ? length : 0;
     return (
       <div className={className} style={style}>
         {open ? this.props.children : null}

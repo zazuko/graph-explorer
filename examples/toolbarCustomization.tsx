@@ -1,28 +1,30 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+/* eslint-disable @typescript-eslint/no-require-imports */
+
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import {
   Workspace,
   WorkspaceProps,
   DemoDataProvider,
   ToolbarProps,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 import {
   onPageLoad,
   tryLoadLayoutFromLocalStorage,
   saveLayoutToLocalStorage,
-} from './common';
+} from "./common";
 
-const CLASSES = require('./resources/classes.json');
-const LINK_TYPES = require('./resources/linkTypes.json');
-const ELEMENTS = require('./resources/elements.json');
-const LINKS = require('./resources/links.json');
+const CLASSES = require("./resources/classes.json");
+const LINK_TYPES = require("./resources/linkTypes.json");
+const ELEMENTS = require("./resources/elements.json");
+const LINKS = require("./resources/links.json");
 
 export interface Props extends ToolbarProps {
   onExampleClick?: () => void;
 }
 
-const CLASS_NAME = 'graph-explorer-toolbar';
+const CLASS_NAME = "graph-explorer-toolbar";
 
 export class Toolbar extends React.Component<Props, {}> {
   render() {
@@ -85,7 +87,7 @@ const props: WorkspaceProps & React.ClassAttributes<Workspace> = {
   toolbar: (
     <Toolbar
       onExampleClick={() => {
-        alert('Example button has been pressed!');
+        alert("Example button has been pressed!");
       }}
     />
   ),

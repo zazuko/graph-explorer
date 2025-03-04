@@ -1,17 +1,17 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { DiagramView } from '../diagram/view';
+import { DiagramView } from "../diagram/view";
 import {
   ElementModel,
   LocalizedString,
   PropertyTypeIri,
   Property,
-  isIriProperty,
+  LiteralProperty,
   isLiteralProperty,
   ElementIri,
-} from '../data/model';
+} from "../data/model";
 
-const CLASS_NAME = 'graph-explorer-edit-form';
+const CLASS_NAME = "graph-explorer-edit-form";
 
 export interface Props {
   view: DiagramView;
@@ -42,11 +42,11 @@ export class EditEntityForm extends React.Component<Props, State> {
     const richProperty = view.model.getProperty(key);
     const label = view.formatLabel(richProperty.label, key);
 
-    let values: string[] = [];
-    if (isIriProperty(property)) {
-      values = property.values.map(({ value }) => value);
-    } else if (isLiteralProperty(property)) {
-      values = property.values.map(({ value }) => value);
+    let values: any[] = [];
+    if (isLiteralProperty(property)) {
+      values = property.values.map(({ value, language }) => {
+        return { value: value, language: language };
+      });
     }
     return (
       <div key={key} className={`${CLASS_NAME}__form-row`}>
@@ -56,7 +56,10 @@ export class EditEntityForm extends React.Component<Props, State> {
             <input
               key={index}
               className="graph-explorer-form-control"
-              defaultValue={value}
+              defaultValue={value.value}
+              lang={value.language}
+              onChange={this.onChangeProp}
+              data-iri={key}
             />
           ))}
         </label>
@@ -123,7 +126,7 @@ export class EditEntityForm extends React.Component<Props, State> {
     const target = e.target as HTMLInputElement;
 
     const labels: LocalizedString[] =
-      target.value.length > 0 ? [{ value: target.value, language: '' }] : [];
+      target.value.length > 0 ? [{ value: target.value, language: "" }] : [];
 
     this.setState({
       elementModel: {
@@ -133,10 +136,33 @@ export class EditEntityForm extends React.Component<Props, State> {
     });
   };
 
+  private onChangeProp = (e: React.FormEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    const values: any[] = [];
+    target.parentElement
+      .querySelectorAll('[data-iri="' + target.dataset["iri"] + '"]')
+      .forEach((Element) => {
+        const typedElement = Element as HTMLInputElement;
+        values.push({ value: typedElement.value, language: typedElement.lang });
+      });
+    this.setState({
+      elementModel: {
+        ...this.state.elementModel,
+        properties: {
+          ...this.state.elementModel.properties,
+          [target.dataset["iri"]]: {
+            type: "string",
+            values: values,
+          } as LiteralProperty,
+        },
+      },
+    });
+  };
+
   private renderLabel() {
     const { view } = this.props;
     const label = view.selectLabel(this.state.elementModel.label.values);
-    const text = label ? label.value : '';
+    const text = label ? label.value : "";
     return (
       <label>
         Label

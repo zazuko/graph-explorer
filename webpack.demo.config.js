@@ -1,9 +1,12 @@
+/* eslint-disable */
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const SUPPORT_IE = process.env.SUPPORT_IE;
 const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT;
+const SPARQL_UPDATEENDPOINT = process.env.SPARQL_UPDATEENDPOINT;
 const WIKIDATA_ENDPOINT = process.env.WIKIDATA_ENDPOINT;
 const LOD_PROXY = process.env.LOD_PROXY;
 const PROP_SUGGEST = process.env.PROP_SUGGEST;
@@ -16,7 +19,6 @@ if (!SUPPORT_IE) {
     'graph-explorer',
     'emptyModule.ts'
   );
-  aliases['canvg-fixed'] = emptyModule;
   aliases['es6-promise/auto'] = emptyModule;
 }
 
@@ -26,11 +28,11 @@ const htmlTemplatePath = path.join(__dirname, 'examples', 'template.ejs');
 module.exports = {
   mode: 'development',
   entry: {
-    rdf: path.join(examplesDir, 'rdf.ts'),
+    edit: path.join(examplesDir, 'edit.ts'),
     demo: path.join(examplesDir, 'demo.ts'),
     dbpedia: path.join(examplesDir, 'dbpedia.ts'),
     wikidata: path.join(examplesDir, 'wikidata.ts'),
-    composite: path.join(examplesDir, 'composite.ts'),
+    //composite: path.join(examplesDir, 'composite.ts'),
     wikidataGraph: path.join(examplesDir, 'wikidataGraph.ts'),
     toolbarCustomization: path.join(examplesDir, 'toolbarCustomization.tsx'),
     envendpoint: path.join(examplesDir, 'envendpoint.ts'),
@@ -78,6 +80,12 @@ module.exports = {
       template: htmlTemplatePath,
     }),
     new HtmlWebpackPlugin({
+      filename: 'edit.html',
+      title: 'Graph Explorer Edit Demo',
+      chunks: ['commons', 'edit'],
+      template: htmlTemplatePath,
+    }),
+    new HtmlWebpackPlugin({
       title: 'Graph Explorer Local Demo',
       chunks: ['commons', 'demo'],
       template: htmlTemplatePath,
@@ -120,30 +128,46 @@ module.exports = {
     }),
   ],
   devServer: {
-    proxy: {
-      '/sparql**': {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+    },
+    proxy: [
+      {
+        context: ['/sparql**'],
         target: SPARQL_ENDPOINT,
         pathRewrite: { '/sparql': '' },
         changeOrigin: true,
         secure: false,
       },
-      '/wikidata**': {
+      {
+        context: ['/update**'],
+        target: SPARQL_UPDATEENDPOINT,
+        pathRewrite: { '/update': '' },
+        changeOrigin: true,
+        secure: false,
+      },
+      {
+        context: ['/wikidata**'],
         target: WIKIDATA_ENDPOINT || SPARQL_ENDPOINT,
         pathRewrite: { '/wikidata': '' },
         changeOrigin: true,
         secure: false,
       },
-      '/lod-proxy/**': {
+      {
+        context: ['/lod-proxy/**'],
         target: LOD_PROXY,
         changeOrigin: true,
         secure: false,
       },
-      '/wikidata-prop-suggest**': {
+      {
+        context: ['/wikidata-prop-suggest**'],
         target: PROP_SUGGEST,
         pathRewrite: { '/wikidata-prop-suggest': '' },
         changeOrigin: true,
         secure: false,
-      },
-    },
+      }
+    ]
   },
 };

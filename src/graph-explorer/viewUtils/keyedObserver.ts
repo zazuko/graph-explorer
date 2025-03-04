@@ -1,20 +1,20 @@
-import { ElementTypeIri, LinkTypeIri, PropertyTypeIri } from '../data/model';
+import { ElementTypeIri, LinkTypeIri, PropertyTypeIri } from "../data/model";
 
 import {
   FatClassModelEvents,
   FatLinkTypeEvents,
   RichPropertyEvents,
-} from '../diagram/elements';
-import { DiagramModel } from '../diagram/model';
+} from "../diagram/elements";
+import { DiagramModel } from "../diagram/model";
 
-import { Unsubscribe, Listener } from './events';
+import { Unsubscribe, Listener } from "./events";
 
 export class KeyedObserver<Key extends string> {
   private observedKeys = new Map<string, Unsubscribe>();
 
   constructor(readonly subscribe: (key: Key) => Unsubscribe | undefined) {}
 
-  observe(keys: ReadonlyArray<Key>) {
+  observe(keys: readonly Key[]) {
     if (keys.length === 0 && this.observedKeys.size === 0) {
       return;
     }

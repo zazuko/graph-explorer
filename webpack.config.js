@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const path = require('path');
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
@@ -14,7 +16,6 @@ if (!SUPPORT_IE) {
     'graph-explorer',
     'emptyModule.ts'
   );
-  aliases['canvg-fixed'] = emptyModule;
   aliases['es6-promise/auto'] = emptyModule;
 }
 
@@ -48,8 +49,8 @@ module.exports = {
     filename: BUNDLE_PEERS
       ? 'graph-explorer-full.min.js'
       : SUPPORT_IE
-      ? 'graph-explorer-ie.js'
-      : 'graph-explorer.js',
+        ? 'graph-explorer-ie.js'
+        : 'graph-explorer.js',
     library: 'GraphExplorer',
     libraryTarget: 'umd',
   },
@@ -57,16 +58,14 @@ module.exports = {
   externals: BUNDLE_PEERS
     ? []
     : [
-        'd3-color',
-        'file-saverjs',
-        'lodash',
-        'n3',
-        'rdf-ext',
-        'react',
-        'react-dom',
-        'webcola',
-        'whatwg-fetch',
-      ],
+      'd3-color',
+      'file-saverjs',
+      'lodash',
+      'n3',
+      'react',
+      'react-dom',
+      'webcola',
+    ],
   performance: {
     maxEntrypointSize: 2048000,
     maxAssetSize: 2048000,

@@ -1,4 +1,4 @@
-export function objectValues<T>(obj: { [key: string]: T }): T[] {
+export function objectValues<T>(obj: Record<string, T>): T[] {
   const items: T[] = [];
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -62,7 +62,7 @@ export class OrderedMap<V> {
     this.ordered.sort(compare);
   }
 
-  get items(): ReadonlyArray<V> {
+  get items(): readonly V[] {
     return this.ordered;
   }
 
@@ -106,7 +106,7 @@ export interface ReadonlyHashMap<K, V> {
 }
 
 export class HashMap<K, V> implements ReadonlyHashMap<K, V> {
-  private readonly map = new Map<number, Array<{ key: K; value: V }>>();
+  private readonly map = new Map<number, { key: K; value: V }[]>();
   private _size = 0;
 
   constructor(
@@ -196,8 +196,8 @@ export enum MoveDirection {
 }
 
 export function makeMoveComparator<T>(
-  items: ReadonlyArray<T>,
-  selected: ReadonlyArray<T>,
+  items: readonly T[],
+  selected: readonly T[],
   moveDirection: MoveDirection
 ): (a: T, b: T) => number {
   const orderMap = new Map<T, number>();

@@ -1,26 +1,26 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { LinkModel } from '../data/model';
+import { LinkModel } from "../data/model";
 
 import {
   Vector,
   computePolyline,
   getPointAlongPolyline,
   computePolylineLength,
-} from '../diagram/geometry';
-import { TransformedSvgCanvas } from '../diagram/paper';
-import { PaperWidgetProps } from '../diagram/paperArea';
-import { DiagramView, RenderingLayer } from '../diagram/view';
-import { Link } from '../diagram/elements';
+} from "../diagram/geometry";
+import { TransformedSvgCanvas } from "../diagram/paper";
+import { PaperWidgetProps } from "../diagram/paperArea";
+import { DiagramView, RenderingLayer } from "../diagram/view";
+import { Link } from "../diagram/elements";
 
-import { Debouncer } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { Debouncer } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
-import { EditorController } from './editorController';
+import { EditorController } from "./editorController";
 
-import { AuthoringKind, AuthoringState } from './authoringState';
-import { LinkValidation, ElementValidation } from './validation';
+import { AuthoringKind, AuthoringState } from "./authoringState";
+import { LinkValidation, ElementValidation } from "./validation";
 
 export interface Props extends PaperWidgetProps {
   view: DiagramView;
@@ -52,37 +52,37 @@ export class LinkStateWidget extends React.Component<Props, {}> {
 
   private listenEvents() {
     const { editor, view } = this.props;
-    this.listener.listen(editor.model.events, 'elementEvent', ({ data }) => {
+    this.listener.listen(editor.model.events, "elementEvent", ({ data }) => {
       if (data.changeSize || data.changePosition) {
         this.scheduleUpdate();
       }
     });
-    this.listener.listen(editor.model.events, 'linkEvent', ({ data }) => {
+    this.listener.listen(editor.model.events, "linkEvent", ({ data }) => {
       if (data.changeVertices || data.changeLabelBounds) {
         this.scheduleUpdate();
       }
     });
     this.listener.listen(
       editor.model.events,
-      'changeCells',
+      "changeCells",
       this.scheduleUpdate
     );
     this.listener.listen(
       editor.events,
-      'changeAuthoringState',
+      "changeAuthoringState",
       this.scheduleUpdate
     );
     this.listener.listen(
       editor.events,
-      'changeTemporaryState',
+      "changeTemporaryState",
       this.scheduleUpdate
     );
     this.listener.listen(
       editor.events,
-      'changeValidationState',
+      "changeValidationState",
       this.scheduleUpdate
     );
-    this.listener.listen(view.events, 'syncUpdate', ({ layer }) => {
+    this.listener.listen(view.events, "syncUpdate", ({ layer }) => {
       if (layer === RenderingLayer.Editor) {
         this.delayedUpdate.runSynchronously();
       }
@@ -99,7 +99,7 @@ export class LinkStateWidget extends React.Component<Props, {}> {
 
   private calculateLinkPath(link: Link) {
     const polyline = this.calculatePolyline(link);
-    return 'M' + polyline.map(({ x, y }) => `${x},${y}`).join(' L');
+    return "M" + polyline.map(({ x, y }) => `${x},${y}`).join(" L");
   }
 
   private calculatePolyline(link: Link) {
@@ -128,14 +128,14 @@ export class LinkStateWidget extends React.Component<Props, {}> {
         let title: string;
 
         if (state.deleted) {
-          statusText = 'Delete';
-          title = 'Revert deletion of the link';
+          statusText = "Delete";
+          title = "Revert deletion of the link";
         } else if (!state.before) {
-          statusText = 'New';
-          title = 'Revert creation of the link';
+          statusText = "New";
+          title = "Revert creation of the link";
         } else {
-          statusText = 'Change';
-          title = 'Revert all changes in properties of the link';
+          statusText = "Change";
+          title = "Revert all changes in properties of the link";
         }
 
         if (statusText && title) {
@@ -192,11 +192,11 @@ export class LinkStateWidget extends React.Component<Props, {}> {
           <path
             key={link.id}
             d={path}
-            fill={'none'}
-            stroke={'grey'}
+            fill={"none"}
+            stroke={"grey"}
             strokeWidth={5}
             strokeOpacity={0.5}
-            strokeDasharray={'8 8'}
+            strokeDasharray={"8 8"}
           />
         );
       }
@@ -213,17 +213,17 @@ export class LinkStateWidget extends React.Component<Props, {}> {
         const path = this.calculateLinkPath(link);
         let color: string;
         if (isDeletedLink) {
-          color = 'red';
+          color = "red";
         } else if (isUncertainLink) {
-          color = 'blue';
+          color = "blue";
         } else if (event && event.type === AuthoringKind.ChangeLink) {
-          color = event.before ? 'blue' : 'green';
+          color = event.before ? "blue" : "green";
         }
         return (
           <path
             key={link.id}
             d={path}
-            fill={'none'}
+            fill={"none"}
             stroke={color}
             strokeWidth={5}
             strokeOpacity={0.5}
@@ -253,7 +253,7 @@ export class LinkStateWidget extends React.Component<Props, {}> {
     if (!validation) {
       return null;
     }
-    const title = validation.errors.map((error) => error.message).join('\n');
+    const title = validation.errors.map((error) => error.message).join("\n");
 
     return this.renderErrorIcon(title, validation);
   }
@@ -283,7 +283,7 @@ export class LinkStateWidget extends React.Component<Props, {}> {
       return null;
     }
     const htmlTransformStyle: React.CSSProperties = {
-      position: 'absolute',
+      position: "absolute",
       left: 0,
       top: 0,
       transform: `scale(${scale},${scale})translate(${originX}px,${originY}px)`,
@@ -292,7 +292,7 @@ export class LinkStateWidget extends React.Component<Props, {}> {
       <div className={`${CLASS_NAME}`}>
         <TransformedSvgCanvas
           paperTransform={paperTransform}
-          style={{ overflow: 'visible', pointerEvents: 'none' }}
+          style={{ overflow: "visible", pointerEvents: "none" }}
         >
           {this.renderLinkStateHighlighting()}
         </TransformedSvgCanvas>

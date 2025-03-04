@@ -1,23 +1,22 @@
-import { createElement, ClassAttributes } from 'react';
-import * as ReactDOM from 'react-dom';
+import { createElement, ClassAttributes } from "react";
+import * as ReactDOM from "react-dom";
 
 import {
   Workspace,
   WorkspaceProps,
   SparqlDataProvider,
   WikidataSettings,
-  SparqlQueryMethod,
   PropertySuggestionParams,
   PropertyScore,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 
 import {
   onPageLoad,
   tryLoadLayoutFromLocalStorage,
   saveLayoutToLocalStorage,
-} from './common';
+} from "./common";
 
-const WIKIDATA_PREFIX = 'http://www.wikidata.org/prop/direct/';
+const WIKIDATA_PREFIX = "http://www.wikidata.org/prop/direct/";
 
 let workspace: Workspace;
 
@@ -27,11 +26,11 @@ function getElementLabel(id: string): string {
   const element = model.getElement(id);
   return element
     ? view.formatLabel(element.data.label.values, element.iri)
-    : '';
+    : "";
 }
 
 function wikidataSuggestProperties(params: PropertySuggestionParams) {
-  const idMap: { [id: string]: string } = {};
+  const idMap: Record<string, string> = {};
 
   const properties = params.properties.map((id) => {
     let resultID;
@@ -47,15 +46,15 @@ function wikidataSuggestProperties(params: PropertySuggestionParams) {
   const requestBody = {
     threshold: 0.1,
     term,
-    // eslint-disable-next-line @typescript-eslint/camelcase
+
     instance_properties: properties,
   };
-  return fetch('/wikidata-prop-suggest', {
-    method: 'POST',
+  return fetch("/wikidata-prop-suggest", {
+    method: "POST",
     body: JSON.stringify(requestBody),
-    credentials: 'same-origin',
-    mode: 'cors',
-    cache: 'default',
+    credentials: "same-origin",
+    mode: "cors",
+    cache: "default",
   })
     .then((response) => {
       if (response.ok) {
@@ -67,7 +66,7 @@ function wikidataSuggestProperties(params: PropertySuggestionParams) {
       }
     })
     .then((json) => {
-      const dictionary: { [id: string]: PropertyScore } = {};
+      const dictionary: Record<string, PropertyScore> = {};
       for (const scoredItem of json.data) {
         const propertyIri = idMap[scoredItem.id];
         const item = dictionary[propertyIri];
@@ -103,10 +102,10 @@ function onWorkspaceMounted(wspace: Workspace) {
   const diagram = tryLoadLayoutFromLocalStorage();
   const dataProvider = new SparqlDataProvider(
     {
-      endpointUrl: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql',
+      endpointUrl: "https://query.wikidata.org/bigdata/namespace/wdq/sparql",
       imagePropertyUris: [
-        'http://www.wikidata.org/prop/direct/P18',
-        'http://www.wikidata.org/prop/direct/P154',
+        "http://www.wikidata.org/prop/direct/P18",
+        "http://www.wikidata.org/prop/direct/P154",
       ],
     },
     WikidataSettings

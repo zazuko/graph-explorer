@@ -4,15 +4,15 @@ import {
   ElementTypeIri,
   LinkTypeIri,
   PropertyTypeIri,
-} from '../data/model';
-import { GenerateID } from '../data/schema';
+} from "../data/model";
+import { GenerateID } from "../data/schema";
 
 import {
   EventSource,
   Events,
   EventObserver,
   AnyEvent,
-} from '../viewUtils/events';
+} from "../viewUtils/events";
 
 import {
   Element,
@@ -24,9 +24,9 @@ import {
   FatClassModel,
   FatClassModelEvents,
   RichProperty,
-} from './elements';
-import { Graph, CellsChangedEvent } from './graph';
-import { CommandHistory, Command } from './history';
+} from "./elements";
+import { Graph, CellsChangedEvent } from "./graph";
+import { CommandHistory, Command } from "./history";
 
 export interface DiagramModelEvents {
   changeCells: CellsChangedEvent;
@@ -64,7 +64,7 @@ export class DiagramModel {
     return this.graph.getLink(linkId);
   }
 
-  linksOfType(linkTypeId: LinkTypeIri): ReadonlyArray<Link> {
+  linksOfType(linkTypeId: LinkTypeIri): readonly Link[] {
     return this.graph.getLinks().filter((link) => link.typeId === linkTypeId);
   }
 
@@ -95,23 +95,23 @@ export class DiagramModel {
   }
 
   subscribeGraph() {
-    this.graphListener.listen(this.graph.events, 'changeCells', (e) => {
-      this.source.trigger('changeCells', e);
+    this.graphListener.listen(this.graph.events, "changeCells", (e) => {
+      this.source.trigger("changeCells", e);
     });
-    this.graphListener.listen(this.graph.events, 'elementEvent', (e) => {
-      this.source.trigger('elementEvent', e);
+    this.graphListener.listen(this.graph.events, "elementEvent", (e) => {
+      this.source.trigger("elementEvent", e);
     });
-    this.graphListener.listen(this.graph.events, 'linkEvent', (e) => {
-      this.source.trigger('linkEvent', e);
+    this.graphListener.listen(this.graph.events, "linkEvent", (e) => {
+      this.source.trigger("linkEvent", e);
     });
-    this.graphListener.listen(this.graph.events, 'linkTypeEvent', (e) => {
-      this.source.trigger('linkTypeEvent', e);
+    this.graphListener.listen(this.graph.events, "linkTypeEvent", (e) => {
+      this.source.trigger("linkTypeEvent", e);
     });
-    this.graphListener.listen(this.graph.events, 'classEvent', (e) => {
-      this.source.trigger('classEvent', e);
+    this.graphListener.listen(this.graph.events, "classEvent", (e) => {
+      this.source.trigger("classEvent", e);
     });
 
-    this.source.trigger('changeCells', { updateAll: true });
+    this.source.trigger("changeCells", { updateAll: true });
   }
 
   reorderElements(compare: (a: Element, b: Element) => number) {
@@ -123,7 +123,7 @@ export class DiagramModel {
     group?: string
   ): Element {
     const elementIri =
-      typeof elementIriOrModel === 'string'
+      typeof elementIriOrModel === "string"
         ? elementIriOrModel
         : (elementIriOrModel as ElementModel).id;
 
@@ -136,7 +136,7 @@ export class DiagramModel {
     }
 
     let data =
-      typeof elementIriOrModel === 'string'
+      typeof elementIriOrModel === "string"
         ? placeholderDataFromIri(elementIri)
         : (elementIriOrModel as ElementModel);
     data = { ...data, id: data.id };
@@ -159,7 +159,7 @@ export class DiagramModel {
   addLink(link: Link): Link {
     const { typeId, sourceId, targetId, data } = link;
     if (data && data.linkTypeId !== typeId) {
-      throw new Error('linkTypeId must match linkType.id');
+      throw new Error("linkTypeId must match linkType.id");
     }
 
     const existingLink = this.findLink(typeId, sourceId, targetId);
@@ -241,13 +241,13 @@ export class DiagramModel {
   }
 
   triggerChangeGroupContent(group: string) {
-    this.source.trigger('changeGroupContent', { group });
+    this.source.trigger("changeGroupContent", { group });
   }
 
   createTemporaryElement(): Element {
     const target = new Element({
       id: GenerateID.forElement(),
-      data: placeholderDataFromIri('' as ElementIri),
+      data: placeholderDataFromIri("" as ElementIri),
       temporary: true,
     });
 
@@ -269,9 +269,9 @@ export function placeholderDataFromIri(iri: ElementIri): ElementModel {
 function addElement(
   graph: Graph,
   element: Element,
-  connectedLinks: ReadonlyArray<Link>
+  connectedLinks: readonly Link[]
 ): Command {
-  return Command.create('Add element', () => {
+  return Command.create("Add element", () => {
     graph.addElement(element);
     for (const link of connectedLinks) {
       const existing =
@@ -286,7 +286,7 @@ function addElement(
 }
 
 function removeElement(graph: Graph, element: Element): Command {
-  return Command.create('Remove element', () => {
+  return Command.create("Remove element", () => {
     const connectedLinks = [...element.links];
     graph.removeElement(element.id);
     return addElement(graph, element, connectedLinks);

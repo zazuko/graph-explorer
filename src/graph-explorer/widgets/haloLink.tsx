@@ -1,25 +1,25 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MetadataApi } from '../data/metadataApi';
+import { MetadataApi } from "../data/metadataApi";
 
-import { Element, Link } from '../diagram/elements';
+import { Element, Link } from "../diagram/elements";
 import {
   computePolyline,
   computePolylineLength,
   getPointAlongPolyline,
   Vector,
-} from '../diagram/geometry';
-import { PaperWidgetProps } from '../diagram/paperArea';
-import { DiagramView } from '../diagram/view';
+} from "../diagram/geometry";
+import { PaperWidgetProps } from "../diagram/paperArea";
+import { DiagramView } from "../diagram/view";
 
-import { EditorController } from '../editor/editorController';
-import { AuthoringState } from '../editor/authoringState';
+import { EditorController } from "../editor/editorController";
+import { AuthoringState } from "../editor/authoringState";
 
-import { EventObserver } from '../viewUtils/events';
-import { Cancellation, CancellationToken, Debouncer } from '../viewUtils/async';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { EventObserver } from "../viewUtils/events";
+import { Cancellation, CancellationToken, Debouncer } from "../viewUtils/async";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
-const CLASS_NAME = 'graph-explorer-halo-link';
+const CLASS_NAME = "graph-explorer-halo-link";
 const BUTTON_SIZE = 20;
 const BUTTON_MARGIN = 5;
 
@@ -55,7 +55,7 @@ export class HaloLink extends React.Component<Props, State> {
 
   componentDidMount() {
     const { target, editor } = this.props;
-    this.listener.listen(editor.events, 'changeAuthoringState', () => {
+    this.listener.listen(editor.events, "changeAuthoringState", () => {
       this.queryAllowedActions();
     });
     this.listenToTarget(target);
@@ -150,22 +150,22 @@ export class HaloLink extends React.Component<Props, State> {
       const listenToElement = (element: Element) => {
         this.targetListener.listen(
           element.events,
-          'changePosition',
+          "changePosition",
           this.updateAll
         );
         this.targetListener.listen(
           element.events,
-          'changeSize',
+          "changeSize",
           this.updateAll
         );
       };
 
       listenToElement(source);
       listenToElement(target);
-      this.targetListener.listen(link.events, 'changeVertices', this.updateAll);
+      this.targetListener.listen(link.events, "changeVertices", this.updateAll);
       this.targetListener.listen(
         link.events,
-        'changeLabelBounds',
+        "changeLabelBounds",
         this.updateAll
       );
     }
@@ -175,7 +175,7 @@ export class HaloLink extends React.Component<Props, State> {
     return this.props.paperArea.paperToScrollablePaneCoords(point.x, point.y);
   }
 
-  private computePolyline(): ReadonlyArray<Vector> {
+  private computePolyline(): readonly Vector[] {
     const { view, target } = this.props;
 
     const sourceElement = view.model.getElement(target.sourceId);
@@ -205,7 +205,7 @@ export class HaloLink extends React.Component<Props, State> {
     this.props.onSourceMove(point);
   };
 
-  private renderSourceButton(polyline: ReadonlyArray<Vector>) {
+  private renderSourceButton(polyline: readonly Vector[]) {
     const { editor, target } = this.props;
     const point = getPointAlongPolyline(polyline, 0);
     const { x, y } = this.paperToScrollablePaneCoords(point);
@@ -234,7 +234,7 @@ export class HaloLink extends React.Component<Props, State> {
   };
 
   private getButtonPosition(
-    polyline: ReadonlyArray<Vector>,
+    polyline: readonly Vector[],
     index: number
   ): { top: number; left: number } {
     const polylineLength = computePolylineLength(polyline);
@@ -247,7 +247,7 @@ export class HaloLink extends React.Component<Props, State> {
     return { top: y - BUTTON_SIZE / 2, left: x - BUTTON_SIZE / 2 };
   }
 
-  private renderTargetButton(polyline: ReadonlyArray<Vector>) {
+  private renderTargetButton(polyline: readonly Vector[]) {
     const { editor, target } = this.props;
     const style = this.getButtonPosition(polyline, 0);
 
@@ -270,14 +270,14 @@ export class HaloLink extends React.Component<Props, State> {
           style={{ transform: `rotate(${degree}deg)` }}
         >
           <g transform={`scale(${BUTTON_SIZE})`}>
-            <polygon points={'0,0.5 1,1 1,0'} fill="#198AD3" />
+            <polygon points={"0,0.5 1,1 1,0"} fill="#198AD3" />
           </g>
         </svg>
       </button>
     );
   }
 
-  private renderEditButton(polyline: ReadonlyArray<Vector>) {
+  private renderEditButton(polyline: readonly Vector[]) {
     const { canEdit } = this.state;
     const style = this.getButtonPosition(polyline, 1);
     if (canEdit === undefined) {
@@ -288,8 +288,8 @@ export class HaloLink extends React.Component<Props, State> {
       );
     }
     const title = canEdit
-      ? 'Edit link'
-      : 'Editing is unavailable for the selected link';
+      ? "Edit link"
+      : "Editing is unavailable for the selected link";
     return (
       <button
         className={`${CLASS_NAME}__button ${CLASS_NAME}__edit`}
@@ -301,7 +301,7 @@ export class HaloLink extends React.Component<Props, State> {
     );
   }
 
-  private renderDeleteButton(polyline: ReadonlyArray<Vector>) {
+  private renderDeleteButton(polyline: readonly Vector[]) {
     const { canDelete } = this.state;
     const style = this.getButtonPosition(polyline, 2);
     if (canDelete === undefined) {
@@ -312,8 +312,8 @@ export class HaloLink extends React.Component<Props, State> {
       );
     }
     const title = canDelete
-      ? 'Delete link'
-      : 'Deletion is unavailable for the selected link';
+      ? "Delete link"
+      : "Deletion is unavailable for the selected link";
     return (
       <button
         className={`${CLASS_NAME}__button ${CLASS_NAME}__delete`}
@@ -353,7 +353,7 @@ export class HaloLink extends React.Component<Props, State> {
         className={`${CLASS_NAME}__edit-label-button`}
         style={style}
         onClick={() => onEditLabel()}
-        title={'Edit Link Label'}
+        title={"Edit Link Label"}
       />
     );
   }

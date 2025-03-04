@@ -10,7 +10,7 @@ import {
   ElementTypeIri,
   LinkTypeIri,
   PropertyTypeIri,
-} from './model';
+} from "./model";
 
 /**
  * DataProvider is responsible for getting data into Graph Explorer
@@ -107,7 +107,7 @@ export interface LinkElementsParams {
   linkId: LinkTypeIri;
   limit?: number;
   offset: number;
-  direction?: 'in' | 'out';
+  direction?: "in" | "out";
 }
 
 export interface FilterParams {
@@ -134,7 +134,7 @@ export interface FilterParams {
   /**
    * Reference element link type direction ('in' | 'out'). Is used only when refElementLinkId is set.
    */
-  linkDirection?: 'in' | 'out';
+  linkDirection?: "in" | "out";
 
   /**
    * Limit number of elements returned. Defaults depend on data provider implementation

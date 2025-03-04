@@ -1,5 +1,5 @@
-import { ComponentClass } from 'react';
-import { DiagramModel } from '../diagram/model';
+import { ComponentClass } from "react";
+import { DiagramModel } from "../diagram/model";
 
 import {
   ElementIri,
@@ -7,8 +7,8 @@ import {
   Dictionary,
   LocalizedString,
   Property,
-} from '../data/model';
-import { Link } from '../diagram/elements';
+} from "../data/model";
+import { Link } from "../diagram/elements";
 
 export type TypeStyleResolver = (
   types: string[]
@@ -39,11 +39,11 @@ export interface TemplateProps {
   props?: Dictionary<Property>;
 }
 
-export type PropArray = Array<{
+export type PropArray = {
   id: string;
   name: string;
   property: Property;
-}>;
+}[];
 
 export interface LinkTemplate {
   markerSource?: LinkMarkerStyle;
@@ -56,8 +56,8 @@ export interface LinkStyle {
   connection?: {
     fill?: string;
     stroke?: string;
-    'stroke-width'?: number;
-    'stroke-dasharray'?: string;
+    "stroke-width"?: number;
+    "stroke-dasharray"?: string;
   };
   label?: LinkLabel;
   properties?: LinkLabel[];
@@ -72,8 +72,8 @@ export type RoutedLinks = Map<string, RoutedLink>;
 
 export interface RoutedLink {
   linkId: string;
-  vertices: ReadonlyArray<Vertex>;
-  labelTextAnchor?: 'start' | 'middle' | 'end';
+  vertices: readonly Vertex[];
+  labelTextAnchor?: "start" | "middle" | "end";
 }
 
 export interface Vertex {
@@ -97,15 +97,15 @@ export interface LinkLabel {
     rect?: {
       fill?: string;
       stroke?: string;
-      'stroke-width'?: number;
+      "stroke-width"?: number;
     };
     text?: {
       fill?: string;
       stroke?: string;
-      'stroke-width'?: number;
-      'font-family'?: string;
-      'font-size'?: string | number;
-      'font-weight'?: 'normal' | 'bold' | 'lighter' | 'bolder' | number;
+      "stroke-width"?: number;
+      "font-family"?: string;
+      "font-size"?: string | number;
+      "font-weight"?: "normal" | "bold" | "lighter" | "bolder" | number;
       text?: LocalizedString[];
     };
   };

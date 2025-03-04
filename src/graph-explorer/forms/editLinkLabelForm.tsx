@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { Link } from '../diagram/elements';
-import { DiagramView } from '../diagram/view';
+import { Link } from "../diagram/elements";
+import { DiagramView } from "../diagram/view";
 
-const CLASS_NAME = 'graph-explorer-edit-form';
+const CLASS_NAME = "graph-explorer-edit-form";
 
 export interface Props {
   view: DiagramView;
