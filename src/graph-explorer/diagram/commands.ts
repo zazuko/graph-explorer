@@ -1,19 +1,19 @@
-import { ElementModel, ElementIri, LinkModel, sameLink } from '../data/model';
+import { ElementModel, ElementIri, LinkModel, sameLink } from "../data/model";
 
-import { Element, Link, FatLinkType, Cell, LinkVertex } from './elements';
-import { Vector, isPolylineEqual } from './geometry';
-import { Command } from './history';
-import { DiagramModel } from './model';
+import { Element, Link, FatLinkType } from "./elements";
+import { Vector, isPolylineEqual } from "./geometry";
+import { Command } from "./history";
+import { DiagramModel } from "./model";
 
 export class RestoreGeometry implements Command {
-  readonly title = 'Move elements and links';
+  readonly title = "Move elements and links";
 
   constructor(
-    private elementState: ReadonlyArray<{ element: Element; position: Vector }>,
-    private linkState: ReadonlyArray<{
+    private elementState: readonly { element: Element; position: Vector }[],
+    private linkState: readonly {
       link: Link;
-      vertices: ReadonlyArray<Vector>;
-    }>
+      vertices: readonly Vector[];
+    }[]
   ) {}
 
   static capture(model: DiagramModel) {
@@ -21,8 +21,8 @@ export class RestoreGeometry implements Command {
   }
 
   private static captureElementsAndLinks(
-    elements: ReadonlyArray<Element>,
-    links: ReadonlyArray<Link>
+    elements: readonly Element[],
+    links: readonly Link[]
   ) {
     return new RestoreGeometry(
       elements.map((element) => ({ element, position: element.position })),
@@ -65,7 +65,7 @@ export class RestoreGeometry implements Command {
 
 export function restoreCapturedLinkGeometry(link: Link): Command {
   const vertices = link.vertices;
-  return Command.create('Change link vertices', () => {
+  return Command.create("Change link vertices", () => {
     const capturedInverse = restoreCapturedLinkGeometry(link);
     link.setVertices(vertices);
     return capturedInverse;
@@ -76,7 +76,7 @@ export function setElementExpanded(
   element: Element,
   expanded: boolean
 ): Command {
-  const title = expanded ? 'Expand element' : 'Collapse element';
+  const title = expanded ? "Expand element" : "Collapse element";
   return Command.create(title, () => {
     element.setExpanded(expanded);
     return setElementExpanded(element, !expanded);
@@ -90,7 +90,7 @@ export function changeLinkTypeVisibility(params: {
   preventLoading?: boolean;
 }): Command {
   const { linkType, visible, showLabel, preventLoading } = params;
-  return Command.create('Change link type visibility', () => {
+  return Command.create("Change link type visibility", () => {
     const previousVisible = linkType.visible;
     const previousShowLabel = linkType.showLabel;
     linkType.setVisibility({ visible, showLabel, preventLoading });
@@ -110,7 +110,7 @@ export function setElementData(
 ): Command {
   const elements = model.elements.filter((el) => el.iri === target);
   const previous = elements.length > 0 ? elements[0].data : undefined;
-  return Command.create('Set element data', () => {
+  return Command.create("Set element data", () => {
     for (const element of model.elements.filter((el) => el.iri === target)) {
       element.setData(data);
     }
@@ -125,10 +125,10 @@ export function setLinkData(
 ): Command {
   if (!sameLink(oldData, newData)) {
     throw new Error(
-      'Cannot change typeId, sourceId or targetId when changing link data'
+      "Cannot change typeId, sourceId or targetId when changing link data"
     );
   }
-  return Command.create('Set link data', () => {
+  return Command.create("Set link data", () => {
     for (const link of model.links) {
       if (sameLink(link.data, oldData)) {
         link.setData(newData);

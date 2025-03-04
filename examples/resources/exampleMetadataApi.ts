@@ -11,25 +11,23 @@ import {
   ValidationEvent,
   ElementError,
   LinkError,
-  Property,
   LiteralProperty,
-  LocalizedString,
   DirectedLinkType,
   CancellationToken,
-} from '../../src/graph-explorer/index';
+} from "../../src/graph-explorer/index";
 
-const OWL_PREFIX = 'http://www.w3.org/2002/07/owl#';
-const RDFS_PREFIX = 'http://www.w3.org/2000/01/rdf-schema#';
+const OWL_PREFIX = "http://www.w3.org/2002/07/owl#";
+const RDFS_PREFIX = "http://www.w3.org/2000/01/rdf-schema#";
 
 const owl = {
-  class: (OWL_PREFIX + 'Class') as ElementTypeIri,
-  objectProperty: (OWL_PREFIX + 'ObjectProperty') as ElementTypeIri,
-  domain: (OWL_PREFIX + 'domain') as LinkTypeIri,
-  range: (OWL_PREFIX + 'range') as LinkTypeIri,
+  class: (OWL_PREFIX + "Class") as ElementTypeIri,
+  objectProperty: (OWL_PREFIX + "ObjectProperty") as ElementTypeIri,
+  domain: (OWL_PREFIX + "domain") as LinkTypeIri,
+  range: (OWL_PREFIX + "range") as LinkTypeIri,
 };
 const rdfs = {
-  subClassOf: (RDFS_PREFIX + 'subClassOf') as LinkTypeIri,
-  subPropertyOf: (RDFS_PREFIX + 'subPropertyOf') as LinkTypeIri,
+  subClassOf: (RDFS_PREFIX + "subClassOf") as LinkTypeIri,
+  subPropertyOf: (RDFS_PREFIX + "subPropertyOf") as LinkTypeIri,
 };
 
 function hasType(model: ElementModel, type: ElementTypeIri) {
@@ -102,8 +100,8 @@ export class ExampleMetadataApi implements MetadataApi {
   }
 
   async propertiesForType(
-    type: ElementTypeIri,
-    ct: CancellationToken
+    _type: ElementTypeIri,
+    _ct: CancellationToken
   ): Promise<PropertyTypeIri[]> {
     //await delay(SIMULATED_DELAY, ct);
     return [];
@@ -119,7 +117,7 @@ export class ExampleMetadataApi implements MetadataApi {
 
   async filterConstructibleTypes(
     types: ReadonlySet<ElementTypeIri>,
-    ct: CancellationToken
+    _ct: CancellationToken
   ): Promise<ReadonlySet<ElementTypeIri>> {
     //await delay(SIMULATED_DELAY, ct);
     const result = new Set<ElementTypeIri>();
@@ -140,35 +138,35 @@ export class ExampleMetadataApi implements MetadataApi {
   }
 
   async canLinkElement(
-    element: ElementModel,
-    ct: CancellationToken
+    _element: ElementModel,
+    _ct: CancellationToken
   ): Promise<boolean> {
     //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
   async canDeleteLink(
-    link: LinkModel,
-    source: ElementModel,
-    target: ElementModel,
-    ct: CancellationToken
+    _link: LinkModel,
+    _source: ElementModel,
+    _target: ElementModel,
+    _ct: CancellationToken
   ): Promise<boolean> {
     //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
   async canEditLink(
-    link: LinkModel,
-    source: ElementModel,
-    target: ElementModel,
-    ct: CancellationToken
+    _link: LinkModel,
+    _source: ElementModel,
+    _target: ElementModel,
+    _ct: CancellationToken
   ): Promise<boolean> {
     //await delay(SIMULATED_DELAY, ct);
     return true;
   }
 
   async generateNewElement(
-    types: ReadonlyArray<ElementTypeIri>,
+    types: readonly ElementTypeIri[],
     ct: CancellationToken
   ): Promise<ElementModel> {
     await delay(SIMULATED_DELAY, ct);
@@ -178,8 +176,13 @@ export class ExampleMetadataApi implements MetadataApi {
     return {
       id: `${types[0]}_${random32BitDigits}` as ElementIri,
       types: [...types],
-      label: { values: [{ value: 'New Entity', language: '' }] },
-      properties:  {"http://xmlns.com/foaf/0.1/name":  {type: 'string', values: [{language:"",value:"helo"}]} as LiteralProperty},
+      label: { values: [{ value: "New Entity", language: "" }] },
+      properties: {
+        "http://xmlns.com/foaf/0.1/name": {
+          type: "string",
+          values: [{ language: "", value: "helo" }],
+        } as LiteralProperty,
+      },
     };
   }
 }
@@ -187,19 +190,19 @@ export class ExampleMetadataApi implements MetadataApi {
 export class ExampleValidationApi implements ValidationApi {
   async validate(
     event: ValidationEvent
-  ): Promise<Array<ElementError | LinkError>> {
-    const errors: Array<ElementError | LinkError> = [];
+  ): Promise<(ElementError | LinkError)[]> {
+    const errors: (ElementError | LinkError)[] = [];
     if (event.target.types.indexOf(owl.class) >= 0) {
       event.state.links.forEach((e) => {
         if (!e.before && e.after.sourceId === event.target.id) {
           errors.push({
-            type: 'link',
+            type: "link",
             target: e.after,
-            message: 'Cannot add any new link from a Class',
+            message: "Cannot add any new link from a Class",
           });
           const linkType = event.model.createLinkType(e.after.linkTypeId);
           errors.push({
-            type: 'element',
+            type: "element",
             target: event.target.id,
             message: `Cannot create <${linkType.id}> link from a Class`,
           });

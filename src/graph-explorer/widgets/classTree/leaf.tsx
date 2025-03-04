@@ -1,15 +1,21 @@
-import * as React from 'react';
+/* eslint-disable @typescript-eslint/no-require-imports */
 
-import { ElementTypeIri } from '../../data/model';
-import { DiagramView } from '../../diagram/view';
-import { highlightSubstring } from '../listElementView';
+import * as React from "react";
 
-import { TreeNode } from './treeModel';
+import { ElementTypeIri } from "../../data/model";
+import { DiagramView } from "../../diagram/view";
+import { highlightSubstring } from "../listElementView";
 
-const EXPAND_ICON = require('../../../../images/tree/expand-toggle.svg').default as string;
-const COLLAPSE_ICON = require('../../../../images/tree/collapse-toggle.svg').default as string;
-const DEFAULT_LEAF_ICON = require('../../../../images/tree/leaf-default.svg').default as string;
-const DEFAULT_PARENT_ICON = require('../../../../images/tree/leaf-folder.svg').default as string;
+import { TreeNode } from "./treeModel";
+
+const EXPAND_ICON = require("../../../../images/tree/expand-toggle.svg")
+  .default as string;
+const COLLAPSE_ICON = require("../../../../images/tree/collapse-toggle.svg")
+  .default as string;
+const DEFAULT_LEAF_ICON = require("../../../../images/tree/leaf-default.svg")
+  .default as string;
+const DEFAULT_PARENT_ICON = require("../../../../images/tree/leaf-folder.svg")
+  .default as string;
 
 interface CommonProps {
   view: DiagramView;
@@ -29,7 +35,7 @@ interface State {
   expanded?: boolean;
 }
 
-const LEAF_CLASS = 'graph-explorer-class-leaf';
+const LEAF_CLASS = "graph-explorer-class-leaf";
 
 export class Leaf extends React.Component<LeafProps, State> {
   constructor(props: LeafProps) {
@@ -101,7 +107,7 @@ export class Leaf extends React.Component<LeafProps, State> {
             >
               <button
                 className="graph-explorer-btn graph-explorer-btn-default"
-                title={'Click or drag to create new entity of this type'}
+                title={"Click or drag to create new entity of this type"}
                 draggable={true}
                 onClick={this.onClickCreate}
                 onDragStart={this.onDragCreate}
@@ -140,7 +146,7 @@ export class Leaf extends React.Component<LeafProps, State> {
     // sets the drag data to support drag-n-drop in Firefox
     // see https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations for more details
     // IE supports only 'text' and 'URL' formats, see https://msdn.microsoft.com/en-us/ie/ms536744(v=vs.94)
-    e.dataTransfer.setData('text', '');
+    e.dataTransfer.setData("text", "");
 
     this.props.onDragCreate(this.props.node);
   };
@@ -148,7 +154,7 @@ export class Leaf extends React.Component<LeafProps, State> {
 
 export interface ForestProps extends CommonProps {
   className?: string;
-  nodes: ReadonlyArray<TreeNode>;
+  nodes: readonly TreeNode[];
 }
 
 export class Forest extends React.Component<ForestProps, {}> {

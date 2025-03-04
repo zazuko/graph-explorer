@@ -1,5 +1,5 @@
-import { LinkTemplate, LinkTemplateResolver } from './props';
-import { PLACEHOLDER_LINK_TYPE } from '../data/schema';
+import { LinkTemplate, LinkTemplateResolver } from "./props";
+import { PLACEHOLDER_LINK_TYPE } from "../data/schema";
 
 export const LINK_SHOW_IRI: LinkTemplate = {
   renderLink: (link) => ({
@@ -11,12 +11,12 @@ export const LINK_SHOW_IRI: LinkTemplate = {
             text: [
               {
                 value: link.typeId,
-                language: '',
+                language: "",
               },
             ],
-            fill: 'gray',
-            'font-size': 12,
-            'font-weight': 'lighter',
+            fill: "gray",
+            "font-size": 12,
+            "font-weight": "lighter",
           },
         },
       },
@@ -26,67 +26,67 @@ export const LINK_SHOW_IRI: LinkTemplate = {
 
 const LINK_SUB_CLASS_OF: LinkTemplate = {
   markerTarget: {
-    fill: '#f8a485',
-    stroke: '#cf8e76',
+    fill: "#f8a485",
+    stroke: "#cf8e76",
   },
   renderLink: () => ({
     connection: {
-      stroke: '#f8a485',
-      'stroke-width': 2,
+      stroke: "#f8a485",
+      "stroke-width": 2,
     },
   }),
 };
 
 const LINK_DOMAIN: LinkTemplate = {
   markerTarget: {
-    fill: '#34c7f3',
-    stroke: '#38b5db',
+    fill: "#34c7f3",
+    stroke: "#38b5db",
   },
   renderLink: () => ({
     connection: {
-      stroke: '#34c7f3',
-      'stroke-width': 2,
+      stroke: "#34c7f3",
+      "stroke-width": 2,
     },
   }),
 };
 
 const LINK_RANGE: LinkTemplate = {
   markerTarget: {
-    fill: '#34c7f3',
-    stroke: '#38b5db',
+    fill: "#34c7f3",
+    stroke: "#38b5db",
   },
   renderLink: () => ({
     connection: {
-      stroke: '#34c7f3',
-      'stroke-width': 2,
+      stroke: "#34c7f3",
+      "stroke-width": 2,
     },
   }),
 };
 
 const LINK_TYPE_OF: LinkTemplate = {
   markerTarget: {
-    fill: '#8cd965',
-    stroke: '#5b9a3b',
+    fill: "#8cd965",
+    stroke: "#5b9a3b",
   },
   renderLink: () => ({
     connection: {
-      stroke: '#8cd965',
-      'stroke-width': 2,
+      stroke: "#8cd965",
+      "stroke-width": 2,
     },
   }),
 };
 
 export const DefaultLinkTemplateBundle: LinkTemplateResolver = (type) => {
-  if (type === 'http://www.w3.org/2000/01/rdf-schema#subClassOf') {
+  if (type === "http://www.w3.org/2000/01/rdf-schema#subClassOf") {
     return LINK_SUB_CLASS_OF;
-  } else if (type === 'http://www.w3.org/2000/01/rdf-schema#domain') {
+  } else if (type === "http://www.w3.org/2000/01/rdf-schema#domain") {
     return LINK_DOMAIN;
-  } else if (type === 'http://www.w3.org/2000/01/rdf-schema#range') {
+  } else if (type === "http://www.w3.org/2000/01/rdf-schema#range") {
     return LINK_RANGE;
-  } else if (type === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
+  } else if (type === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type") {
     return LINK_TYPE_OF;
   } else if (type === PLACEHOLDER_LINK_TYPE) {
-    return { markerTarget: { fill: 'none' } };
+    return { markerTarget: { fill: "none" } };
   } else {
     return undefined;
   }

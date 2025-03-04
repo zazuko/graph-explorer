@@ -272,7 +272,7 @@ export interface LinkConfiguration {
    * Optional domain constraint for source element of the link.
    * If specified checks RDF type of source element to match one from this set.
    */
-  domain?: ReadonlyArray<string>;
+  domain?: readonly string[];
 
   /**
    * SPARQL predicate or pattern connecting source element to target element.
@@ -320,7 +320,7 @@ export interface PropertyConfiguration {
    * Optional domain constraint for source element of the property.
    * If specified checks RDF type of source element to match one from this set.
    */
-  domain?: ReadonlyArray<string>;
+  domain?: readonly string[];
 
   /**
    * SPARQL predicate or pattern connecting source element to property value.
@@ -354,13 +354,13 @@ export const RDFSettings: SparqlDataProviderSettings = {
                 VALUES (?target) {\${ids}}
             }`,
 
-  defaultPrefix: '',
+  defaultPrefix: "",
 
-  schemaLabelProperty: 'rdfs:label',
-  dataLabelProperty: 'rdfs:label',
+  schemaLabelProperty: "rdfs:label",
+  dataLabelProperty: "rdfs:label",
 
   fullTextSearch: {
-    prefix: '',
+    prefix: "",
     queryPattern: ``,
     elementFirst: false,
   },
@@ -395,7 +395,7 @@ export const RDFSettings: SparqlDataProviderSettings = {
 
   linkTypesOfQuery: ``,
   linkTypesStatisticsQuery: ``,
-  filterRefElementLinkPattern: '',
+  filterRefElementLinkPattern: "",
   filterTypePattern: ``,
   filterAdditionalRestriction: ``,
   filterElementInfoPattern: ``,
@@ -410,11 +410,11 @@ const WikidataSettingsOverride: Partial<SparqlDataProviderSettings> = {
 
 `,
 
-  schemaLabelProperty: 'rdfs:label',
-  dataLabelProperty: 'rdfs:label',
+  schemaLabelProperty: "rdfs:label",
+  dataLabelProperty: "rdfs:label",
 
   fullTextSearch: {
-    prefix: 'PREFIX bds: <http://www.bigdata.com/rdf/search#>' + '\n',
+    prefix: "PREFIX bds: <http://www.bigdata.com/rdf/search#>" + "\n",
     queryPattern: `
               ?inst rdfs:label ?searchLabel.
               SERVICE bds:search {
@@ -498,7 +498,7 @@ const WikidataSettingsOverride: Partial<SparqlDataProviderSettings> = {
         }
     `,
   filterRefElementLinkPattern:
-    '?claim <http://wikiba.se/ontology#directClaim> ?link .',
+    "?claim <http://wikiba.se/ontology#directClaim> ?link .",
   filterTypePattern: `?inst wdt:P31 ?instType. ?instType wdt:P279* ?class`,
   filterAdditionalRestriction: `FILTER ISIRI(?inst)
                         BIND(STR(?inst) as ?strInst)
@@ -520,10 +520,10 @@ export const OWLRDFSSettingsOverride: Partial<SparqlDataProviderSettings> = {
  PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
  PREFIX owl:  <http://www.w3.org/2002/07/owl#>
 `,
-  schemaLabelProperty: 'rdfs:label',
-  dataLabelProperty: 'rdfs:label',
+  schemaLabelProperty: "rdfs:label",
+  dataLabelProperty: "rdfs:label",
   fullTextSearch: {
-    prefix: '',
+    prefix: "",
     queryPattern: ` OPTIONAL {?inst \${dataLabelProperty} ?search1}
         FILTER regex(COALESCE(str(?search1), str(?extractedLabel)), "\${text}", "i")
         BIND(0 as ?score)
@@ -589,12 +589,12 @@ export const OWLRDFSSettingsOverride: Partial<SparqlDataProviderSettings> = {
             }
         }
     `,
-  filterRefElementLinkPattern: '',
+  filterRefElementLinkPattern: "",
   filterTypePattern: `?inst a ?instType. ?instType rdfs:subClassOf* ?class`,
   filterElementInfoPattern: `OPTIONAL {?inst rdf:type ?foundClass}
                 BIND (coalesce(?foundClass, owl:Thing) as ?class)
                 OPTIONAL {?inst \${dataLabelProperty} ?label}`,
-  filterAdditionalRestriction: '',
+  filterAdditionalRestriction: "",
 };
 
 export const OWLRDFSSettings: SparqlDataProviderSettings = {
@@ -628,7 +628,7 @@ export const OWLStatsSettings: SparqlDataProviderSettings = {
 
 const DBPediaOverride: Partial<SparqlDataProviderSettings> = {
   fullTextSearch: {
-    prefix: 'PREFIX dbo: <http://dbpedia.org/ontology/>\n',
+    prefix: "PREFIX dbo: <http://dbpedia.org/ontology/>\n",
     queryPattern: `
               ?inst rdfs:label ?searchLabel.
               ?searchLabel bif:contains "\${text}".

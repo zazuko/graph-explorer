@@ -3,10 +3,7 @@
     "target": "es5",
     "module": "commonjs",
     "jsx": "react",
-    "lib": [
-      "dom",
-      "es2015"
-    ],
+    "lib": ["dom", "es2015"],
     "importHelpers": true,
     "strict": true,
     "strictNullChecks": false

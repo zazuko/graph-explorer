@@ -6,18 +6,18 @@ import {
   ElementTypeIri,
   LinkTypeIri,
   PropertyTypeIri,
-} from '../data/model';
-import { GenerateID } from '../data/schema';
+} from "../data/model";
+import { GenerateID } from "../data/schema";
 
-import { EventSource, Events, PropertyChange } from '../viewUtils/events';
+import { EventSource, Events, PropertyChange } from "../viewUtils/events";
 
-import { Vector, Size, isPolylineEqual, Rect } from './geometry';
+import { Vector, Size, isPolylineEqual, Rect } from "./geometry";
 
 export type Cell = Element | Link | LinkVertex;
 
 export enum LinkDirection {
-  in = 'in',
-  out = 'out',
+  in = "in",
+  out = "out",
 }
 
 export interface ElementEvents {
@@ -32,7 +32,7 @@ export interface ElementEvents {
   requestedAddToFilter: {
     source: Element;
     linkType?: FatLinkType;
-    direction?: 'in' | 'out';
+    direction?: "in" | "out";
   };
   requestedRedraw: { source: Element };
 }
@@ -97,7 +97,7 @@ export class Element {
       return;
     }
     this._data = value;
-    this.source.trigger('changeData', { source: this, previous });
+    this.source.trigger("changeData", { source: this, previous });
     updateLinksToReferByNewIri(this, previous.id, value.id);
   }
 
@@ -111,7 +111,7 @@ export class Element {
       return;
     }
     this._position = value;
-    this.source.trigger('changePosition', { source: this, previous });
+    this.source.trigger("changePosition", { source: this, previous });
   }
 
   get size(): Size {
@@ -125,7 +125,7 @@ export class Element {
       return;
     }
     this._size = value;
-    this.source.trigger('changeSize', { source: this, previous });
+    this.source.trigger("changeSize", { source: this, previous });
   }
 
   get isExpanded(): boolean {
@@ -137,7 +137,7 @@ export class Element {
       return;
     }
     this._expanded = value;
-    this.source.trigger('changeExpanded', { source: this, previous });
+    this.source.trigger("changeExpanded", { source: this, previous });
   }
 
   get group(): string | undefined {
@@ -149,7 +149,7 @@ export class Element {
       return;
     }
     this._group = value;
-    this.source.trigger('changeGroup', { source: this, previous });
+    this.source.trigger("changeGroup", { source: this, previous });
   }
 
   get elementState(): ElementTemplateState | undefined {
@@ -161,7 +161,7 @@ export class Element {
       return;
     }
     this._elementState = value;
-    this.source.trigger('changeElementState', { source: this, previous });
+    this.source.trigger("changeElementState", { source: this, previous });
   }
 
   get temporary(): boolean {
@@ -169,15 +169,15 @@ export class Element {
   }
 
   focus() {
-    this.source.trigger('requestedFocus', { source: this });
+    this.source.trigger("requestedFocus", { source: this });
   }
 
   requestGroupContent() {
-    this.source.trigger('requestedGroupContent', { source: this });
+    this.source.trigger("requestedGroupContent", { source: this });
   }
 
-  addToFilter(linkType?: FatLinkType, direction?: 'in' | 'out') {
-    this.source.trigger('requestedAddToFilter', {
+  addToFilter(linkType?: FatLinkType, direction?: "in" | "out") {
+    this.source.trigger("requestedAddToFilter", {
       source: this,
       linkType,
       direction,
@@ -185,18 +185,16 @@ export class Element {
   }
 
   redraw() {
-    this.source.trigger('requestedRedraw', { source: this });
+    this.source.trigger("requestedRedraw", { source: this });
   }
 }
 
-export interface ElementTemplateState {
-  [propertyIri: string]: any;
-}
+export type ElementTemplateState = Record<string, any>;
 
 export interface AddToFilterRequest {
   element: Element;
   linkType?: FatLinkType;
-  direction?: 'in' | 'out';
+  direction?: "in" | "out";
 }
 
 function updateLinksToReferByNewIri(
@@ -220,7 +218,7 @@ function updateLinksToReferByNewIri(
 }
 
 export interface FatClassModelEvents {
-  changeLabel: PropertyChange<FatClassModel, ReadonlyArray<LocalizedString>>;
+  changeLabel: PropertyChange<FatClassModel, readonly LocalizedString[]>;
   changeCount: PropertyChange<FatClassModel, number | undefined>;
 }
 
@@ -230,12 +228,12 @@ export class FatClassModel {
 
   readonly id: ElementTypeIri;
 
-  private _label: ReadonlyArray<LocalizedString>;
+  private _label: readonly LocalizedString[];
   private _count: number | undefined;
 
   constructor(props: {
     id: ElementTypeIri;
-    label?: ReadonlyArray<LocalizedString>;
+    label?: readonly LocalizedString[];
     count?: number;
   }) {
     const { id, label = [], count } = props;
@@ -247,13 +245,13 @@ export class FatClassModel {
   get label() {
     return this._label;
   }
-  setLabel(value: ReadonlyArray<LocalizedString>) {
+  setLabel(value: readonly LocalizedString[]) {
     const previous = this._label;
     if (previous === value) {
       return;
     }
     this._label = value;
-    this.source.trigger('changeLabel', { source: this, previous });
+    this.source.trigger("changeLabel", { source: this, previous });
   }
 
   get count() {
@@ -265,12 +263,12 @@ export class FatClassModel {
       return;
     }
     this._count = value;
-    this.source.trigger('changeCount', { source: this, previous });
+    this.source.trigger("changeCount", { source: this, previous });
   }
 }
 
 export interface RichPropertyEvents {
-  changeLabel: PropertyChange<RichProperty, ReadonlyArray<LocalizedString>>;
+  changeLabel: PropertyChange<RichProperty, readonly LocalizedString[]>;
 }
 
 export class RichProperty {
@@ -279,34 +277,34 @@ export class RichProperty {
 
   readonly id: PropertyTypeIri;
 
-  private _label: ReadonlyArray<LocalizedString>;
+  private _label: readonly LocalizedString[];
 
   constructor(props: {
     id: PropertyTypeIri;
-    label?: ReadonlyArray<LocalizedString>;
+    label?: readonly LocalizedString[];
   }) {
     const { id, label = [] } = props;
     this.id = id;
     this._label = label;
   }
 
-  get label(): ReadonlyArray<LocalizedString> {
+  get label(): readonly LocalizedString[] {
     return this._label;
   }
-  setLabel(value: ReadonlyArray<LocalizedString>) {
+  setLabel(value: readonly LocalizedString[]) {
     const previous = this._label;
     if (previous === value) {
       return;
     }
     this._label = value;
-    this.source.trigger('changeLabel', { source: this, previous });
+    this.source.trigger("changeLabel", { source: this, previous });
   }
 }
 
 export interface LinkEvents {
   changeData: PropertyChange<Link, LinkModel>;
   changeLayoutOnly: PropertyChange<Link, boolean>;
-  changeVertices: PropertyChange<Link, ReadonlyArray<Vector>>;
+  changeVertices: PropertyChange<Link, readonly Vector[]>;
   changeLabelBounds: PropertyChange<Link, Rect>;
   changeLinkState: PropertyChange<Link, LinkTemplateState | undefined>;
 }
@@ -324,7 +322,7 @@ export class Link {
   private _data: LinkModel | undefined;
   private _labelBounds: Rect | undefined;
   private _layoutOnly: boolean;
-  private _vertices: ReadonlyArray<Vector>;
+  private _vertices: readonly Vector[];
 
   private _linkState: LinkTemplateState | undefined;
 
@@ -334,7 +332,7 @@ export class Link {
     sourceId: string;
     targetId: string;
     data?: LinkModel;
-    vertices?: ReadonlyArray<Vector>;
+    vertices?: readonly Vector[];
     linkState?: LinkTemplateState;
   }) {
     const {
@@ -375,7 +373,7 @@ export class Link {
     }
     this._data = value;
     this._typeId = value.linkTypeId;
-    this.source.trigger('changeData', { source: this, previous });
+    this.source.trigger("changeData", { source: this, previous });
   }
 
   get labelBounds() {
@@ -387,7 +385,7 @@ export class Link {
       return;
     }
     this._labelBounds = value;
-    this.source.trigger('changeLabelBounds', { source: this, previous });
+    this.source.trigger("changeLabelBounds", { source: this, previous });
   }
 
   get layoutOnly(): boolean {
@@ -399,19 +397,19 @@ export class Link {
       return;
     }
     this._layoutOnly = value;
-    this.source.trigger('changeLayoutOnly', { source: this, previous });
+    this.source.trigger("changeLayoutOnly", { source: this, previous });
   }
 
-  get vertices(): ReadonlyArray<Vector> {
+  get vertices(): readonly Vector[] {
     return this._vertices;
   }
-  setVertices(value: ReadonlyArray<Vector>) {
+  setVertices(value: readonly Vector[]) {
     const previous = this._vertices;
     if (isPolylineEqual(this._vertices, value)) {
       return;
     }
     this._vertices = value;
-    this.source.trigger('changeVertices', { source: this, previous });
+    this.source.trigger("changeVertices", { source: this, previous });
   }
 
   get linkState(): LinkTemplateState | undefined {
@@ -423,20 +421,18 @@ export class Link {
       return;
     }
     this._linkState = value;
-    this.source.trigger('changeLinkState', { source: this, previous });
+    this.source.trigger("changeLinkState", { source: this, previous });
   }
 }
 
-export interface LinkTemplateState {
-  [propertyIri: string]: any;
-}
+export type LinkTemplateState = Record<string, any>;
 
 export function linkMarkerKey(linkTypeIndex: number, startMarker: boolean) {
-  return `graph-explorer-${startMarker ? 'mstart' : 'mend'}-${linkTypeIndex}`;
+  return `graph-explorer-${startMarker ? "mstart" : "mend"}-${linkTypeIndex}`;
 }
 
 export interface FatLinkTypeEvents {
-  changeLabel: PropertyChange<FatLinkType, ReadonlyArray<LocalizedString>>;
+  changeLabel: PropertyChange<FatLinkType, readonly LocalizedString[]>;
   changeIsNew: PropertyChange<FatLinkType, boolean>;
   changeVisibility: {
     source: FatLinkType;
@@ -459,7 +455,7 @@ export class FatLinkType {
 
   private _index: number | undefined;
 
-  private _label: ReadonlyArray<LocalizedString>;
+  private _label: readonly LocalizedString[];
   private _isNew = false;
 
   private _visible = true;
@@ -468,7 +464,7 @@ export class FatLinkType {
   constructor(props: {
     id: LinkTypeIri;
     index?: number;
-    label?: ReadonlyArray<LocalizedString>;
+    label?: readonly LocalizedString[];
   }) {
     const { id, index, label = [] } = props;
     this.id = id;
@@ -480,8 +476,8 @@ export class FatLinkType {
     return this._index;
   }
   setIndex(value: number) {
-    if (typeof this._index === 'number') {
-      throw new Error('Cannot set index for link type more than once.');
+    if (typeof this._index === "number") {
+      throw new Error("Cannot set index for link type more than once.");
     }
     this._index = value;
   }
@@ -489,13 +485,13 @@ export class FatLinkType {
   get label() {
     return this._label;
   }
-  setLabel(value: ReadonlyArray<LocalizedString>) {
+  setLabel(value: readonly LocalizedString[]) {
     const previous = this._label;
     if (previous === value) {
       return;
     }
     this._label = value;
-    this.source.trigger('changeLabel', { source: this, previous });
+    this.source.trigger("changeLabel", { source: this, previous });
   }
 
   get visible() {
@@ -518,7 +514,7 @@ export class FatLinkType {
       Boolean(params.preventLoading) || this._visible === params.visible;
     this._visible = params.visible;
     this._showLabel = params.showLabel;
-    this.source.trigger('changeVisibility', { source: this, preventLoading });
+    this.source.trigger("changeVisibility", { source: this, preventLoading });
   }
 
   get isNew() {
@@ -530,7 +526,7 @@ export class FatLinkType {
       return;
     }
     this._isNew = value;
-    this.source.trigger('changeIsNew', { source: this, previous });
+    this.source.trigger("changeIsNew", { source: this, previous });
   }
 }
 
@@ -551,7 +547,7 @@ export class LinkVertex {
 
   remove() {
     const vertices = [...this.link.vertices];
-    const [location] = vertices.splice(this.vertexIndex, 1);
+    vertices.splice(this.vertexIndex, 1);
     this.link.setVertices(vertices);
   }
 }

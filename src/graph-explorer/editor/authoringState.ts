@@ -4,9 +4,9 @@ import {
   ElementIri,
   sameLink,
   hashLink,
-} from '../data/model';
+} from "../data/model";
 
-import { HashMap, ReadonlyHashMap, cloneMap } from '../viewUtils/collections';
+import { HashMap, ReadonlyHashMap, cloneMap } from "../viewUtils/collections";
 
 export interface AuthoringState {
   readonly elements: ReadonlyMap<ElementIri, ElementChange>;
@@ -16,8 +16,8 @@ export interface AuthoringState {
 export type AuthoringEvent = ElementChange | LinkChange;
 
 export enum AuthoringKind {
-  ChangeElement = 'changeElement',
-  ChangeLink = 'changeLink',
+  ChangeElement = "changeElement",
+  ChangeLink = "changeLink",
 }
 
 export interface ElementChange {
@@ -162,7 +162,7 @@ export const AuthoringState = {
     after: LinkModel
   ): AuthoringState {
     if (!sameLink(before, after)) {
-      throw new Error('Cannot move link to another element or change its type');
+      throw new Error("Cannot move link to another element or change its type");
     }
     const newState = this.clone(state);
     const previous = state.links.get(before);

@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from "react";
 
 export enum ProgressState {
-  none = 'none',
-  loading = 'loading',
-  error = 'error',
-  completed = 'completed',
+  none = "none",
+  loading = "loading",
+  error = "error",
+  completed = "completed",
 }
 
 export interface ProgressBarProps {
@@ -13,7 +13,7 @@ export interface ProgressBarProps {
   height?: number;
 }
 
-const CLASS_NAME = 'graph-explorer-progress-bar';
+const CLASS_NAME = "graph-explorer-progress-bar";
 
 export class ProgressBar extends React.Component<ProgressBarProps, {}> {
   render() {

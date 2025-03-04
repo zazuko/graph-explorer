@@ -1,4 +1,4 @@
-import { DataProvider, LinkElementsParams, FilterParams } from '../provider';
+import { DataProvider, LinkElementsParams, FilterParams } from "../provider";
 import {
   Dictionary,
   ClassModel,
@@ -6,14 +6,12 @@ import {
   ElementModel,
   LinkModel,
   LinkCount,
-  Property,
   PropertyModel,
-  LocalizedString,
   ElementIri,
   ElementTypeIri,
   LinkTypeIri,
   PropertyTypeIri,
-} from '../model';
+} from "../model";
 import {
   CompositeResponse,
   mergeClassTree,
@@ -26,7 +24,7 @@ import {
   mergeLinkTypesOf,
   mergeLinkElements,
   mergeFilter,
-} from './mergeUtils';
+} from "./mergeUtils";
 
 export interface DPDefinition {
   name: string;
@@ -39,11 +37,11 @@ function isDefinition(dp: DataProvider | DPDefinition): dp is DPDefinition {
   return definition.name !== undefined && definition.dataProvider !== undefined;
 }
 
-export type MergeMode = 'fetchAll' | 'sequentialFetching';
+export type MergeMode = "fetchAll" | "sequentialFetching";
 
 export class CompositeDataProvider implements DataProvider {
   public dataProviders: DPDefinition[];
-  public mergeMode: MergeMode = 'fetchAll';
+  public mergeMode: MergeMode = "fetchAll";
 
   constructor(
     dataProviders: (DataProvider | DPDefinition)[],
@@ -57,7 +55,7 @@ export class CompositeDataProvider implements DataProvider {
         return dp;
       } else {
         return {
-          name: 'dataProvider_' + dpCounter++,
+          name: "dataProvider_" + dpCounter++,
           dataProvider: dp,
         };
       }
@@ -69,14 +67,14 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   classTree(): Promise<ClassModel[]> {
-    return this.fetchSequentially('classTree', mergeClassTree, undefined);
+    return this.fetchSequentially("classTree", mergeClassTree, undefined);
   }
 
   propertyInfo(params: {
     propertyIds: PropertyTypeIri[];
   }): Promise<Dictionary<PropertyModel>> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('propertyInfo', mergePropertyInfo, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("propertyInfo", mergePropertyInfo, params);
     } else {
       let propertyIds = params.propertyIds;
       return this.queueProcessResults(
@@ -93,8 +91,8 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   classInfo(params: { classIds: ElementTypeIri[] }): Promise<ClassModel[]> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('classInfo', mergeClassInfo, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("classInfo", mergeClassInfo, params);
     } else {
       let classIds = params.classIds;
       return this.queueProcessResults(
@@ -113,9 +111,9 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   linkTypesInfo(params: { linkTypeIds: LinkTypeIri[] }): Promise<LinkType[]> {
-    if (this.mergeMode === 'fetchAll') {
+    if (this.mergeMode === "fetchAll") {
       return this.fetchSequentially(
-        'linkTypesInfo',
+        "linkTypesInfo",
         mergeLinkTypesInfo,
         params
       );
@@ -137,14 +135,14 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   linkTypes(): Promise<LinkType[]> {
-    return this.fetchSequentially('linkTypes', mergeLinkTypes, undefined);
+    return this.fetchSequentially("linkTypes", mergeLinkTypes, undefined);
   }
 
   elementInfo(params: {
     elementIds: ElementIri[];
   }): Promise<Dictionary<ElementModel>> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('elementInfo', mergeElementInfo, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("elementInfo", mergeElementInfo, params);
     } else {
       let elementIds = params.elementIds;
       return this.queueProcessResults(
@@ -164,8 +162,8 @@ export class CompositeDataProvider implements DataProvider {
     elementIds: ElementIri[];
     linkTypeIds: LinkTypeIri[];
   }): Promise<LinkModel[]> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('linksInfo', mergeLinksInfo, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("linksInfo", mergeLinksInfo, params);
     } else {
       let elementIds = params.elementIds;
       return this.queueProcessResults(
@@ -192,8 +190,8 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   linkTypesOf(params: { elementId: ElementIri }): Promise<LinkCount[]> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('linkTypesOf', mergeLinkTypesOf, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("linkTypesOf", mergeLinkTypesOf, params);
     } else {
       return this.queueProcessResults(
         (previousResult: LinkCount[], dp: DPDefinition) => {
@@ -211,8 +209,8 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   linkElements(params: LinkElementsParams): Promise<Dictionary<ElementModel>> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('linkElements', mergeLinkElements, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("linkElements", mergeLinkElements, params);
     } else {
       return this.queueProcessResults(
         (previousResult: Dictionary<ElementModel>, dp: DPDefinition) => {
@@ -230,8 +228,8 @@ export class CompositeDataProvider implements DataProvider {
   }
 
   filter(params: FilterParams): Promise<Dictionary<ElementModel>> {
-    if (this.mergeMode === 'fetchAll') {
-      return this.fetchSequentially('filter', mergeFilter, params);
+    if (this.mergeMode === "fetchAll") {
+      return this.fetchSequentially("filter", mergeFilter, params);
     } else {
       return this.queueProcessResults(
         (previousResult: Dictionary<ElementModel>, dp: DPDefinition) => {
@@ -260,7 +258,6 @@ export class CompositeDataProvider implements DataProvider {
         response: response,
       }))
       .catch((error) => {
-        // tslint:disable-next-line:no-console
         console.error(error);
         return {
           dataSourceName: dpName,
@@ -298,7 +295,6 @@ export class CompositeDataProvider implements DataProvider {
             return recursiveCall(newResult);
           })
           .catch((error) => {
-            // tslint:disable-next-line:no-console
             console.error(error);
             return recursiveCall(result);
           });
@@ -317,7 +313,7 @@ export class CompositeDataProvider implements DataProvider {
     params: OperationParams<K>
   ) {
     const resultPromises = this.dataProviders.map((dp: DPDefinition) => {
-      const providerMethod = (dp.dataProvider[functionName] as any) as (
+      const providerMethod = dp.dataProvider[functionName] as any as (
         this: DataProvider,
         params: OperationParams<K>
       ) => Promise<OperationResult<K>>;

@@ -1,20 +1,20 @@
-import * as React from 'react';
-import { hcl } from 'd3-color';
+import * as React from "react";
+import { hcl } from "d3-color";
 
-import { Element } from '../diagram/elements';
-import { DiagramView } from '../diagram/view';
-import { PaperWidgetProps } from '../diagram/paperArea';
+import { Element } from "../diagram/elements";
+import { DiagramView } from "../diagram/view";
+import { PaperWidgetProps } from "../diagram/paperArea";
 
-import { Debouncer } from '../viewUtils/async';
-import { EventObserver } from '../viewUtils/events';
+import { Debouncer } from "../viewUtils/async";
+import { EventObserver } from "../viewUtils/events";
 import {
   PaperTransform,
   totalPaneSize,
   paneTopLeft,
   paneFromPaperCoords,
   paperFromPaneCoords,
-} from '../diagram/paper';
-import { Vector } from '../diagram/geometry';
+} from "../diagram/paper";
+import { Vector } from "../diagram/geometry";
 
 export interface NavigatorProps extends PaperWidgetProps {
   view: DiagramView;
@@ -30,7 +30,7 @@ interface NavigatorTransform {
   paneOffset: Vector;
 }
 
-const CLASS_NAME = 'graph-explorer-navigator';
+const CLASS_NAME = "graph-explorer-navigator";
 const MIN_SCALE = 0.25;
 
 interface State {
@@ -59,15 +59,15 @@ export class Navigator extends React.Component<NavigatorProps, State> {
 
   componentDidMount() {
     const { view, paperArea } = this.props;
-    this.listener.listen(view.events, 'changeHighlight', this.scheduleRedraw);
-    this.listener.listen(view.model.events, 'changeCells', this.scheduleRedraw);
+    this.listener.listen(view.events, "changeHighlight", this.scheduleRedraw);
+    this.listener.listen(view.model.events, "changeCells", this.scheduleRedraw);
     this.listener.listen(
       view.model.events,
-      'elementEvent',
+      "elementEvent",
       this.scheduleRedraw
     );
-    this.listener.listen(paperArea.events, 'pointerMove', this.scheduleRedraw);
-    this.listener.listen(paperArea.events, 'scroll', this.scheduleRedraw);
+    this.listener.listen(paperArea.events, "pointerMove", this.scheduleRedraw);
+    this.listener.listen(paperArea.events, "scroll", this.scheduleRedraw);
   }
 
   shouldComponentUpdate(nextProps: NavigatorProps, nextState: State) {
@@ -91,8 +91,8 @@ export class Navigator extends React.Component<NavigatorProps, State> {
 
     this.calculateTransform();
 
-    const ctx = this.canvas.getContext('2d');
-    ctx.fillStyle = '#EEEEEE';
+    const ctx = this.canvas.getContext("2d");
+    ctx.fillStyle = "#EEEEEE";
     ctx.clearRect(0, 0, width, height);
     ctx.fillRect(0, 0, width, height);
 
@@ -105,7 +105,7 @@ export class Navigator extends React.Component<NavigatorProps, State> {
 
     const start = canvasFromPaneCoords(paneStart, pt, this.transform);
     const end = canvasFromPaneCoords(paneEnd, pt, this.transform);
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = "white";
     ctx.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
 
     ctx.save();
@@ -144,7 +144,7 @@ export class Navigator extends React.Component<NavigatorProps, State> {
     const { view } = this.props;
     const isBlurred = view.highlighter && !view.highlighter(element);
     if (isBlurred) {
-      return 'lightgray';
+      return "lightgray";
     }
     const {
       color: { h, c, l },
@@ -155,7 +155,7 @@ export class Navigator extends React.Component<NavigatorProps, State> {
   private drawViewport(ctx: CanvasRenderingContext2D) {
     const { paperArea, paperTransform: pt, width, height } = this.props;
 
-    ctx.strokeStyle = '#337ab7';
+    ctx.strokeStyle = "#337ab7";
     ctx.lineWidth = 2;
 
     const { clientWidth, clientHeight } = paperArea.getAreaMetrics();
@@ -199,7 +199,7 @@ export class Navigator extends React.Component<NavigatorProps, State> {
     }
 
     ctx.lineWidth = 4;
-    ctx.strokeStyle = '#a0d2ff';
+    ctx.strokeStyle = "#a0d2ff";
     ctx.setLineDash([5, 5]);
     ctx.stroke();
   }
@@ -259,7 +259,7 @@ export class Navigator extends React.Component<NavigatorProps, State> {
     return (
       <div
         className={`${CLASS_NAME} ${CLASS_NAME}--${
-          expanded ? 'expanded' : 'collapsed'
+          expanded ? "expanded" : "collapsed"
         }`}
         style={expanded ? { width, height } : undefined}
       >
@@ -275,7 +275,7 @@ export class Navigator extends React.Component<NavigatorProps, State> {
         />
         <button
           className={`${CLASS_NAME}__toggle`}
-          title={expanded ? 'Collapse navigator' : 'Expand navigator'}
+          title={expanded ? "Collapse navigator" : "Expand navigator"}
           onClick={this.onToggleClick}
         >
           <div className={`${CLASS_NAME}__toggle-icon`} />
@@ -287,16 +287,16 @@ export class Navigator extends React.Component<NavigatorProps, State> {
   private startDragginViewport() {
     if (!this.isDraggingViewport) {
       this.isDraggingViewport = true;
-      document.addEventListener('mousemove', this.onDragViewport);
-      document.addEventListener('mouseup', this.onMouseUp);
+      document.addEventListener("mousemove", this.onDragViewport);
+      document.addEventListener("mouseup", this.onMouseUp);
     }
   }
 
   private stopDraggingViewport() {
     if (this.isDraggingViewport) {
       this.isDraggingViewport = false;
-      document.removeEventListener('mousemove', this.onDragViewport);
-      document.removeEventListener('mouseup', this.onMouseUp);
+      document.removeEventListener("mousemove", this.onDragViewport);
+      document.removeEventListener("mouseup", this.onMouseUp);
     }
   }
 

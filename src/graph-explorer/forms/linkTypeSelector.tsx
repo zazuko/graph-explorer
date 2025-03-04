@@ -1,17 +1,17 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MetadataApi } from '../data/metadataApi';
-import { LinkModel, ElementModel, sameLink } from '../data/model';
-import { PLACEHOLDER_LINK_TYPE } from '../data/schema';
+import { MetadataApi } from "../data/metadataApi";
+import { LinkModel, ElementModel, sameLink } from "../data/model";
+import { PLACEHOLDER_LINK_TYPE } from "../data/schema";
 
-import { EditorController } from '../editor/editorController';
-import { FatLinkType, LinkDirection } from '../diagram/elements';
-import { DiagramView } from '../diagram/view';
-import { EventObserver } from '../viewUtils/events';
-import { Cancellation, CancellationToken } from '../viewUtils/async';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { EditorController } from "../editor/editorController";
+import { FatLinkType, LinkDirection } from "../diagram/elements";
+import { DiagramView } from "../diagram/view";
+import { EventObserver } from "../viewUtils/events";
+import { Cancellation, CancellationToken } from "../viewUtils/async";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
-const CLASS_NAME = 'graph-explorer-edit-form';
+const CLASS_NAME = "graph-explorer-edit-form";
 
 export interface Value {
   link: LinkModel;
@@ -42,7 +42,7 @@ export interface Props {
 }
 
 export interface State {
-  fatLinkTypes?: Array<DirectedFatLinkType>;
+  fatLinkTypes?: DirectedFatLinkType[];
 }
 
 export class LinkTypeSelector extends React.Component<Props, State> {
@@ -87,7 +87,7 @@ export class LinkTypeSelector extends React.Component<Props, State> {
     if (linkTypes === null) {
       return;
     }
-    const fatLinkTypes: Array<DirectedFatLinkType> = [];
+    const fatLinkTypes: DirectedFatLinkType[] = [];
     linkTypes.forEach(({ linkTypeIri, direction }) => {
       const fatLinkType = view.model.createLinkType(linkTypeIri);
       fatLinkTypes.push({ fatLinkType, direction });
@@ -98,18 +98,16 @@ export class LinkTypeSelector extends React.Component<Props, State> {
   }
 
   private listenToLinkLabels(
-    fatLinkTypes: Array<{ fatLinkType: FatLinkType; direction: LinkDirection }>
+    fatLinkTypes: { fatLinkType: FatLinkType; direction: LinkDirection }[]
   ) {
     fatLinkTypes.forEach(({ fatLinkType }) =>
-      this.listener.listen(fatLinkType.events, 'changeLabel', this.updateAll)
+      this.listener.listen(fatLinkType.events, "changeLabel", this.updateAll)
     );
   }
 
   private onChangeType = (e: React.FormEvent<HTMLSelectElement>) => {
-    const {
-      link: originalLink,
-      direction: originalDirection,
-    } = this.props.linkValue.value;
+    const { link: originalLink, direction: originalDirection } =
+      this.props.linkValue.value;
     const index = parseInt(e.currentTarget.value, 10);
     const { fatLinkType, direction } = this.state.fatLinkTypes[index];
     const link: LinkModel = { ...originalLink, linkTypeId: fatLinkType.id };
@@ -128,7 +126,7 @@ export class LinkTypeSelector extends React.Component<Props, State> {
     }: { fatLinkType: FatLinkType; direction: LinkDirection },
     index: number
   ) => {
-    const { view, linkValue, source, target } = this.props;
+    const { view, source, target } = this.props;
     const label = view.formatLabel(fatLinkType.label, fatLinkType.id);
     let [sourceLabel, targetLabel] = [source, target].map((element) =>
       view.formatLabel(element.label.values, element.id)
@@ -176,7 +174,7 @@ export class LinkTypeSelector extends React.Component<Props, State> {
             {linkValue.error}
           </span>
         ) : (
-          ''
+          ""
         )}
       </div>
     );
@@ -205,9 +203,9 @@ export function validateLinkType(
   editor: EditorController,
   currentLink: LinkModel,
   originalLink: LinkModel
-): Promise<Pick<LinkValue, 'error' | 'allowChange'>> {
+): Promise<Pick<LinkValue, "error" | "allowChange">> {
   if (currentLink.linkTypeId === PLACEHOLDER_LINK_TYPE) {
-    return Promise.resolve({ error: 'Required.', allowChange: true });
+    return Promise.resolve({ error: "Required.", allowChange: true });
   }
   if (sameLink(currentLink, originalLink)) {
     return Promise.resolve({ error: undefined, allowChange: true });
@@ -221,7 +219,7 @@ export function validateLinkType(
   );
   if (alreadyOnDiagram) {
     return Promise.resolve({
-      error: 'The link already exists.',
+      error: "The link already exists.",
       allowChange: false,
     });
   }
@@ -230,12 +228,10 @@ export function validateLinkType(
       elementIds: [currentLink.sourceId, currentLink.targetId],
       linkTypeIds: [currentLink.linkTypeId],
     })
-    .then(
-      (links): Pick<LinkValue, 'error' | 'allowChange'> => {
-        const alreadyExists = links.some((link) => sameLink(link, currentLink));
-        return alreadyExists
-          ? { error: 'The link already exists.', allowChange: false }
-          : { error: undefined, allowChange: true };
-      }
-    );
+    .then((links): Pick<LinkValue, "error" | "allowChange"> => {
+      const alreadyExists = links.some((link) => sameLink(link, currentLink));
+      return alreadyExists
+        ? { error: "The link already exists.", allowChange: false }
+        : { error: undefined, allowChange: true };
+    });
 }

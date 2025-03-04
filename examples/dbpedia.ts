@@ -1,5 +1,5 @@
-import { createElement, ClassAttributes } from 'react';
-import * as ReactDOM from 'react-dom';
+import { createElement, ClassAttributes } from "react";
+import * as ReactDOM from "react-dom";
 
 import {
   Workspace,
@@ -7,13 +7,13 @@ import {
   SparqlDataProvider,
   SparqlQueryMethod,
   DBPediaSettings,
-} from '../src/graph-explorer/index';
+} from "../src/graph-explorer/index";
 
 import {
   onPageLoad,
   tryLoadLayoutFromLocalStorage,
   saveLayoutToLocalStorage,
-} from './common';
+} from "./common";
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {
@@ -26,16 +26,17 @@ function onWorkspaceMounted(workspace: Workspace) {
     validateLinks: true,
     dataProvider: new SparqlDataProvider(
       {
-        endpointUrl: 'https://dbpedia.org/sparql',
+        endpointUrl: "https://dbpedia.org/sparql",
         imagePropertyUris: [
-          'http://xmlns.com/foaf/0.1/depiction',
-          'http://xmlns.com/foaf/0.1/img',
+          "http://xmlns.com/foaf/0.1/depiction",
+          "http://xmlns.com/foaf/0.1/img",
         ],
         queryMethod: SparqlQueryMethod.GET,
       },
-      {...DBPediaSettings,
-      ...{
-        classTreeQuery: `
+      {
+        ...DBPediaSettings,
+        ...{
+          classTreeQuery: `
           PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
           PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
           PREFIX owl:  <http://www.w3.org/2002/07/owl#>
@@ -44,8 +45,8 @@ function onWorkspaceMounted(workspace: Workspace) {
             ?class a owl:Class.
             ?class rdfs:label ?label.
             OPTIONAL {?class rdfs:subClassOf ?parent}
-          }`
-        }
+          }`,
+        },
       }
     ),
   });

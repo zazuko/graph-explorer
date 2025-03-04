@@ -1,28 +1,28 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { EditorController } from '../editor/editorController';
-import { DiagramView } from '../diagram/view';
-import { ElementModel, LinkModel } from '../data/model';
-import { MetadataApi } from '../data/metadataApi';
-import { LinkDirection } from '../diagram/elements';
+import { EditorController } from "../editor/editorController";
+import { DiagramView } from "../diagram/view";
+import { ElementModel, LinkModel } from "../data/model";
+import { MetadataApi } from "../data/metadataApi";
+import { LinkDirection } from "../diagram/elements";
 
-import { Cancellation } from '../viewUtils/async';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { Cancellation } from "../viewUtils/async";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
-import { ProgressBar, ProgressState } from '../widgets/progressBar';
+import { ProgressBar, ProgressState } from "../widgets/progressBar";
 
 import {
   ElementTypeSelector,
   ElementValue,
   validateElementType,
-} from './elementTypeSelector';
+} from "./elementTypeSelector";
 import {
   LinkTypeSelector,
   LinkValue,
   validateLinkType,
-} from './linkTypeSelector';
+} from "./linkTypeSelector";
 
-const CLASS_NAME = 'graph-explorer-edit-form';
+const CLASS_NAME = "graph-explorer-edit-form";
 
 export interface Props {
   editor: EditorController;
@@ -183,7 +183,7 @@ export class EditElementTypeForm extends React.Component<Props, State> {
             }}
           />
           {elementValue.loading ? (
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: "flex" }}>
               <HtmlSpinner width={20} height={20} />
               &nbsp;Loading entity...
             </div>

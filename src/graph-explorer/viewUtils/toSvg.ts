@@ -1,12 +1,11 @@
-import { uniqueId } from 'lodash';
+/* eslint-disable @typescript-eslint/prefer-for-of */
 
-import { DiagramModel } from '../diagram/model';
-import { Rect, Vector, boundsOf } from '../diagram/geometry';
+import { uniqueId } from "lodash";
 
-const canvg = require('canvg-fixed');
+import { DiagramModel } from "../diagram/model";
+import { Rect, Vector, boundsOf } from "../diagram/geometry";
 
-const SVG_NAMESPACE: 'http://www.w3.org/2000/svg' =
-  'http://www.w3.org/2000/svg';
+const SVG_NAMESPACE = "http://www.w3.org/2000/svg" as const;
 
 export interface ToSVGOptions {
   model: DiagramModel;
@@ -51,11 +50,11 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
   const paddedHeight = bbox.height + 2 * BORDER_PADDING;
 
   if (options.preserveDimensions) {
-    svgClone.setAttribute('width', paddedWidth.toString());
-    svgClone.setAttribute('height', paddedHeight.toString());
+    svgClone.setAttribute("width", paddedWidth.toString());
+    svgClone.setAttribute("height", paddedHeight.toString());
   } else {
-    svgClone.setAttribute('width', '100%');
-    svgClone.setAttribute('height', '100%');
+    svgClone.setAttribute("width", "100%");
+    svgClone.setAttribute("height", "100%");
   }
 
   const viewBox: Rect = {
@@ -65,37 +64,36 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
     height: paddedHeight,
   };
   svgClone.setAttribute(
-    'viewBox',
+    "viewBox",
     `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`
   );
 
   addWatermark(svgClone, viewBox, watermarkSvg);
 
   const images: HTMLImageElement[] = [];
-  const nodes = svgClone.querySelectorAll('img');
+  const nodes = svgClone.querySelectorAll("img");
   foreachNode(nodes, (node) => images.push(node));
 
   const convertingImages = Promise.all(
     images.map((img) => {
-      const exportKey = img.getAttribute('export-key');
-      img.removeAttribute('export-key');
+      const exportKey = img.getAttribute("export-key");
+      img.removeAttribute("export-key");
       if (exportKey) {
         const { width, height } = imageBounds[exportKey];
-        img.setAttribute('width', width.toString());
-        img.setAttribute('height', height.toString());
+        img.setAttribute("width", width.toString());
+        img.setAttribute("height", height.toString());
         if (!options.convertImagesToDataUris) {
           return Promise.resolve();
         }
         return exportAsDataUri(img)
           .then((dataUri) => {
             // check for empty svg data URI which happens when mockJointXHR catches an exception
-            if (dataUri && dataUri !== 'data:image/svg+xml,') {
+            if (dataUri && dataUri !== "data:image/svg+xml,") {
               img.src = dataUri;
             }
           })
           .catch((err) => {
-            // tslint:disable-next-line:no-console
-            console.warn('Failed to export image: ' + img.src, err);
+            console.warn("Failed to export image: " + img.src, err);
           });
       } else {
         return Promise.resolve();
@@ -107,7 +105,7 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
     // workaround to include only graph-explorer-related stylesheets
     const exportedCssText = extractCSSFromDocument(svgClone);
 
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     defs.innerHTML = `<style>${exportedCssText}</style>`;
     svgClone.insertBefore(defs, svgClone.firstChild);
 
@@ -123,51 +121,50 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
 }
 
 function addWatermark(svg: SVGElement, viewBox: Rect, watermarkSvg: string) {
-  const WATERMARK_CLASS = 'graph-explorer-exported-watermark';
+  const WATERMARK_CLASS = "graph-explorer-exported-watermark";
   const WATERMARK_MAX_WIDTH = 120;
   const WATERMARK_PADDING = 20;
 
-  const image = document.createElementNS(SVG_NAMESPACE, 'image');
-  image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', watermarkSvg);
-  image.setAttribute('class', WATERMARK_CLASS);
+  const image = document.createElementNS(SVG_NAMESPACE, "image");
+  image.setAttributeNS("http://www.w3.org/1999/xlink", "href", watermarkSvg);
+  image.setAttribute("class", WATERMARK_CLASS);
 
   const width = Math.min(viewBox.width * 0.2, WATERMARK_MAX_WIDTH);
   const x = viewBox.x + viewBox.width - width - WATERMARK_PADDING;
   const y = viewBox.y + WATERMARK_PADDING;
 
-  image.setAttribute('x', x.toString());
-  image.setAttribute('y', y.toString());
-  image.setAttribute('width', width.toString());
-  image.setAttribute('opacity', '0.3');
+  image.setAttribute("x", x.toString());
+  image.setAttribute("y", y.toString());
+  image.setAttribute("width", width.toString());
+  image.setAttribute("opacity", "0.3");
 
   svg.insertBefore(image, svg.firstChild);
 }
 
-function clearAttributes(svg: SVGElement) {
-  const availableIds: { [key: string]: boolean } = {};
-  const prohibitedIds: { [key: string]: boolean } = {};
-  const defss = svg.querySelectorAll('defs');
+function _clearAttributes(svg: SVGElement) {
+  const availableIds: Record<string, boolean> = {};
+  const defss = svg.querySelectorAll("defs");
   foreachNode(defss, (defs) => {
     foreachNode(defs.childNodes, (def) => {
-      const id = (def as SVGElement).getAttribute('id');
+      const id = (def as SVGElement).getAttribute("id");
       if (id) {
         availableIds[id] = true;
       }
     });
   });
-  const paths = svg.querySelectorAll('*');
+  const paths = svg.querySelectorAll("*");
   foreachNode(paths, (path) => {
-    const markerStart = extractId(path.getAttribute('marker-start'));
+    const markerStart = extractId(path.getAttribute("marker-start"));
     if (markerStart && !availableIds[markerStart]) {
-      path.removeAttribute('marker-start');
+      path.removeAttribute("marker-start");
     }
-    const markerEnd = extractId(path.getAttribute('marker-end'));
+    const markerEnd = extractId(path.getAttribute("marker-end"));
     if (markerEnd && !availableIds[markerEnd]) {
-      path.removeAttribute('marker-end');
+      path.removeAttribute("marker-end");
     }
-    const filterId = extractId(path.getAttribute('filter'));
+    const filterId = extractId(path.getAttribute("filter"));
     if (filterId && !availableIds[filterId]) {
-      path.removeAttribute('filter');
+      path.removeAttribute("filter");
     }
   });
 
@@ -189,7 +186,7 @@ function extractCSSFromDocument(targetSubtree: Element): string {
       if (!rules) {
         continue;
       }
-    } catch (e) {
+    } catch (_e) {
       continue;
     }
 
@@ -205,7 +202,7 @@ function extractCSSFromDocument(targetSubtree: Element): string {
 
   const exportedCssTexts: string[] = [];
   exportedRules.forEach((rule) => exportedCssTexts.push(rule.cssText));
-  return exportedCssTexts.join('\n');
+  return exportedCssTexts.join("\n");
 }
 
 function clonePaperSvg(
@@ -213,12 +210,12 @@ function clonePaperSvg(
   elementSizePadding: number
 ): {
   svgClone: SVGSVGElement;
-  imageBounds: { [path: string]: Bounds };
+  imageBounds: Record<string, Bounds>;
 } {
   const { model, paper, getOverlayedElement } = options;
   const svgClone = paper.cloneNode(true) as SVGSVGElement;
-  svgClone.removeAttribute('class');
-  svgClone.removeAttribute('style');
+  svgClone.removeAttribute("class");
+  svgClone.removeAttribute("style");
 
   function findViewport() {
     let child = svgClone.firstChild;
@@ -232,9 +229,9 @@ function clonePaperSvg(
   }
 
   const viewport = findViewport();
-  viewport.removeAttribute('transform');
+  viewport.removeAttribute("transform");
 
-  const imageBounds: { [path: string]: Bounds } = {};
+  const imageBounds: Record<string, Bounds> = {};
 
   for (const element of model.elements) {
     const modelId = element.id;
@@ -243,28 +240,28 @@ function clonePaperSvg(
       continue;
     }
 
-    const elementRoot = document.createElementNS(SVG_NAMESPACE, 'g');
+    const elementRoot = document.createElementNS(SVG_NAMESPACE, "g");
     const overlayedViewContent = overlayedView.firstChild.cloneNode(
       true
     ) as HTMLElement;
-    elementRoot.setAttribute('class', 'graph-explorer-exported-element');
+    elementRoot.setAttribute("class", "graph-explorer-exported-element");
 
-    const newRoot = document.createElementNS(SVG_NAMESPACE, 'foreignObject');
+    const newRoot = document.createElementNS(SVG_NAMESPACE, "foreignObject");
     newRoot.appendChild(overlayedViewContent);
 
     const { x, y, width, height } = boundsOf(element);
-    newRoot.setAttribute('transform', `translate(${x},${y})`);
-    newRoot.setAttribute('width', (width + elementSizePadding).toString());
-    newRoot.setAttribute('height', (height + elementSizePadding).toString());
+    newRoot.setAttribute("transform", `translate(${x},${y})`);
+    newRoot.setAttribute("width", (width + elementSizePadding).toString());
+    newRoot.setAttribute("height", (height + elementSizePadding).toString());
 
     elementRoot.appendChild(newRoot);
     viewport.appendChild(elementRoot);
 
-    const clonedNodes = overlayedViewContent.querySelectorAll('img');
+    const clonedNodes = overlayedViewContent.querySelectorAll("img");
 
-    foreachNode(overlayedView.querySelectorAll('img'), (img, index) => {
-      const exportKey = uniqueId('export-key-');
-      clonedNodes[index].setAttribute('export-key', exportKey);
+    foreachNode(overlayedView.querySelectorAll("img"), (img, index) => {
+      const exportKey = uniqueId("export-key-");
+      clonedNodes[index].setAttribute("export-key", exportKey);
       imageBounds[exportKey] = {
         width: img.clientWidth,
         height: img.clientHeight,
@@ -277,34 +274,34 @@ function clonePaperSvg(
 
 function exportAsDataUri(original: HTMLImageElement): Promise<string> {
   const url = original.src;
-  if (!url || url.startsWith('data:')) {
+  if (!url || url.startsWith("data:")) {
     return Promise.resolve(url);
   }
 
   return loadCrossOriginImage(original.src).then((image) => {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = image.width;
     canvas.height = image.height;
 
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     context.drawImage(image, 0, 0);
 
     // match extensions like htttp://example.com/images/foo.JPG&w=200
     const extensionMatch = url.match(/\.([a-zA-Z0-9]+)[^.a-zA-Z0-9]?[^.]*$/);
-    const extension = extensionMatch ? extensionMatch[1].toLowerCase() : 'png';
+    const extension = extensionMatch ? extensionMatch[1].toLowerCase() : "png";
 
     try {
-      const mimeType = 'image/' + (extension === 'jpg' ? 'jpeg' : extension);
+      const mimeType = "image/" + (extension === "jpg" ? "jpeg" : extension);
       const dataUri = canvas.toDataURL(mimeType);
       return Promise.resolve(dataUri);
-    } catch (e) {
-      if (extension !== 'svg') {
-        return Promise.reject('Failed to convert image to data URI');
+    } catch (_e) {
+      if (extension !== "svg") {
+        return Promise.reject("Failed to convert image to data URI");
       }
       return fetch(url)
         .then((response) => response.text())
         .then((svg) =>
-          svg.length > 0 ? 'data:image/svg+xml,' + encodeURIComponent(svg) : ''
+          svg.length > 0 ? "data:image/svg+xml," + encodeURIComponent(svg) : ""
         );
     }
   });
@@ -312,7 +309,7 @@ function exportAsDataUri(original: HTMLImageElement): Promise<string> {
 
 function loadCrossOriginImage(src: string): Promise<HTMLImageElement> {
   const image = new Image();
-  image.crossOrigin = 'anonymous';
+  image.crossOrigin = "anonymous";
   const promise = new Promise<HTMLImageElement>((resolve, reject) => {
     image.onload = () => resolve(image);
     image.onerror = (ev) => reject(ev);
@@ -345,7 +342,7 @@ const MAX_CANVAS_LENGTH = 4096;
 export async function toDataURL(
   options: ToSVGOptions & ToDataURLOptions
 ): Promise<string> {
-  const { paper, mimeType = 'image/png' } = options;
+  const { paper: _paper, mimeType = "image/png" } = options;
   const svgOptions = {
     ...options,
     convertImagesToDataUris: true,
@@ -354,12 +351,12 @@ export async function toDataURL(
   };
   const svg = await exportSVG(svgOptions);
   const svgBox: Bounds = {
-    width: Number(svg.getAttribute('width')),
-    height: Number(svg.getAttribute('height')),
+    width: Number(svg.getAttribute("width")),
+    height: Number(svg.getAttribute("height")),
   };
 
   const containerSize =
-    typeof options.width === 'number' || typeof options.height === 'number'
+    typeof options.width === "number" || typeof options.height === "number"
       ? { width: options.width, height: options.height }
       : fallbackContainerSize(svgBox);
 
@@ -367,8 +364,8 @@ export async function toDataURL(
     svgBox,
     containerSize
   );
-  svg.setAttribute('width', innerSize.width.toString());
-  svg.setAttribute('height', innerSize.height.toString());
+  svg.setAttribute("width", innerSize.width.toString());
+  svg.setAttribute("height", innerSize.height.toString());
   const svgString = new XMLSerializer().serializeToString(svg);
 
   const { canvas, context } = createCanvas(
@@ -378,7 +375,7 @@ export async function toDataURL(
   );
 
   const image = await loadImage(
-    'data:image/svg+xml,' + encodeURIComponent(svgString)
+    "data:image/svg+xml," + encodeURIComponent(svgString)
   );
   context.drawImage(
     image,
@@ -394,10 +391,10 @@ export async function toDataURL(
     canvasHeight: number,
     backgroundColor?: string
   ) {
-    const cnv = document.createElement('canvas');
+    const cnv = document.createElement("canvas");
     cnv.width = canvasWidth;
     cnv.height = canvasHeight;
-    const cnt = cnv.getContext('2d');
+    const cnt = cnv.getContext("2d");
     if (backgroundColor) {
       cnt.fillStyle = backgroundColor;
       cnt.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -432,11 +429,11 @@ function computeAutofit(itemSize: Bounds, containerSize: Bounds) {
   };
   const outerSize: Bounds = {
     width:
-      typeof containerSize.width === 'number'
+      typeof containerSize.width === "number"
         ? containerSize.width
         : innerSize.width,
     height:
-      typeof containerSize.height === 'number'
+      typeof containerSize.height === "number"
         ? containerSize.height
         : innerSize.height,
   };
@@ -464,16 +461,16 @@ export function fitRectKeepingAspectRatio(
   targetWidth: number | undefined,
   targetHeight: number | undefined
 ): { width: number; height: number } {
-  if (!(typeof targetWidth === 'number' || typeof targetHeight === 'number')) {
+  if (!(typeof targetWidth === "number" || typeof targetHeight === "number")) {
     return { width: sourceWidth, height: sourceHeight };
   }
   const sourceAspectRatio = sourceWidth / sourceHeight;
   targetWidth =
-    typeof targetWidth === 'number'
+    typeof targetWidth === "number"
       ? targetWidth
       : targetHeight * sourceAspectRatio;
   targetHeight =
-    typeof targetHeight === 'number'
+    typeof targetHeight === "number"
       ? targetHeight
       : targetWidth / sourceAspectRatio;
   if (targetHeight * sourceAspectRatio <= targetWidth) {
@@ -490,16 +487,16 @@ export function fitRectKeepingAspectRatio(
  * @return {Blob} A blob representing the array buffer data.
  */
 export function dataURLToBlob(dataURL: string): Blob {
-  const BASE64_MARKER = ';base64,';
+  const BASE64_MARKER = ";base64,";
   if (dataURL.indexOf(BASE64_MARKER) === -1) {
-    const parts = dataURL.split(',');
-    const contentType = parts[0].split(':')[1];
+    const parts = dataURL.split(",");
+    const contentType = parts[0].split(":")[1];
     const raw = decodeURIComponent(parts[1]);
 
     return new Blob([raw], { type: contentType });
   } else {
     const parts = dataURL.split(BASE64_MARKER);
-    const contentType = parts[0].split(':')[1];
+    const contentType = parts[0].split(":")[1];
     const raw = window.atob(parts[1]);
     const rawLength = raw.length;
 

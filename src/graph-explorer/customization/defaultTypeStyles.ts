@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import { TypeStyleResolver } from "./props";
 
 const classIcon = require("../../../images/icons/class.svg").default as string;

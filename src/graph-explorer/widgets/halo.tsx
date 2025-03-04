@@ -1,21 +1,21 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MetadataApi } from '../data/metadataApi';
+import { MetadataApi } from "../data/metadataApi";
 
 import {
   Element as DiagramElement,
   ElementEvents,
   Element,
-} from '../diagram/elements';
-import { Vector, boundsOf } from '../diagram/geometry';
-import { PaperWidgetProps } from '../diagram/paperArea';
+} from "../diagram/elements";
+import { Vector, boundsOf } from "../diagram/geometry";
+import { PaperWidgetProps } from "../diagram/paperArea";
 
-import { EditorController } from '../editor/editorController';
-import { AuthoringState } from '../editor/authoringState';
+import { EditorController } from "../editor/editorController";
+import { AuthoringState } from "../editor/authoringState";
 
-import { AnyListener, EventObserver } from '../viewUtils/events';
-import { Cancellation, CancellationToken, Debouncer } from '../viewUtils/async';
-import { HtmlSpinner } from '../viewUtils/spinner';
+import { AnyListener, EventObserver } from "../viewUtils/events";
+import { Cancellation, CancellationToken, Debouncer } from "../viewUtils/async";
+import { HtmlSpinner } from "../viewUtils/spinner";
 
 export interface Props extends PaperWidgetProps {
   target: DiagramElement | undefined;
@@ -34,7 +34,7 @@ export interface State {
   canLink?: boolean;
 }
 
-const CLASS_NAME = 'graph-explorer-halo';
+const CLASS_NAME = "graph-explorer-halo";
 
 export class Halo extends React.Component<Props, State> {
   private readonly listener = new EventObserver();
@@ -49,7 +49,7 @@ export class Halo extends React.Component<Props, State> {
 
   componentDidMount() {
     const { editor, target } = this.props;
-    this.listener.listen(editor.events, 'changeAuthoringState', () => {
+    this.listener.listen(editor.events, "changeAuthoringState", () => {
       this.queryAllowedActions();
     });
     this.listenToElement(target);
@@ -133,7 +133,7 @@ export class Halo extends React.Component<Props, State> {
     } = this.props;
 
     if (!target) {
-      return <div className={CLASS_NAME} style={{ display: 'none' }} />;
+      return <div className={CLASS_NAME} style={{ display: "none" }} />;
     }
 
     const bbox = boundsOf(target);
@@ -161,7 +161,7 @@ export class Halo extends React.Component<Props, State> {
             className={
               `${CLASS_NAME}__navigate ` +
               `${CLASS_NAME}__navigate--${
-                navigationMenuOpened ? 'closed' : 'open'
+                navigationMenuOpened ? "closed" : "open"
               }`
             }
             role="button"
@@ -190,7 +190,7 @@ export class Halo extends React.Component<Props, State> {
           <div
             className={
               `${CLASS_NAME}__expand ` +
-              `${CLASS_NAME}__expand--${target.isExpanded ? 'closed' : 'open'}`
+              `${CLASS_NAME}__expand--${target.isExpanded ? "closed" : "open"}`
             }
             role="button"
             title={`Expand an element to reveal additional properties`}
@@ -220,8 +220,8 @@ export class Halo extends React.Component<Props, State> {
         role="button"
         title={
           isNewElement
-            ? 'Delete new element'
-            : 'Remove an element from the diagram'
+            ? "Delete new element"
+            : "Remove an element from the diagram"
         }
         onClick={onRemove}
       ></div>
@@ -242,8 +242,8 @@ export class Halo extends React.Component<Props, State> {
       );
     }
     const title = canLink
-      ? 'Establish connection'
-      : 'Establishing connection is unavailable for the selected element';
+      ? "Establish connection"
+      : "Establishing connection is unavailable for the selected element";
     return (
       <button
         className={`${CLASS_NAME}__establish-connection`}

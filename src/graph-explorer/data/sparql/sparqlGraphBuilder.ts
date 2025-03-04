@@ -1,14 +1,14 @@
-import { LayoutData, SerializedDiagram } from '../../editor/serializedDiagram';
+import { SerializedDiagram } from "../../editor/serializedDiagram";
 
-import { Dictionary, ElementModel } from '../model';
+import { Dictionary, ElementModel } from "../model";
 
-import { GraphBuilder } from './graphBuilder';
-import { SparqlDataProvider } from './sparqlDataProvider';
+import { GraphBuilder } from "./graphBuilder";
+import { SparqlDataProvider } from "./sparqlDataProvider";
 
 const DEFAULT_PREFIX =
   `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
  PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
- PREFIX owl:  <http://www.w3.org/2002/07/owl#>` + '\n\n';
+ PREFIX owl:  <http://www.w3.org/2002/07/owl#>` + "\n\n";
 
 export class SparqlGraphBuilder {
   graphBuilder: GraphBuilder;
@@ -17,9 +17,7 @@ export class SparqlGraphBuilder {
     this.graphBuilder = new GraphBuilder(dataProvider);
   }
 
-  getGraphFromConstruct(
-    constructQuery: string
-  ): Promise<{
+  getGraphFromConstruct(constructQuery: string): Promise<{
     preloadedElements: Dictionary<ElementModel>;
     diagram: SerializedDiagram;
   }> {
