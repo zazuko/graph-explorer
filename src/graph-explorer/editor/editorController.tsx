@@ -445,8 +445,6 @@ export class EditorController {
           target={selected}
           onRemove={() => this.removeSelectedElements()}
           onExpand={() => {
-            console.log("model", this.model);
-            console.log("selected", selected);
             this.model.history.execute(
               setElementExpanded(selected, !selected.isExpanded)
             );
