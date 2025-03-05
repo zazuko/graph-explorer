@@ -44,10 +44,10 @@ if (SPARQL_UPDATE_ENDPOINT) {
   });
 }
 
-if (WIKIDATA_ENDPOINT) {
+if (WIKIDATA_ENDPOINT || SPARQL_ENDPOINT) {
   proxy.push({
     context: ['/wikidata**'],
-    target: WIKIDATA_ENDPOINT,
+    target: WIKIDATA_ENDPOINT || SPARQL_ENDPOINT,
     pathRewrite: { '/wikidata': '' },
     changeOrigin: true,
     secure: false,
