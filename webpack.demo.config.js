@@ -6,7 +6,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const SUPPORT_IE = process.env.SUPPORT_IE;
 const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT;
-const SPARQL_UPDATEENDPOINT = process.env.SPARQL_UPDATEENDPOINT;
+const SPARQL_UPDATE_ENDPOINT = process.env.SPARQL_UPDATE_ENDPOINT;
 const WIKIDATA_ENDPOINT = process.env.WIKIDATA_ENDPOINT;
 const LOD_PROXY = process.env.LOD_PROXY;
 const PROP_SUGGEST = process.env.PROP_SUGGEST;
@@ -34,10 +34,10 @@ if (SPARQL_ENDPOINT) {
   });
 }
 
-if (SPARQL_UPDATEENDPOINT) {
+if (SPARQL_UPDATE_ENDPOINT) {
   proxy.push({
     context: ['/update**'],
-    target: SPARQL_UPDATEENDPOINT,
+    target: SPARQL_UPDATE_ENDPOINT,
     pathRewrite: { '/update': '' },
     changeOrigin: true,
     secure: false,
