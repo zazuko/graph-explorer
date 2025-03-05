@@ -32,10 +32,10 @@ module.exports = {
   module: {
     rules: [
       { test: /\.ts$|\.tsx$/, use: ['ts-loader'] },
-      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+      { test: /\.css$/, use: ['style-loader', { loader: 'css-loader', options: { esModule: false } }] },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: ['style-loader', { loader: 'css-loader', options: { esModule: false } }, 'sass-loader'],
       },
       {
         test: /\.(jpe?g|gif|png|svg)$/,
