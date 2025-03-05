@@ -6,7 +6,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const SUPPORT_IE = process.env.SUPPORT_IE;
 const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT;
-const SPARQL_UPDATEENDPOINT = process.env.SPARQL_UPDATEENDPOINT;
+const SPARQL_UPDATE_ENDPOINT = process.env.SPARQL_UPDATE_ENDPOINT;
 const WIKIDATA_ENDPOINT = process.env.WIKIDATA_ENDPOINT;
 const LOD_PROXY = process.env.LOD_PROXY;
 const PROP_SUGGEST = process.env.PROP_SUGGEST;
@@ -21,6 +21,58 @@ if (!SUPPORT_IE) {
   );
   aliases['es6-promise/auto'] = emptyModule;
 }
+
+const proxy = [];
+
+if (SPARQL_ENDPOINT) {
+  proxy.push({
+    context: ['/sparql**'],
+    target: SPARQL_ENDPOINT,
+    pathRewrite: { '/sparql': '' },
+    changeOrigin: true,
+    secure: false,
+  });
+}
+
+if (SPARQL_UPDATE_ENDPOINT) {
+  proxy.push({
+    context: ['/update**'],
+    target: SPARQL_UPDATE_ENDPOINT,
+    pathRewrite: { '/update': '' },
+    changeOrigin: true,
+    secure: false,
+  });
+}
+
+if (WIKIDATA_ENDPOINT || SPARQL_ENDPOINT) {
+  proxy.push({
+    context: ['/wikidata**'],
+    target: WIKIDATA_ENDPOINT || SPARQL_ENDPOINT,
+    pathRewrite: { '/wikidata': '' },
+    changeOrigin: true,
+    secure: false,
+  });
+}
+
+if (LOD_PROXY) {
+  proxy.push({
+    context: ['/lod-proxy/**'],
+    target: LOD_PROXY,
+    changeOrigin: true,
+    secure: false,
+  });
+}
+
+if (PROP_SUGGEST) {
+  proxy.push({
+    context: ['/wikidata-prop-suggest**'],
+    target: PROP_SUGGEST,
+    pathRewrite: { '/wikidata-prop-suggest': '' },
+    changeOrigin: true,
+    secure: false,
+  });
+}
+
 
 const examplesDir = path.join(__dirname, 'examples');
 const htmlTemplatePath = path.join(__dirname, 'examples', 'template.ejs');
@@ -133,41 +185,6 @@ module.exports = {
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
       "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
     },
-    proxy: [
-      {
-        context: ['/sparql**'],
-        target: SPARQL_ENDPOINT,
-        pathRewrite: { '/sparql': '' },
-        changeOrigin: true,
-        secure: false,
-      },
-      {
-        context: ['/update**'],
-        target: SPARQL_UPDATEENDPOINT,
-        pathRewrite: { '/update': '' },
-        changeOrigin: true,
-        secure: false,
-      },
-      {
-        context: ['/wikidata**'],
-        target: WIKIDATA_ENDPOINT || SPARQL_ENDPOINT,
-        pathRewrite: { '/wikidata': '' },
-        changeOrigin: true,
-        secure: false,
-      },
-      {
-        context: ['/lod-proxy/**'],
-        target: LOD_PROXY,
-        changeOrigin: true,
-        secure: false,
-      },
-      {
-        context: ['/wikidata-prop-suggest**'],
-        target: PROP_SUGGEST,
-        pathRewrite: { '/wikidata-prop-suggest': '' },
-        changeOrigin: true,
-        secure: false,
-      }
-    ]
+    proxy,
   },
 };
