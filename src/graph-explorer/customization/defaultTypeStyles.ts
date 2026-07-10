@@ -1,23 +1,14 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import { TypeStyleResolver } from "./props";
 
-const classIcon = require("../../../images/icons/class.svg").default as string;
-const objectPropertyIcon = require("../../../images/icons/objectProperty.svg")
-  .default as string;
-const datatypePropertyIcon =
-  require("../../../images/icons/datatypeProperty.svg").default as string;
-const personIcon = require("../../../images/icons/person.svg")
-  .default as string;
-const countryIcon = require("../../../images/icons/country.svg")
-  .default as string;
-const organizationIcon = require("../../../images/icons/organization.svg")
-  .default as string;
-const locationIcon = require("../../../images/icons/location.svg")
-  .default as string;
-const eventIcon = require("../../../images/icons/event.svg").default as string;
-const objectIcon = require("../../../images/icons/object.svg")
-  .default as string;
+import classIcon from "../../../images/icons/class.svg";
+import objectPropertyIcon from "../../../images/icons/objectProperty.svg";
+import datatypePropertyIcon from "../../../images/icons/datatypeProperty.svg";
+import personIcon from "../../../images/icons/person.svg";
+import countryIcon from "../../../images/icons/country.svg";
+import organizationIcon from "../../../images/icons/organization.svg";
+import locationIcon from "../../../images/icons/location.svg";
+import eventIcon from "../../../images/icons/event.svg";
+import objectIcon from "../../../images/icons/object.svg";
 
 export const DefaultTypeStyleBundle: TypeStyleResolver = (types) => {
   if (

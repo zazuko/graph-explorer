@@ -5,6 +5,9 @@
     "jsx": "react",
     "lib": ["dom", "es2015"],
     "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
     "strict": true,
     "strictNullChecks": false
   },

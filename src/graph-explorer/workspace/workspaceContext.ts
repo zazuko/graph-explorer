@@ -1,4 +1,4 @@
-import { PropTypes } from "../viewUtils/react";
+import { createContext } from "react";
 import { EditorController } from "../editor/editorController";
 
 export type WorkspaceEventHandler = (key: WorkspaceEventKey) => void;
@@ -22,8 +22,5 @@ export interface WorkspaceContext {
   triggerWorkspaceEvent: WorkspaceEventHandler;
 }
 
-export const WorkspaceContextTypes: {
-  [K in keyof WorkspaceContextWrapper]: any;
-} = {
-  workspace: PropTypes.anything,
-};
+export const WorkspaceContext =
+  createContext<WorkspaceContextWrapper>(null);

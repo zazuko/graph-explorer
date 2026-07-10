@@ -1,12 +1,10 @@
 import * as React from "react";
-import { findDOMNode } from "react-dom";
 import { hcl } from "d3-color";
 
 import { Property, ElementTypeIri, PropertyTypeIri } from "../data/model";
 import { TemplateProps } from "../customization/props";
 import { Debouncer } from "../viewUtils/async";
 import { EventObserver } from "../viewUtils/events";
-import { PropTypes } from "../viewUtils/react";
 import {
   KeyedObserver,
   observeElementTypes,
@@ -285,31 +283,21 @@ interface OverlayedElementProps {
 export interface ElementContextWrapper {
   graphExplorerElement: ElementContext;
 }
-export const ElementContextTypes: {
-  [K in keyof ElementContextWrapper]: any;
-} = {
-  graphExplorerElement: PropTypes.anything,
-};
 
 export interface ElementContext {
   element: Element;
 }
 
+export const ElementContext = React.createContext<ElementContextWrapper>(null);
+
 class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
-  static childContextTypes = ElementContextTypes;
+  private element: HTMLElement | null = null;
 
   private readonly listener = new EventObserver();
   private disposed = false;
 
   private typesObserver: KeyedObserver<ElementTypeIri>;
   private propertiesObserver: KeyedObserver<PropertyTypeIri>;
-
-  getChildContext(): ElementContextWrapper {
-    const graphExplorerElement: ElementContext = {
-      element: this.props.state.element,
-    };
-    return { graphExplorerElement: graphExplorerElement };
-  }
 
   private rerenderTemplate = () => {
     if (this.disposed) {
@@ -339,25 +327,28 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
       blurred ? "graph-explorer-overlayed-element--blurred" : ""
     }`;
     return (
-      <div
-        className={className}
-        // set `element-id` to translate mouse events to paper
-        data-element-id={element.id}
-        style={{ position: "absolute", transform }}
-        tabIndex={0}
-        ref={this.onMount}
-        // resize element when child image loaded
-        onLoad={this.onLoadOrErrorEvent}
-        onError={this.onLoadOrErrorEvent}
-        onClick={this.onClick}
-        onDoubleClick={this.onDoubleClick}
-      >
-        <TemplatedElement {...this.props} />
-      </div>
+      <ElementContext.Provider value={{ graphExplorerElement: { element } }}>
+        <div
+          className={className}
+          // set `element-id` to translate mouse events to paper
+          data-element-id={element.id}
+          style={{ position: "absolute", transform }}
+          tabIndex={0}
+          ref={this.onMount}
+          // resize element when child image loaded
+          onLoad={this.onLoadOrErrorEvent}
+          onError={this.onLoadOrErrorEvent}
+          onClick={this.onClick}
+          onDoubleClick={this.onDoubleClick}
+        >
+          <TemplatedElement {...this.props} />
+        </div>
+      </ElementContext.Provider>
     );
   }
 
-  private onMount = (node: HTMLDivElement | undefined) => {
+  private onMount = (node: HTMLDivElement | null) => {
+    this.element = node;
     if (!node) {
       return;
     }
@@ -367,7 +358,9 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
 
   private onLoadOrErrorEvent = () => {
     const { state, onResize } = this.props;
-    onResize(state.element, findDOMNode(this) as HTMLDivElement);
+    if (this.element) {
+      onResize(state.element, this.element as HTMLDivElement);
+    }
   };
 
   private onClick = (e: React.MouseEvent<EventTarget>) => {
@@ -398,9 +391,8 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
   componentDidMount() {
     const { state, view } = this.props;
     this.listener.listen(state.element.events, "requestedFocus", () => {
-      const element = findDOMNode(this) as HTMLElement;
-      if (element) {
-        element.focus();
+      if (this.element) {
+        this.element.focus();
       }
     });
     this.typesObserver = observeElementTypes(
@@ -429,10 +421,12 @@ class OverlayedElement extends React.Component<OverlayedElementProps, {}> {
 
   componentDidUpdate() {
     this.observeTypes();
-    this.props.onResize(
-      this.props.state.element,
-      findDOMNode(this) as HTMLDivElement
-    );
+    if (this.element) {
+      this.props.onResize(
+        this.props.state.element,
+        this.element as HTMLDivElement
+      );
+    }
   }
 
   private observeTypes() {

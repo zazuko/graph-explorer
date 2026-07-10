@@ -13,7 +13,6 @@ import {
   EventSource,
   PropertyChange,
 } from "../viewUtils/events";
-import { PropTypes } from "../viewUtils/react";
 import {
   ToSVGOptions,
   ToDataURLOptions,
@@ -103,11 +102,8 @@ export interface PaperAreaContext {
   view: DiagramView;
 }
 
-export const PaperAreaContextTypes: {
-  [K in keyof PaperAreaContextWrapper]: any;
-} = {
-  paperArea: PropTypes.anything,
-};
+export const PaperAreaContext =
+  React.createContext<PaperAreaContextWrapper>(null);
 
 interface PointerMoveState {
   pointerMoved: boolean;
@@ -160,8 +156,6 @@ const DEFAULT_ANIMATION_DURATION = 500;
 const LEFT_MOUSE_BUTTON = 0;
 
 export class PaperArea extends React.Component<PaperAreaProps, State> {
-  static childContextTypes = PaperAreaContextTypes;
-
   private readonly listener = new EventObserver();
   private readonly source = new EventSource<PaperAreaEvents>();
   readonly events: Events<PaperAreaEvents> = this.source;
@@ -218,12 +212,6 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     };
   }
 
-  getChildContext(): PaperAreaContextWrapper {
-    const { view } = this.props;
-    const paperArea: PaperAreaContext = { paperArea: this, view };
-    return { paperArea: paperArea };
-  }
-
   render() {
     const { view, watermarkSvg, watermarkUrl } = this.props;
     const {
@@ -258,57 +246,63 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
     }
 
     return (
-      <div className={componentClass} ref={this.onOuterMount}>
-        <div
-          className={areaClass}
-          ref={this.onAreaMount}
-          onMouseDown={this.onAreaPointerDown}
-        >
-          <Paper
-            view={view}
-            paperTransform={paperTransform}
-            onPointerDown={this.onPaperPointerDown}
-            linkLayerWidgets={
-              <div
-                className={`${CLASS_NAME}__widgets`}
-                onMouseDown={this.onWidgetsMouseDown}
-              >
-                {renderedWidgets
-                  .filter((w) => w.attachment === WidgetAttachment.OverLinks)
-                  .map((widget) =>
-                    React.cloneElement(widget.element, widgetProps)
-                  )}
-              </div>
-            }
-            elementLayerWidgets={
-              <div
-                className={`${CLASS_NAME}__widgets`}
-                onMouseDown={this.onWidgetsMouseDown}
-              >
-                {renderedWidgets
-                  .filter((w) => w.attachment === WidgetAttachment.OverElements)
-                  .map((widget) =>
-                    React.cloneElement(widget.element, widgetProps)
-                  )}
-              </div>
-            }
-          />
-          {watermarkSvg ? (
-            <a href={watermarkUrl} target="_blank" rel="noopener noreferrer">
-              <img
-                className={`${CLASS_NAME}__watermark`}
-                src={watermarkSvg}
-                draggable={false}
-              />
-            </a>
-          ) : null}
+      <PaperAreaContext.Provider
+        value={{ paperArea: { paperArea: this, view } }}
+      >
+        <div className={componentClass} ref={this.onOuterMount}>
+          <div
+            className={areaClass}
+            ref={this.onAreaMount}
+            onMouseDown={this.onAreaPointerDown}
+          >
+            <Paper
+              view={view}
+              paperTransform={paperTransform}
+              onPointerDown={this.onPaperPointerDown}
+              linkLayerWidgets={
+                <div
+                  className={`${CLASS_NAME}__widgets`}
+                  onMouseDown={this.onWidgetsMouseDown}
+                >
+                  {renderedWidgets
+                    .filter((w) => w.attachment === WidgetAttachment.OverLinks)
+                    .map((widget) =>
+                      React.cloneElement(widget.element, widgetProps)
+                    )}
+                </div>
+              }
+              elementLayerWidgets={
+                <div
+                  className={`${CLASS_NAME}__widgets`}
+                  onMouseDown={this.onWidgetsMouseDown}
+                >
+                  {renderedWidgets
+                    .filter(
+                      (w) => w.attachment === WidgetAttachment.OverElements
+                    )
+                    .map((widget) =>
+                      React.cloneElement(widget.element, widgetProps)
+                    )}
+                </div>
+              }
+            />
+            {watermarkSvg ? (
+              <a href={watermarkUrl} target="_blank" rel="noopener noreferrer">
+                <img
+                  className={`${CLASS_NAME}__watermark`}
+                  src={watermarkSvg}
+                  draggable={false}
+                />
+              </a>
+            ) : null}
+          </div>
+          {renderedWidgets
+            .filter((w) => w.attachment === WidgetAttachment.Viewport)
+            .map((widget) => {
+              return React.cloneElement(widget.element, widgetProps);
+            })}
         </div>
-        {renderedWidgets
-          .filter((w) => w.attachment === WidgetAttachment.Viewport)
-          .map((widget) => {
-            return React.cloneElement(widget.element, widgetProps);
-          })}
-      </div>
+      </PaperAreaContext.Provider>
     );
   }
 

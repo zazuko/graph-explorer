@@ -119,7 +119,7 @@ export class LinkStateWidget extends React.Component<Props, {}> {
     const { editor } = this.props;
 
     return editor.model.links.map((link) => {
-      let renderedState: JSX.Element | null = null;
+      let renderedState: React.JSX.Element | null = null;
       const state = editor.authoringState.links.get(link.data);
       if (state) {
         const onCancel = () => editor.discardChange(state);
@@ -261,7 +261,7 @@ export class LinkStateWidget extends React.Component<Props, {}> {
   private renderErrorIcon(
     title: string,
     validation: LinkValidation | ElementValidation
-  ): JSX.Element {
+  ): React.JSX.Element {
     return (
       <div className={`${CLASS_NAME}__item-error`} title={title}>
         {validation.loading ? (

@@ -17,8 +17,7 @@ import { highlightSubstring } from "./listElementView";
 import { SearchResults } from "./searchResults";
 
 import {
-  WorkspaceContextTypes,
-  WorkspaceContextWrapper,
+  WorkspaceContext,
   WorkspaceEventKey,
 } from "../workspace/workspaceContext";
 
@@ -80,8 +79,8 @@ export interface ConnectionsMenuProps {
 }
 
 export class ConnectionsMenu extends React.Component<ConnectionsMenuProps, {}> {
-  static contextTypes = WorkspaceContextTypes;
-  readonly context: WorkspaceContextWrapper;
+  static contextType = WorkspaceContext;
+  declare readonly context: React.ContextType<typeof WorkspaceContext>;
 
   private readonly handler = new EventObserver();
   private readonly linkTypesListener = new EventObserver();
@@ -592,7 +591,7 @@ class ConnectionsList extends React.Component<
     const { view } = this.props;
     const countMap = this.props.data.countMap || {};
 
-    const views: JSX.Element[] = [];
+    const views: React.JSX.Element[] = [];
     const addView = (link: FatLinkType, direction: "in" | "out") => {
       const count =
         direction === "in"

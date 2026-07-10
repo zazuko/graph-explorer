@@ -1,6 +1,6 @@
 import eslint from "@eslint/js";
 import prettierConfig from "eslint-config-prettier";
-import stylisticTs from "@stylistic/eslint-plugin-ts";
+import stylistic from "@stylistic/eslint-plugin";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -9,16 +9,15 @@ export default tseslint.config(
   tseslint.configs.stylistic,
   {
     plugins: {
-      "@stylistic/ts": stylisticTs
+      "@stylistic": stylistic
     },
     ignores: [
       "node_modules",
       "dist",
-      "webpack.config.js",
     ],
     rules: {
-      "@stylistic/ts/indent": ["error", 2],
-      "@stylistic/ts/semi": ["error", "always"],
+      "@stylistic/indent": ["error", 2],
+      "@stylistic/semi": ["error", "always"],
       "@typescript-eslint/no-unused-vars": ["error", {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",

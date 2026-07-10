@@ -6,7 +6,7 @@ import { ElementModel } from "../data/model";
 
 import { DiagramView } from "../diagram/view";
 import {
-  PaperAreaContextTypes,
+  PaperAreaContext,
   PaperAreaContextWrapper,
 } from "../diagram/paperArea";
 
@@ -14,7 +14,7 @@ import { Cancellation, CancellationToken } from "../viewUtils/async";
 import { Listener } from "../viewUtils/events";
 
 import {
-  WorkspaceContextTypes,
+  WorkspaceContext,
   WorkspaceContextWrapper,
 } from "../workspace/workspaceContext";
 
@@ -41,25 +41,26 @@ export interface State {
   canDelete?: boolean;
 }
 
+interface AuthoredEntityInnerProps extends AuthoredEntityProps {
+  context: PaperAreaContextWrapper & WorkspaceContextWrapper;
+}
+
 /**
  * Component to simplify tracking changes in validation messages (property and link type labels).
  */
-export class AuthoredEntity extends React.Component<
-  AuthoredEntityProps,
+class AuthoredEntityInner extends React.Component<
+  AuthoredEntityInnerProps,
   State
 > {
-  static contextTypes = { ...PaperAreaContextTypes, ...WorkspaceContextTypes };
-  context: PaperAreaContextWrapper & WorkspaceContextWrapper;
-
   private queryCancellation = new Cancellation();
 
-  constructor(props: AuthoredEntityProps, context: any) {
-    super(props, context);
+  constructor(props: AuthoredEntityInnerProps) {
+    super(props);
     this.state = {};
   }
 
   componentDidMount() {
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
     editor.events.on("changeAuthoringState", this.onChangeAuthoringState);
     this.queryAllowedActions();
   }
@@ -75,7 +76,7 @@ export class AuthoredEntity extends React.Component<
   }
 
   componentWillUnmount() {
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
     editor.events.off("changeAuthoringState", this.onChangeAuthoringState);
     this.queryCancellation.abort();
   }
@@ -101,7 +102,7 @@ export class AuthoredEntity extends React.Component<
     this.queryCancellation.abort();
     this.queryCancellation = new Cancellation();
 
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
 
     if (
       !editor.metadataApi ||
@@ -115,7 +116,7 @@ export class AuthoredEntity extends React.Component<
   }
 
   private queryCanEdit(data: ElementModel) {
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
     const signal = this.queryCancellation.signal;
     this.setState({ canEdit: undefined });
     CancellationToken.mapCancelledToNull(
@@ -130,7 +131,7 @@ export class AuthoredEntity extends React.Component<
   }
 
   private queryCanDelete(data: ElementModel) {
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
     const signal = this.queryCancellation.signal;
     this.setState({ canDelete: undefined });
     CancellationToken.mapCancelledToNull(
@@ -146,8 +147,8 @@ export class AuthoredEntity extends React.Component<
 
   render() {
     const { children: renderTemplate } = this.props;
-    const { view } = this.context.paperArea;
-    const { editor } = this.context.workspace;
+    const { view } = this.props.context.paperArea;
+    const { editor } = this.props.context.workspace;
     const { canEdit, canDelete } = this.state;
 
     const iri = this.props.templateProps.iri;
@@ -169,15 +170,26 @@ export class AuthoredEntity extends React.Component<
   }
 
   private onEdit = () => {
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
     const { elementId } = this.props.templateProps;
     const element = editor.model.getElement(elementId);
     editor.showEditEntityForm(element);
   };
 
   private onDelete = () => {
-    const { editor } = this.context.workspace;
+    const { editor } = this.props.context.workspace;
     const { data } = this.props.templateProps;
     editor.deleteEntity(data.id);
   };
+}
+
+export function AuthoredEntity(props: AuthoredEntityProps) {
+  const paperAreaContext = React.useContext(PaperAreaContext);
+  const workspaceContext = React.useContext(WorkspaceContext);
+  return (
+    <AuthoredEntityInner
+      {...props}
+      context={{ ...paperAreaContext, ...workspaceContext }}
+    />
+  );
 }

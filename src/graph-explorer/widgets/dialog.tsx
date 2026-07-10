@@ -34,6 +34,7 @@ export interface Props extends PaperWidgetProps {
   offset?: Vector;
   calculatePosition?: () => Vector;
   onClose: () => void;
+  children?: React.ReactNode;
 }
 
 export interface State {

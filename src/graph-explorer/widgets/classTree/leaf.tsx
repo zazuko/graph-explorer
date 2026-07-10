@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import * as React from "react";
 
 import { ElementTypeIri } from "../../data/model";
@@ -8,14 +6,10 @@ import { highlightSubstring } from "../listElementView";
 
 import { TreeNode } from "./treeModel";
 
-const EXPAND_ICON = require("../../../../images/tree/expand-toggle.svg")
-  .default as string;
-const COLLAPSE_ICON = require("../../../../images/tree/collapse-toggle.svg")
-  .default as string;
-const DEFAULT_LEAF_ICON = require("../../../../images/tree/leaf-default.svg")
-  .default as string;
-const DEFAULT_PARENT_ICON = require("../../../../images/tree/leaf-folder.svg")
-  .default as string;
+import EXPAND_ICON from "../../../../images/tree/expand-toggle.svg";
+import COLLAPSE_ICON from "../../../../images/tree/collapse-toggle.svg";
+import DEFAULT_LEAF_ICON from "../../../../images/tree/leaf-default.svg";
+import DEFAULT_PARENT_ICON from "../../../../images/tree/leaf-folder.svg";
 
 interface CommonProps {
   view: DiagramView;

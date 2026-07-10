@@ -1,5 +1,5 @@
 import { createElement, ClassAttributes } from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import {
   Workspace,
@@ -65,5 +65,5 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
 };
 
 onPageLoad((container) => {
-  ReactDOM.render(createElement(Workspace, props), container);
+  createRoot(container).render(createElement(Workspace, props));
 });

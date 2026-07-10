@@ -203,7 +203,7 @@ class LinkTypesToolboxView extends React.Component<
     const links = this.getLinks();
     const views = this.getViews(links);
 
-    let connectedTo: JSX.Element | null = null;
+    let connectedTo: React.JSX.Element | null = null;
     if (selectedElement) {
       const selectedElementLabel = view.formatLabel(
         selectedElement.data.label.values,
@@ -217,7 +217,7 @@ class LinkTypesToolboxView extends React.Component<
       );
     }
 
-    let dropButton: JSX.Element | null = null;
+    let dropButton: React.JSX.Element | null = null;
     if (this.state.filterKey) {
       dropButton = (
         <button
