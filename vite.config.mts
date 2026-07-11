@@ -39,6 +39,10 @@ export default defineConfig({
     emptyOutDir: false,
     sourcemap: true,
     minify: BUNDLE_PEERS ? "esbuild" : false,
+    // inline every asset (icons referenced from CSS/JS) as a data URI so the
+    // runtime-injected stylesheet is self-contained, matching the previous
+    // url-loader behaviour
+    assetsInlineLimit: () => true,
     lib: {
       entry: "src/graph-explorer/index.ts",
       name: "GraphExplorer",

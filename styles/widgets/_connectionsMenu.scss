@@ -8,7 +8,7 @@
   }
 
   &__sort-switch:checked + &__sort-switch-label {
-    color: #337ab7;
+    color: var(--ge-accent);
     opacity: 1;
   }
 
@@ -43,10 +43,12 @@
   position: absolute;
   top: -11px;
   left: 10px;
-  background: white;
-  padding-left: 3px;
-  padding-right: 3px;
-  border-radius: 6px;
+  background: var(--ge-surface);
+  color: var(--ge-text);
+  font-weight: 600;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: var(--ge-radius-sm);
 }
 
 .graph-explorer-connections-menu_search-line {
@@ -65,7 +67,7 @@
   padding: 5px;
   overflow-x: hidden;
   overflow-y: auto;
-  border-top: 1px solid #dbdbdb;
+  border-top: 1px solid var(--ge-border);
   flex-grow: 1;
   margin: 0;
 }
@@ -142,7 +144,7 @@
 
   &__navigate-button {
     float: right;
-    background-image: url("../images/expand-link.png");
+    background-image: url("../../images/expand-link.png");
     width: 16px;
     height: 16px;
     opacity: 0.5;
@@ -153,7 +155,7 @@
   }
 
   &__filter-button {
-    background-image: url("../images/add-to-filter.png");
+    background-image: url("../../images/add-to-filter.png");
     background-size: 20px 20px;
     width: 20px;
     height: 20px;
@@ -176,7 +178,7 @@
 }
 
 .link-in-popup-menu_direction__in-direction {
-  background: url("../images/direction-in.png") 0 0 no-repeat;
+  background: url("../../images/direction-in.png") 0 0 no-repeat;
   flex-shrink: 0;
   width: 22px;
   height: 15px;
@@ -186,7 +188,7 @@
 }
 
 .link-in-popup-menu_direction__out-direction {
-  background: url("../images/direction-out.png") 0 0 no-repeat;
+  background: url("../../images/direction-out.png") 0 0 no-repeat;
   flex-shrink: 0;
   width: 22px;
   height: 15px;
@@ -267,7 +269,7 @@
 }
 
 .graph-explorer-connections-menu__link {
-  color: #337ab7;
+  color: var(--ge-accent);
   cursor: pointer;
   text-decoration: none;
 

@@ -2,9 +2,9 @@
   position: absolute;
   pointer-events: none;
 
-  border: 1.5px dashed #d8956d;
-  border-radius: 2px;
-  box-shadow: 0 0 5px 0 #d8956d inset;
+  border: 1.5px dashed var(--ge-accent);
+  border-radius: var(--ge-radius);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 
   $buttonWidth: 20px;
   $buttonHeight: 20px;
@@ -91,11 +91,11 @@
     @include e-docked;
 
     &--open {
-      background-image: url("../images/connections.svg");
+      background-image: url("../../images/connections.svg");
     }
 
     &--closed {
-      background-image: url("../images/close-connections.svg");
+      background-image: url("../../images/close-connections.svg");
     }
   }
 
@@ -103,13 +103,13 @@
     @include halo-button;
     @include w-docked;
 
-    background-image: url("../images/link.svg");
+    background-image: url("../../images/link.svg");
   }
 
   &__remove {
     @include halo-button;
     @include ne-docked;
-    background-image: url("../images/delete.svg");
+    background-image: url("../../images/delete.svg");
   }
 
   &__expand {
@@ -117,30 +117,30 @@
     @include s-docked;
 
     &--open {
-      background-image: url("../images/expand-properties.png");
+      background-image: url("../../images/expand-properties.png");
     }
 
     &--closed {
-      background-image: url("../images/collapse-properties.png");
+      background-image: url("../../images/collapse-properties.png");
     }
   }
 
   &__add-to-filter {
     @include halo-button;
     @include se-docked;
-    background-image: url("../images/add-to-filter.png");
+    background-image: url("../../images/add-to-filter.png");
   }
 
   &__revert {
     @include halo-button;
     @include n-docked;
-    background-image: url("../images/font-awesome/undo-solid.svg");
+    background-image: url("../../images/font-awesome/undo-solid.svg");
   }
 
   &__establish-connection {
     @include halo-button;
     @include sw-docked;
-    background-image: url("../images/font-awesome/plug.svg");
+    background-image: url("../../images/font-awesome/plug.svg");
   }
 
   &__establish-connection-spinner {

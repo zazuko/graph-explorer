@@ -19,7 +19,9 @@
   }
 
   &__tree {
-    border-top: 1px solid rgb(221, 221, 221);
+    border-top: 1px solid var(--ge-border);
+    padding: 6px 8px;
+    overflow: auto;
   }
 
   &__spinner {
@@ -44,23 +46,27 @@
     display: flex;
     align-items: center;
     text-decoration: none;
-    font-size: 15px;
-    padding: 1px;
-    border: 1px solid;
-    border-color: transparent;
+    font-size: 14px;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-radius: var(--ge-radius-sm);
+    transition: background var(--ge-transition), border-color var(--ge-transition);
     &:hover {
-      background: #dcebff91;
-      border-color: #ccefff;
+      background: var(--ge-surface-3);
+      border-color: transparent;
       cursor: pointer;
     }
     &--selected {
-      background-color: #beebff;
-      border-color: #8edcff;
+      background-color: var(--ge-accent-soft);
+      border-color: var(--ge-accent-soft-border);
+    }
+    &--selected:hover {
+      background-color: var(--ge-accent-soft);
     }
   }
 
   &__icon-container {
-    height: 20px;
+    height: 18px;
   }
 
   &__icon {
@@ -69,8 +75,8 @@
   }
 
   &__label {
-    margin-left: 5px;
-    color: black;
+    margin-left: 7px;
+    color: var(--ge-text);
   }
 
   &__highlighted-term {
@@ -96,8 +102,9 @@
     width: 12px;
     height: 12px;
     margin: 5px;
+    border-radius: var(--ge-radius-sm);
     &:hover:not(:empty) {
-      background: #dcebff91;
+      background: var(--ge-surface-3);
       cursor: pointer;
     }
   }

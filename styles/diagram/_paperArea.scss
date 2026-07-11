@@ -4,7 +4,13 @@
   display: flex;
   position: relative;
   cursor: default;
-  background: #fff;
+  background-color: var(--ge-canvas);
+  background-image: radial-gradient(
+    var(--ge-canvas-dot) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  background-position: -1px -1px;
 
   &__area {
     flex: auto;

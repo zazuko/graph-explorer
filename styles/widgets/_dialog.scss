@@ -1,22 +1,24 @@
 .graph-explorer-dialog {
-  background: #fff;
-  border: 1px solid #333;
-  box-shadow: 0 4px 15px 7px rgba(51, 51, 51, 0.05);
+  background: var(--ge-surface);
+  border: 1px solid var(--ge-border);
+  border-radius: var(--ge-radius-lg);
+  box-shadow: var(--ge-shadow-lg);
   position: absolute;
 
   &__caption {
-    font-weight: bold;
+    font-weight: 600;
     position: absolute;
     top: -11px;
     left: 10px;
-    background: white;
-    padding-left: 3px;
-    padding-right: 3px;
-    border-radius: 6px;
+    background: var(--ge-surface);
+    color: var(--ge-text);
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: var(--ge-radius-sm);
   }
 
   &__close-button {
-    background: transparent url("../images/font-awesome/times-circle-regular.svg");
+    background: transparent url("../../images/font-awesome/times-circle-regular.svg");
     background-size: contain;
     border: 0 none;
     cursor: pointer;

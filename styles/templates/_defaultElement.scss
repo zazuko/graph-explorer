@@ -1,9 +1,11 @@
 .graph-explorer-default-template {
   max-width: 450px;
   float: left;
-  border-radius: 12px;
+  border-radius: var(--ge-radius-lg);
   border-style: solid;
   border-width: 1px;
+  overflow: hidden;
+  box-shadow: var(--ge-shadow-md);
 
   &__thumbnail {
     text-align: center;
@@ -58,8 +60,10 @@ div.graph-explorer-default-template_type-line__icon {
 }
 
 .graph-explorer-default-template_body__label {
-  font-size: 19px;
-  font-weight: 100;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ge-text);
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 0;

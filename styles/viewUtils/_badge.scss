@@ -1,14 +1,15 @@
 .graph-explorer-badge {
   display: inline-block;
   min-width: 10px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   line-height: 1;
-  color: rgb(255, 255, 255);
+  color: var(--ge-text-muted);
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: rgb(119, 119, 119);
-  padding: 3px 7px;
-  border-radius: 10px;
+  background-color: var(--ge-surface-3);
+  border: 1px solid var(--ge-border);
+  padding: 3px 8px;
+  border-radius: var(--ge-radius-pill);
 }

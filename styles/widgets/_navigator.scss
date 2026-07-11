@@ -11,9 +11,10 @@
     box-sizing: content-box;
   }
 
-  background: #fff;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 15px 7px rgba(51, 51, 51, 0.05);
+  background: var(--ge-surface);
+  border: 1px solid var(--ge-border);
+  border-radius: var(--ge-radius);
+  box-shadow: var(--ge-shadow-md);
 
   $transition: 0.3s;
   transition: width $transition, height $transition;
@@ -60,9 +61,9 @@
     background-repeat: no-repeat;
   }
   &--expanded &__toggle-icon {
-    background-image: url('../images/font-awesome/minus-square-regular.svg');
+    background-image: url('../../images/font-awesome/minus-square-regular.svg');
   }
   &--collapsed &__toggle-icon {
-    background-image: url('../images/font-awesome/plus-square-regular.svg');
+    background-image: url('../../images/font-awesome/plus-square-regular.svg');
   }
 }

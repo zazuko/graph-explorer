@@ -24,7 +24,7 @@
   position: relative;
 
   &__handle {
-    background: #fff url("../images/resizable-column-handle.png") repeat;
+    background: #fff url("../../images/resizable-column-handle.png") repeat;
     width: 8px;
     height: 100%;
     position: absolute;
@@ -81,28 +81,28 @@
   &--docked-left { margin-right: 8px; }
   &--docked-left &__handle { right: -8px; }
   &--docked-left &__handle-btn {
-    &::before { background-image: url("../images/arrow-left.png"); }
-    &:hover::before { background-image: url("../images/arrow-left1.png"); }
+    &::before { background-image: url("../../images/arrow-left.png"); }
+    &:hover::before { background-image: url("../../images/arrow-left1.png"); }
   }
 
   &--docked-right { margin-left: 8px; }
   &--docked-right &__handle { left: -8px; }
   &--docked-right &__handle-btn {
-    &::before { background-image: url("../images/arrow-right.png"); }
-    &:hover::before { background-image: url("../images/arrow-right1.png"); }
+    &::before { background-image: url("../../images/arrow-right.png"); }
+    &:hover::before { background-image: url("../../images/arrow-right1.png"); }
   }
 
   &--docked-top { margin-bottom: 8px; }
   &--docked-top &__handle { bottom: -8px; }
   &--docked-top &__handle-btn {
-    &::before { background-image: url("../images/arrow-top.png"); }
-    &:hover::before { background-image: url("../images/arrow-top1.png"); }
+    &::before { background-image: url("../../images/arrow-top.png"); }
+    &:hover::before { background-image: url("../../images/arrow-top1.png"); }
   }
 
   &--docked-bottom { margin-top: 8px; }
   &--docked-bottom &__handle { top: -8px; }
   &--docked-bottom &__handle-btn {
-    &::before { background-image: url("../images/arrow-bottom.png"); }
-    &:hover::before { background-image: url("../images/arrow-bottom1.png"); }
+    &::before { background-image: url("../../images/arrow-bottom.png"); }
+    &:hover::before { background-image: url("../../images/arrow-bottom1.png"); }
   }
 }

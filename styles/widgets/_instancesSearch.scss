@@ -20,25 +20,34 @@
     width: 100%;
   }
 
-  &__criterion-class {
-    border: black 1px dashed;
-    background: rgb(255, 210, 33);
-    padding: 0 .5em 0 .5em;
+  &__criterion-class,
+  &__criterion-element,
+  &__criterion-link-type {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: var(--ge-radius-pill);
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 500;
     word-wrap: break-word;
+  }
+
+  &__criterion-class {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
   }
 
   &__criterion-element {
-    border: black 1px dashed;
-    background: rgb(255, 131, 92);
-    padding: 0 .5em 0 .5em;
-    word-wrap: break-word;
+    background: #ffedd5;
+    border-color: #fdba74;
+    color: #9a3412;
   }
 
   &__criterion-link-type {
-    border: black 1px dashed;
-    background: rgb(202, 255, 206);
-    padding: 0 .5em 0 .5em;
-    word-wrap: break-word;
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
   }
 
   &__link-direction {
@@ -55,7 +64,7 @@
 
   &__rest {
     padding: 10px 10px 0 10px;
-    border-top: 1px solid rgb(221, 221, 221);
+    border-top: 1px solid var(--ge-border);
   }
 
   &__results {
