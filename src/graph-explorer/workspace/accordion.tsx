@@ -337,7 +337,7 @@ export class Accordion extends React.Component<Props, State> {
     } else {
       const { defaultSize, minSize } = this.defaultProps.get(itemIndex);
       const shift = (defaultSize || totalSize / sizes.length) - collapsedSize;
-      let freeSize = 0;
+      let freeSize: number;
       if (itemIndex === sizes.length - 1) {
         freeSize = distributor.collapseForward({
           shift,

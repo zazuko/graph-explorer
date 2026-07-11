@@ -156,14 +156,11 @@ export class DemoDataProvider implements DataProvider {
       const filteredByText: Dictionary<ElementModel> = {};
       const text = params.text.toLowerCase();
       each(filtered, (element) => {
-        let found = false;
-        if (element.id.toLowerCase().indexOf(text) >= 0) {
-          found = true;
-        } else {
-          found = element.label.values.some(
+        const found =
+          element.id.toLowerCase().indexOf(text) >= 0 ||
+          element.label.values.some(
             (label) => label.value.toLowerCase().indexOf(text) >= 0
           );
-        }
         if (found) {
           filteredByText[element.id] = element;
         }

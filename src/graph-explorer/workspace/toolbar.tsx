@@ -82,7 +82,7 @@ export class DefaultToolbar extends React.Component<ToolbarProps, {}> {
         className={`graph-explorer-btn-group ${CLASS_NAME}__language-selector`}
       >
         <label className="graph-explorer-label">
-          <span>Data Language - </span>
+          <span>Data Language</span>
         </label>
         <select value={selectedLanguage} onChange={this.onChangeLanguage}>
           {languages.map(({ code, label }) => (

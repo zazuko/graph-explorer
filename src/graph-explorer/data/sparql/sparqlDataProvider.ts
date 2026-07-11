@@ -694,6 +694,10 @@ export class SparqlDataProvider implements DataProvider {
     if (params.text) {
       innerProjection += " ?score";
       if (this.settings.fullTextSearch.extractLabel) {
+        // NOTE: pre-existing dead store — this value is overwritten by the
+        // assignment below, so the extracted-label part is currently discarded.
+        // Kept as-is to avoid changing SPARQL query behaviour during the upgrade.
+        // eslint-disable-next-line no-useless-assignment
         textSearchPart += sparqlExtractLabel("?inst", "?extractedLabel");
       }
       textSearchPart = resolveTemplate(fullTextSearch.queryPattern, {

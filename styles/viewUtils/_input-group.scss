@@ -1,35 +1,40 @@
 .graph-explorer-input-group {
   position: relative;
-  display: table;
-  border-collapse: separate;
+  // flex layout so the field and the trailing button share the same height
+  display: flex;
+  align-items: stretch;
 
   .graph-explorer-form-control {
-    display: table-cell;
     position: relative;
     z-index: 2;
-    float: left;
-    width: 100%;
+    // allow the input to shrink within the flex row
+    flex: 1 1 auto;
+    width: 1%;
     margin-bottom: 0;
   }
 
-  .graph-explorer-form-control:first-child {
+  .graph-explorer-form-control:not(:last-child) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
   }
 }
 
 .graph-explorer-input-group-btn {
-  display: table-cell;
-  width: 1%;
-  vertical-align: middle;
+  display: flex;
+  align-items: stretch;
   position: relative;
   font-size: 0;
   white-space: nowrap;
 
+  > .graph-explorer-btn {
+    // match the input height and join the two controls seamlessly
+    height: 100%;
+    margin-left: -1px;
+    z-index: 2;
+  }
+
   &:last-child > .graph-explorer-btn {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    z-index: 2;
-    margin-left: -1px;
   }
 }
