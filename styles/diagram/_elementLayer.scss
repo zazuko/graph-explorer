@@ -5,12 +5,24 @@
 
 .graph-explorer-overlayed-element,
 .graph-explorer-exported-element {
-  // set defaults for all inherited properties
+  // Set defaults for all inherited properties. These also apply to the exported
+  // SVG/PNG, which is detached from the workspace root, so the design tokens are
+  // spelled out with fallbacks to keep exports looking like the canvas.
   box-sizing: border-box;
-  color: black;
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: var(--ge-text, #0f172a);
+  font-family: var(
+    --ge-font-sans,
+    "Inter",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif
+  );
   font-size: 14px;
-  line-height: 1.42857143;
+  line-height: 1.5;
 
   // http://stackoverflow.com/questions/6664460/line-height-affects-images
   img { vertical-align: middle; }
