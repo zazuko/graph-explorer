@@ -121,11 +121,42 @@ export async function waitForCanvasSettled(page: Page): Promise<void> {
   );
 }
 
-export function paperScroll(page: Page): Promise<{ left: number; top: number }> {
-  return page.evaluate(() => {
-    const area = document.querySelector(".graph-explorer-paper-area__area");
-    return { left: area.scrollLeft, top: area.scrollTop };
-  });
+export interface ElementPlacement {
+  /** position on screen, in viewport pixels */
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  /** inline transform, i.e. the element's position in paper coordinates */
+  transform: string;
+}
+
+/**
+ * Where the first diagram element sits, both on screen and within the diagram.
+ *
+ * Panning is asserted through this rather than through `scrollLeft`/`scrollTop`:
+ * `PaperArea` re-measures the paper on content/viewport changes and rewrites the
+ * scroll offsets (see its `componentDidUpdate`) to keep content visually in
+ * place, so the raw scroll numbers can jump at any time. The on-screen position
+ * is the value that is actually preserved, and the paper-space `transform`
+ * distinguishes "the canvas moved" from "the element was dragged".
+ */
+export async function elementPlacement(page: Page): Promise<ElementPlacement> {
+  const element = page.locator(".graph-explorer-overlayed-element").first();
+  const box = await element.boundingBox();
+  if (!box) {
+    throw new Error("no diagram element is visible on the canvas");
+  }
+  const transform = await element.evaluate(
+    (node) => (node as HTMLElement).style.transform
+  );
+  return {
+    left: box.x,
+    top: box.y,
+    width: box.width,
+    height: box.height,
+    transform,
+  };
 }
 
 /** Presses the given mouse button and drags in steps so move handlers run. */
