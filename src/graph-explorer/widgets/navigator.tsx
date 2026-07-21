@@ -264,7 +264,9 @@ export class Navigator extends React.Component<NavigatorProps, State> {
         style={expanded ? { width, height } : undefined}
       >
         <canvas
-          ref={(canvas) => (this.canvas = canvas)}
+          ref={(canvas) => {
+            this.canvas = canvas;
+          }}
           width={width}
           height={height}
           onMouseDown={(e) => {

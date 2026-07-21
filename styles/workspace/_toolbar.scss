@@ -1,17 +1,78 @@
-$toolbarHeight: 30px;
+$toolbarHeight: 32px;
 
 .graph-explorer-toolbar {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px;
+  background: var(--ge-surface);
+  border: 1px solid var(--ge-border);
+  border-radius: var(--ge-radius-lg);
+  box-shadow: var(--ge-shadow-md);
+
+  // lay the button group out as a flat, evenly gapped row of ghost buttons
+  .graph-explorer-btn-group {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px;
+
+    > .graph-explorer-btn,
+    > .graph-explorer-btn-group {
+      float: none;
+      margin-left: 0;
+    }
+  }
+
+  .graph-explorer-btn-default {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--ge-text-muted);
+
+    &:hover {
+      background: var(--ge-surface-3);
+      border-color: transparent;
+      color: var(--ge-text);
+    }
+
+    &.active {
+      background: var(--ge-accent-soft);
+      border-color: transparent;
+      color: var(--ge-accent-hover);
+    }
+  }
+
   &__language-selector {
-    margin-left: 5px;
-    margin-right: 5px;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    padding-left: 10px;
+    border-left: 1px solid var(--ge-border);
+    color: var(--ge-text-muted);
+    font-size: 13px;
 
     > label {
-      margin-right: 5px;
+      margin-right: 8px;
+      margin-bottom: 0;
+      font-weight: 500;
       > span { vertical-align: middle; }
     }
 
     > select {
       height: $toolbarHeight;
+      padding: 0 10px;
+      background: var(--ge-surface);
+      border: 1px solid var(--ge-border-strong);
+      border-radius: var(--ge-radius-sm);
+      color: var(--ge-text);
+      cursor: pointer;
+      transition: border-color var(--ge-transition), box-shadow var(--ge-transition);
+
+      &:focus {
+        outline: none;
+        border-color: var(--ge-accent);
+        box-shadow: var(--ge-ring);
+      }
     }
   }
 
@@ -20,45 +81,43 @@ $toolbarHeight: 30px;
   }
 
   &__toggle:after {
-    background-position: 0 0;
+    background-position: center;
     background-repeat: no-repeat;
     content: '';
     display: block;
-    height: 12px;
-    margin: 3px 0;
-    width: 12px;
+    height: 14px;
+    margin: 2px 0;
+    width: 14px;
   }
 
   &__toggle-left:after {
-    background-image: url('../images/left-panel.svg');
+    background-image: url('../../images/left-panel.svg');
   }
 
   &__toggle-right:after {
-    background-image: url('../images/right-panel.svg');
-  }
-
-  &__toggle.active {
-    border-color: #c3c3c3;
+    background-image: url('../../images/right-panel.svg');
   }
 
   &__toggle-left.active:after {
-    background-image: url('../images/left-panel-active.svg');
+    background-image: url('../../images/left-panel-active.svg');
   }
 
   &__toggle-right.active:after {
-    background-image: url('../images/right-panel-active.svg');
+    background-image: url('../../images/right-panel-active.svg');
   }
 
   &__layout-group {
-    float: left;
+    display: inline-flex;
+    align-items: center;
     margin-left: 5px;
     height: $toolbarHeight;
 
     > label {
       margin-right: 5px;
+      margin-bottom: 0;
     }
 
-    .btn-group,button {
+    .btn-group, button {
       height: 100%;
     }
   }
@@ -68,4 +127,3 @@ $toolbarHeight: 30px;
 .graph-explorer-toolbar .graph-explorer-toolbar__redo {
   display: none;
 }
-

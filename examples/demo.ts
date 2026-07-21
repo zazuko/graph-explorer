@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import { createElement, ClassAttributes } from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import {
   Workspace,
@@ -15,10 +13,10 @@ import {
   saveLayoutToLocalStorage,
 } from "./common";
 
-const CLASSES = require("./resources/classes.json");
-const LINK_TYPES = require("./resources/linkTypes.json");
-const ELEMENTS = require("./resources/elements.json");
-const LINKS = require("./resources/links.json");
+import CLASSES from "./resources/classes.json";
+import LINK_TYPES from "./resources/linkTypes.json";
+import ELEMENTS from "./resources/elements.json";
+import LINKS from "./resources/links.json";
 
 function onWorkspaceMounted(workspace: Workspace) {
   if (!workspace) {
@@ -28,7 +26,12 @@ function onWorkspaceMounted(workspace: Workspace) {
   const diagram = tryLoadLayoutFromLocalStorage();
   workspace.getModel().importLayout({
     diagram,
-    dataProvider: new DemoDataProvider(CLASSES, LINK_TYPES, ELEMENTS, LINKS),
+    dataProvider: new DemoDataProvider(
+      CLASSES as never,
+      LINK_TYPES as never,
+      ELEMENTS as never,
+      LINKS as never
+    ),
     validateLinks: true,
   });
 }
@@ -46,5 +49,5 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
 };
 
 onPageLoad((container) => {
-  ReactDOM.render(createElement(Workspace, props), container);
+  createRoot(container).render(createElement(Workspace, props));
 });

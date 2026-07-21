@@ -1,31 +1,41 @@
 .graph-explorer-list-element-view {
   position: relative;
   display: block;
-  background: #808080;
-  padding: 1px 1px 1px 10px;
-  border-radius: 2px;
-  margin: 0 0 2px 0;
-  opacity: 1.0;
+  // background is the element's type colour (set inline); it shows through the
+  // left padding as a thin accent strip
+  background: var(--ge-text-subtle);
+  padding: 2px 2px 2px 6px;
+  border-radius: var(--ge-radius-sm);
+  margin: 0 0 4px 0;
+  opacity: 1;
   cursor: move;
   user-select: none;
+  box-shadow: var(--ge-shadow-xs);
+  transition: box-shadow var(--ge-transition), transform var(--ge-transition);
+
+  &:hover {
+    box-shadow: var(--ge-shadow-sm);
+  }
 
   &--disabled {
     opacity: 0.4;
     cursor: default;
+    box-shadow: none;
   }
 
   &__label {
-    background: white;
-    border-radius: 0 2px 2px 0;
-    font-family: "Andale Mono", sans-serif;
-    font-size: 15px;
-    min-height: 1.3em;
-    padding-left: 7px;
-    padding-right: 5px;
+    background: var(--ge-surface);
+    border-radius: 0 var(--ge-radius-sm) var(--ge-radius-sm) 0;
+    font-family: var(--ge-font-mono);
+    font-size: 13px;
+    color: var(--ge-text);
+    min-height: 1.4em;
+    padding: 3px 8px;
     overflow-wrap: break-word;
   }
 }
 
 .graph-explorer-text-highlight {
-  font-weight: bold;
+  font-weight: 700;
+  color: var(--ge-accent-hover);
 }

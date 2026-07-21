@@ -104,14 +104,18 @@ export class AccordionItem extends React.Component<Props, State> {
           collapsed ? "collapsed" : "expanded"
         } ${CLASS_NAME}--${direction}
                 ${resizing ? `${CLASS_NAME}--resizing` : ""}`}
-        ref={(element) => (this._element = element)}
+        ref={(element) => {
+          this._element = element;
+        }}
         style={style}
       >
         <div className={`${CLASS_NAME}__inner`}>
           {heading ? (
             <div
               className={`${CLASS_NAME}__header`}
-              ref={(header) => (this._header = header)}
+              ref={(header) => {
+                this._header = header;
+              }}
               onClick={() => this.props.onChangeCollapsed(!collapsed)}
             >
               {heading}

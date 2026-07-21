@@ -10,8 +10,18 @@
 .graph-explorer-list-group-item {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 14px;
   margin-bottom: -1px;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--ge-surface);
+  border: 1px solid var(--ge-border);
+
+  &:first-child {
+    border-top-left-radius: var(--ge-radius-sm);
+    border-top-right-radius: var(--ge-radius-sm);
+  }
+
+  &:last-child {
+    border-bottom-left-radius: var(--ge-radius-sm);
+    border-bottom-right-radius: var(--ge-radius-sm);
+  }
 }

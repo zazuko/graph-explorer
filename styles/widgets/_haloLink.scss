@@ -32,12 +32,12 @@
 
   &__edit {
     @include button;
-    background-image: url("../images/font-awesome/edit.svg");
+    background-image: url("../../images/font-awesome/edit.svg");
   }
 
   &__delete {
     @include button;
-    background-image: url("../images/font-awesome/trash-alt.svg");
+    background-image: url("../../images/font-awesome/trash-alt.svg");
   }
 
   &__spinner {
@@ -45,7 +45,7 @@
   }
 
   &__edit-label-button {
-    background: transparent url("../images/font-awesome/pen-square-solid.svg") no-repeat;
+    background: transparent url("../../images/font-awesome/pen-square-solid.svg") no-repeat;
     background-size: cover;
     border: 0 none;
     cursor: pointer;

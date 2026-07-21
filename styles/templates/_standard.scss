@@ -4,16 +4,18 @@
   float: left;
 
   &__main {
-    border-radius: 2px;
+    border-radius: var(--ge-radius);
     border: 1px solid;
+    overflow: hidden;
+    box-shadow: var(--ge-shadow-md);
   }
 
   &__body {
     margin-left: 8px;
-    border-radius: 0 2px 2px 0;
+    border-radius: 0 var(--ge-radius) var(--ge-radius) 0;
     border-left: 1px solid;
-    padding: 3px 0;
-    background: #fafaf9;
+    padding: 4px 0;
+    background: var(--ge-surface);
   }
 
   &__body-horizontal {
@@ -30,7 +32,9 @@
   }
 
   &__label {
-    font-size: 19px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -151,10 +155,11 @@
   }
 
   &__dropdown {
-    border-radius: 2px;
-    background-color: white;
-    margin-top: 5px;
+    border-radius: var(--ge-radius);
+    background-color: var(--ge-surface);
+    margin-top: 6px;
     border: 1px solid;
+    box-shadow: var(--ge-shadow-md);
   }
 
   &__dropdown-content {

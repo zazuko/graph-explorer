@@ -1,5 +1,5 @@
 import { createElement, ClassAttributes } from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import * as SparqlJS from "sparqljs";
 const SparqlGenerator = SparqlJS.Generator;
 import SparqlClient from "sparql-http-client";
@@ -85,7 +85,7 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
 };
 
 onPageLoad((container) => {
-  ReactDOM.render(createElement(Workspace, props), container);
+  createRoot(container).render(createElement(Workspace, props));
 });
 
 function generateSparqlUpdate(workspace: Workspace) {

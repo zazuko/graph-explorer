@@ -112,8 +112,9 @@ export class Accordion extends React.Component<Props, State> {
       if (typeof child !== "object") {
         return;
       }
-      const { defaultSize, defaultCollapsed, collapsedSize, minSize } =
-        child.props;
+      const { defaultSize, defaultCollapsed, collapsedSize, minSize } = (
+        child as React.ReactElement<ItemProps>
+      ).props;
       // enables the scrollbar in the accordion if at least one item has min size
       if (minSize !== undefined) {
         this.isScrollable = true;
@@ -192,7 +193,9 @@ export class Accordion extends React.Component<Props, State> {
     return (
       <div
         className={`${CLASS_NAME} ${CLASS_NAME}--${direction} ${resizingClassName} ${scrollableClassName}`}
-        ref={(element) => (this.element = element)}
+        ref={(element) => {
+          this.element = element;
+        }}
       >
         {this.renderItems()}
       </div>
@@ -212,8 +215,11 @@ export class Accordion extends React.Component<Props, State> {
       const lastChild = index === React.Children.count(children) - 1;
       const size = collapsed[index] ? sizes[index] : percents[index];
 
-      const additionalProps: Partial<ItemProps> & React.Props<AccordionItem> = {
-        ref: (element) => (this.items[index] = element),
+      const additionalProps: Partial<ItemProps> &
+        React.ClassAttributes<AccordionItem> = {
+        ref: (element) => {
+          this.items[index] = element;
+        },
         collapsed: collapsed[index],
         size,
         direction,
@@ -331,7 +337,7 @@ export class Accordion extends React.Component<Props, State> {
     } else {
       const { defaultSize, minSize } = this.defaultProps.get(itemIndex);
       const shift = (defaultSize || totalSize / sizes.length) - collapsedSize;
-      let freeSize = 0;
+      let freeSize: number;
       if (itemIndex === sizes.length - 1) {
         freeSize = distributor.collapseForward({
           shift,

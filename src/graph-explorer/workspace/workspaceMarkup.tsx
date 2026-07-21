@@ -19,9 +19,7 @@ import { AsyncModel } from "../editor/asyncModel";
 import { EditorController } from "../editor/editorController";
 
 import {
-  WorkspaceContextWrapper,
   WorkspaceContext,
-  WorkspaceContextTypes,
   WorkspaceEventHandler,
   WorkspaceEventKey,
 } from "./workspaceContext";
@@ -57,22 +55,11 @@ export interface WorkspaceMarkupProps {
 }
 
 export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
-  static childContextTypes = WorkspaceContextTypes;
-
   element: HTMLElement;
   paperArea: PaperArea;
 
   private untilMouseUpClasses: string[] = [];
   private readonly cancellation = new Cancellation();
-
-  getChildContext(): WorkspaceContextWrapper {
-    const { editor } = this.props;
-    const workspace: WorkspaceContext = {
-      editor,
-      triggerWorkspaceEvent: this.triggerWorkspaceEvent,
-    };
-    return { workspace };
-  }
 
   private triggerWorkspaceEvent = (key: WorkspaceEventKey) => {
     const { onWorkspaceEvent } = this.props;
@@ -204,7 +191,9 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
           style={{ flex: "1 1 0px", width: "100%" }}
         >
           <PaperArea
-            ref={(el) => (this.paperArea = el)}
+            ref={(el) => {
+              this.paperArea = el;
+            }}
             view={this.props.view}
             zoomOptions={this.props.zoomOptions}
             hideScrollBars={this.props.hideScrollBars}
@@ -227,20 +216,34 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
           ],
         };
     return (
-      <div ref={(e) => (this.element = e)} className="graph-explorer">
-        <div className="graph-explorer__workspace">
-          <WorkspaceLayout
-            layout={workspaceLayout}
-            _onStartResize={(direction) =>
-              this.untilMouseUp({
-                preventTextSelection: true,
-                verticalResizing: direction === "vertical",
-                horizontalResizing: direction === "horizontal",
-              })
-            }
-          />
+      <WorkspaceContext.Provider
+        value={{
+          workspace: {
+            editor: this.props.editor,
+            triggerWorkspaceEvent: this.triggerWorkspaceEvent,
+          },
+        }}
+      >
+        <div
+          ref={(e) => {
+            this.element = e;
+          }}
+          className="graph-explorer"
+        >
+          <div className="graph-explorer__workspace">
+            <WorkspaceLayout
+              layout={workspaceLayout}
+              _onStartResize={(direction) =>
+                this.untilMouseUp({
+                  preventTextSelection: true,
+                  verticalResizing: direction === "vertical",
+                  horizontalResizing: direction === "horizontal",
+                })
+              }
+            />
+          </div>
         </div>
-      </div>
+      </WorkspaceContext.Provider>
     );
   }
 
@@ -301,7 +304,7 @@ export class WorkspaceMarkup extends React.Component<WorkspaceMarkupProps, {}> {
   };
 }
 
-class ToolbarWidget extends React.Component<{ children: JSX.Element }> {
+class ToolbarWidget extends React.Component<{ children: React.JSX.Element }> {
   render() {
     return (
       <div className="graph-explorer__toolbar-widget">

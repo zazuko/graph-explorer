@@ -1,11 +1,13 @@
-@use "sass:color";
 .graph-explorer-btn {
-  display: inline-block;
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 13px;
   margin-bottom: 0;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.42857143;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
@@ -14,80 +16,93 @@
   user-select: none;
   background-image: none;
   border: 1px solid transparent;
+  border-radius: var(--ge-radius-sm);
   text-transform: none;
-  transition: background-color 0.3s;
+  transition: background-color var(--ge-transition),
+    border-color var(--ge-transition), box-shadow var(--ge-transition),
+    color var(--ge-transition);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--ge-ring);
+  }
 
   &[disabled] {
     cursor: not-allowed;
-    opacity: .65;
+    opacity: .55;
+    box-shadow: none;
   }
 }
 
-
 .graph-explorer-btn-default {
-  background-color: #fff;
-  border-color: #ccc;
-  color: #333;
+  background-color: var(--ge-surface);
+  border-color: var(--ge-border-strong);
+  color: var(--ge-text-muted);
+  box-shadow: var(--ge-shadow-xs);
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: var(--ge-surface-3);
+    border-color: var(--ge-border-strong);
+    color: var(--ge-text);
   }
 
   &.active {
-    background-color: #e0e0e0;
-    border-color: #dbdbdb;
+    background-color: var(--ge-accent-soft);
+    border-color: var(--ge-accent-soft-border);
+    color: var(--ge-accent-hover);
   }
 
   &.active:hover {
-    background-color: #d4d4d4;
-    border-color: #8c8c8c;
+    background-color: var(--ge-accent-soft);
+    border-color: var(--ge-accent);
   }
 
   &[disabled], &[disabled]:hover, &[disabled].active, &[disabled].active:hover {
-    background-color: #e0e0e0;
+    background-color: var(--ge-surface-3);
+    color: var(--ge-text-subtle);
   }
 }
 
 .graph-explorer-btn-primary {
-  color: rgb(255, 255, 255);
-  background-color: rgb(51, 122, 183);
-  border-color: #245580;
+  color: var(--ge-accent-fg);
+  background-color: var(--ge-accent);
+  border-color: var(--ge-accent);
+  box-shadow: var(--ge-shadow-xs);
 
   &:hover, &:focus, &:active {
-    background-color: #265a88;
-  }
-
-  &:hover, &:focus {
-    border-color: #204d74;
+    background-color: var(--ge-accent-hover);
+    border-color: var(--ge-accent-hover);
   }
 
   &.active {
-    border-color: #245580;
+    border-color: var(--ge-accent-hover);
   }
 
   &[disabled], &[disabled]:hover, &[disabled]:focus, &[disabled]:active, &[disabled].active {
-    background-color: #265a88;
+    background-color: var(--ge-accent);
   }
 }
 
 .graph-explorer-btn-success {
-  background-color: #5cb85c;
-  border-color: #5cb85c;
+  background-color: var(--ge-success);
+  border-color: var(--ge-success);
   color: #fff;
-  transition: 0.3s;
+  box-shadow: var(--ge-shadow-xs);
 
   &:hover {
-    background: color.adjust(#5cb85c, $lightness: -8%);
+    background-color: var(--ge-success-hover);
+    border-color: var(--ge-success-hover);
   }
 }
 
 .graph-explorer-btn-danger {
-  background-color: #c9302c;
-  border-color: #c9302c;
+  background-color: var(--ge-danger);
+  border-color: var(--ge-danger);
   color: #fff;
-  transition: 0.3s;
+  box-shadow: var(--ge-shadow-xs);
 
   &:hover {
-    background: color.adjust(#c9302c, $lightness: -8%);
+    background-color: var(--ge-danger-hover);
+    border-color: var(--ge-danger-hover);
   }
 }

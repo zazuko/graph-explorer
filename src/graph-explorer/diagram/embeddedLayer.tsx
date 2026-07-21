@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import { Paper, PaperTransform } from "./paper";
-import { PaperAreaContextTypes, PaperAreaContextWrapper } from "./paperArea";
+import { PaperAreaContext, PaperAreaContextWrapper } from "./paperArea";
 import { Element, Cell } from "./elements";
-import { ElementContextWrapper, ElementContextTypes } from "./elementLayer";
+import { ElementContext, ElementContextWrapper } from "./elementLayer";
 import { EventObserver } from "../viewUtils/events";
 
 import { Vector, Rect } from "./geometry";
@@ -16,11 +16,11 @@ export interface State {
   offsetY?: number;
 }
 
-export class EmbeddedLayer extends React.Component<{}, State> {
-  static contextTypes = { ...ElementContextTypes, ...PaperAreaContextTypes };
-
+interface EmbeddedLayerProps {
   context: ElementContextWrapper & PaperAreaContextWrapper;
+}
 
+class EmbeddedLayerInner extends React.Component<EmbeddedLayerProps, State> {
   private readonly listener = new EventObserver();
   private nestedElementListener = new EventObserver();
 
@@ -31,14 +31,14 @@ export class EmbeddedLayer extends React.Component<{}, State> {
   private isNestedElementMoving = false;
   private previousPositions: { id: string; position: Vector }[] = [];
 
-  constructor(props: {}) {
+  constructor(props: EmbeddedLayerProps) {
     super(props);
     this.state = { paperWidth: 0, paperHeight: 0, offsetX: 0, offsetY: 0 };
   }
 
   componentDidMount() {
-    const { element } = this.context.graphExplorerElement;
-    const { paperArea, view } = this.context.paperArea;
+    const { element } = this.props.context.graphExplorerElement;
+    const { paperArea, view } = this.props.context.paperArea;
 
     this.listener.listen(
       view.model.events,
@@ -115,8 +115,8 @@ export class EmbeddedLayer extends React.Component<{}, State> {
   }
 
   private getNestedElements() {
-    const { element } = this.context.graphExplorerElement;
-    const { view } = this.context.paperArea;
+    const { element } = this.props.context.graphExplorerElement;
+    const { view } = this.props.context.paperArea;
     return view.model.elements.filter((el) => el.group === element.id);
   }
 
@@ -126,7 +126,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
   }
 
   private removeElements() {
-    const { view } = this.context.paperArea;
+    const { view } = this.props.context.paperArea;
     const batch = view.model.history.startBatch();
     for (const element of this.getNestedElements()) {
       view.model.removeElement(element.id);
@@ -135,7 +135,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
   }
 
   private getOffset(): { offsetX: number; offsetY: number } {
-    const { element } = this.context.graphExplorerElement;
+    const { element } = this.props.context.graphExplorerElement;
     const { x: elementX, y: elementY } = element.position;
 
     const offsetX = elementX + this.layerOffsetLeft;
@@ -163,7 +163,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
       return;
     }
 
-    const { element } = this.context.graphExplorerElement;
+    const { element } = this.props.context.graphExplorerElement;
     const {
       x: offsetX,
       y: offsetY,
@@ -199,7 +199,7 @@ export class EmbeddedLayer extends React.Component<{}, State> {
   };
 
   private calculateOffset(layer: HTMLElement): { left: number; top: number } {
-    const { paperArea } = this.context.paperArea;
+    const { paperArea } = this.props.context.paperArea;
     const scale = paperArea.getScale();
     const parent = findParentElement(layer);
     const { left, top } = layer.getBoundingClientRect();
@@ -223,8 +223,8 @@ export class EmbeddedLayer extends React.Component<{}, State> {
   };
 
   render() {
-    const { element } = this.context.graphExplorerElement;
-    const { view } = this.context.paperArea;
+    const { element } = this.props.context.graphExplorerElement;
+    const { view } = this.props.context.paperArea;
     const { paperWidth, paperHeight, offsetX, offsetY } = this.state;
 
     const paperTransform: PaperTransform = {
@@ -248,6 +248,16 @@ export class EmbeddedLayer extends React.Component<{}, State> {
       </div>
     );
   }
+}
+
+export function EmbeddedLayer() {
+  const elementContext = React.useContext(ElementContext);
+  const paperAreaContext = React.useContext(PaperAreaContext);
+  return (
+    <EmbeddedLayerInner
+      context={{ ...elementContext, ...paperAreaContext }}
+    />
+  );
 }
 
 function findParentElement(layer: HTMLElement): HTMLElement {

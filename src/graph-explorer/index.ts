@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-require("../../styles/main.scss");
+import "../../styles/main.scss";
 
 export * from "./customization/props";
 export * from "./customization/templates";
@@ -10,7 +9,7 @@ export * from "./data/validationApi";
 export * from "./data/provider";
 export { PLACEHOLDER_ELEMENT_TYPE, PLACEHOLDER_LINK_TYPE } from "./data/schema";
 export * from "./data/demo/provider";
-export {
+export type {
   RdfNode,
   RdfIri,
   RdfLiteral,
@@ -31,66 +30,73 @@ export {
 } from "./diagram/commands";
 export {
   Element,
+  Link,
+  LinkVertex,
+  LinkDirection,
+} from "./diagram/elements";
+export type {
   ElementEvents,
   ElementTemplateState,
-  Link,
   LinkEvents,
   LinkTemplateState,
-  LinkVertex,
   Cell,
-  LinkDirection,
 } from "./diagram/elements";
 export { EmbeddedLayer } from "./diagram/embeddedLayer";
 export * from "./diagram/geometry";
 export * from "./diagram/history";
-export { DiagramModel, DiagramModelEvents } from "./diagram/model";
+export { DiagramModel } from "./diagram/model";
+export type { DiagramModelEvents } from "./diagram/model";
 export * from "./diagram/view";
-export {
+export { getContentFittingBox } from "./diagram/paperArea";
+export type {
   PointerEvent,
   PointerUpEvent,
-  getContentFittingBox,
   ViewportOptions,
   ScaleOptions,
 } from "./diagram/paperArea";
 
 export * from "./editor/asyncModel";
-export {
-  AuthoredEntity,
+export { AuthoredEntity } from "./editor/authoredEntity";
+export type {
   AuthoredEntityProps,
   AuthoredEntityContext,
 } from "./editor/authoredEntity";
 export * from "./editor/authoringState";
-export {
+export { EditorController } from "./editor/editorController";
+export type {
   EditorOptions,
   EditorEvents,
-  EditorController,
   PropertyEditor,
   PropertyEditorOptions,
 } from "./editor/editorController";
-export {
-  ValidationState,
+export { ValidationState } from "./editor/validation";
+export type {
   ElementValidation,
   LinkValidation,
 } from "./editor/validation";
 
 export {
+  convertToSerializedDiagram,
+  makeSerializedDiagram,
+  makeLayoutData,
+} from "./editor/serializedDiagram";
+export type {
   LayoutData,
   LayoutElement,
   LayoutLink,
   SerializedDiagram,
-  convertToSerializedDiagram,
-  makeSerializedDiagram,
   LinkTypeOptions,
-  makeLayoutData,
 } from "./editor/serializedDiagram";
 export {
   calculateLayout,
   removeOverlaps,
+  applyLayout,
+  forceLayout,
+} from "./viewUtils/layout";
+export type {
   CalculatedLayout,
   UnzippedCalculatedLayout,
   LayoutNode,
-  applyLayout,
-  forceLayout,
 } from "./viewUtils/layout";
 
 export {
@@ -100,23 +106,21 @@ export {
 } from "./viewUtils/async";
 export * from "./viewUtils/events";
 
-export {
+export type {
   PropertySuggestionParams,
   PropertyScore,
 } from "./widgets/connectionsMenu";
 
-export { DefaultToolbar, ToolbarProps } from "./workspace/toolbar";
-export {
-  Workspace,
+export { DefaultToolbar } from "./workspace/toolbar";
+export type { ToolbarProps } from "./workspace/toolbar";
+export { Workspace, renderTo } from "./workspace/workspace";
+export type {
   WorkspaceProps,
   WorkspaceState,
   WorkspaceLanguage,
-  renderTo,
 } from "./workspace/workspace";
-export {
-  WorkspaceEventHandler,
-  WorkspaceEventKey,
-} from "./workspace/workspaceContext";
+export { WorkspaceEventKey } from "./workspace/workspaceContext";
+export type { WorkspaceEventHandler } from "./workspace/workspaceContext";
 export { DraggableHandle } from "./workspace/draggableHandle";
 export * from "./workspace/layout/layout";
 

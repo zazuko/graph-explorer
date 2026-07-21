@@ -27,7 +27,7 @@
   }
 
   &--vertical {
-    border-top: 1px solid lightgray;
+    border-top: 1px solid var(--ge-border);
 
     &:first-child {
       border-top-width: 0;
@@ -35,7 +35,7 @@
   }
 
   &--horizontal {
-    border-right: 1px solid lightgray;
+    border-right: 1px solid var(--ge-border);
 
     &:last-child {
       border-right-width: 0;
@@ -64,9 +64,9 @@
   }
 
   &__handle-btn {
-    background: #fff;
-    border: 2px solid #17b;
-    box-shadow: 0 0 0 1px rgba(9, 30, 66, 0.08), 0 2px 4px 1px rgba(9, 30, 66, 0.08);
+    background: var(--ge-surface);
+    border: 2px solid var(--ge-accent);
+    box-shadow: var(--ge-shadow-sm);
     border-radius: 10px;
     cursor: pointer;
     height: 20px;
@@ -93,22 +93,22 @@
     }
 
     &:hover {
-      background: #17b;
+      background: var(--ge-accent);
     }
   }
 
   &__handle-btn-left {
     left: 100%;
     margin-left: -10px;
-    &:before { background-image: url("../images/arrow-left.png"); }
-    &:hover:before { background-image: url("../images/arrow-left1.png"); }
+    &:before { background-image: url("../../images/arrow-left.png"); }
+    &:hover:before { background-image: url("../../images/arrow-left1.png"); }
   }
 
   &__handle-btn-right {
     right: 100%;
     margin-right: -10px;
-    &:before { background-image: url("../images/arrow-right.png"); }
-    &:hover:before { background-image: url("../images/arrow-right1.png"); }
+    &:before { background-image: url("../../images/arrow-right.png"); }
+    &:hover:before { background-image: url("../../images/arrow-right1.png"); }
   }
 
   &--collapsed &__handle-btn:before {
@@ -126,16 +126,23 @@
     flex: 1 1 0px; // IE 11 requires a unit to be added to the third argument
     display: flex;
     flex-direction: column;
+    background: var(--ge-surface);
   }
 
   &__header {
-    padding-left: 20px;
+    padding: 11px 12px 11px 24px;
     position: relative;
 
     flex-shrink: 0;
-    font-size: 16px;
-    background: #E4E4E4;
-    cursor: default;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ge-text-muted);
+    background: var(--ge-surface-2);
+    border-bottom: 1px solid var(--ge-border);
+    cursor: pointer;
+    transition: background var(--ge-transition), color var(--ge-transition);
     /* unselectable */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -143,19 +150,22 @@
     -ms-user-select: none;
     user-select: none;
 
+    &:hover {
+      background: var(--ge-surface-3);
+      color: var(--ge-text);
+    }
+
     &:before {
-      border-top: 6px solid #555555;
-      border-left: 3.5px solid transparent;
-      border-right: 3.5px solid transparent;
+      border-top: 5px solid var(--ge-text-subtle);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
       content: "";
       position: absolute;
       top: 50%;
-      left: 7px;
-      margin-top: -3px;
+      left: 9px;
+      margin-top: -2px;
 
-      -webkit-transition: 0.1s;
-      -moz-transition: 0.1s;
-      transition: 0.1s;
+      transition: transform 0.15s ease;
     }
   }
 

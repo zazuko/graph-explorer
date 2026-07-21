@@ -1,6 +1,6 @@
 import { Component, createElement, ReactElement, cloneElement } from "react";
-import * as ReactDOM from "react-dom";
-import * as saveAs from "file-saverjs";
+import { createRoot } from "react-dom/client";
+import saveAs from "file-saverjs";
 
 import {
   LinkRouter,
@@ -558,5 +558,5 @@ export function renderTo<WorkspaceComponentProps>(
   container: HTMLElement,
   props: WorkspaceComponentProps
 ) {
-  ReactDOM.render(createElement(workspace, props), container);
+  createRoot(container).render(createElement(workspace, props));
 }

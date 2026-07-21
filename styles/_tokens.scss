@@ -1,0 +1,59 @@
+// Design tokens for Graph Explorer.
+// Scoped to `.graph-explorer` so they never leak into a host page; every widget
+// (panels, dialogs, halo, navigator, graph nodes) is a descendant and inherits
+// these custom properties through the cascade.
+.graph-explorer {
+  // Typography
+  --ge-font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ge-font-mono: "SFMono-Regular", "JetBrains Mono", "Fira Code", ui-monospace,
+    Menlo, Consolas, monospace;
+
+  // Neutral surfaces & text (slate scale)
+  --ge-bg: #f1f5f9;
+  --ge-surface: #ffffff;
+  --ge-surface-2: #f8fafc;
+  --ge-surface-3: #f1f5f9;
+  --ge-border: #e5e9f0;
+  --ge-border-strong: #cbd5e1;
+  --ge-text: #0f172a;
+  --ge-text-muted: #475569;
+  --ge-text-subtle: #94a3b8;
+
+  // Accent (indigo) & semantic colors
+  --ge-accent: #4f46e5;
+  --ge-accent-hover: #4338ca;
+  --ge-accent-fg: #ffffff;
+  --ge-accent-soft: #eef2ff;
+  --ge-accent-soft-border: #c7d2fe;
+  --ge-success: #16a34a;
+  --ge-success-hover: #15803d;
+  --ge-danger: #dc2626;
+  --ge-danger-hover: #b91c1c;
+  --ge-warning: #f59e0b;
+
+  // Canvas
+  --ge-canvas: #fbfcfe;
+  --ge-canvas-dot: #dbe2ee;
+
+  // Radii
+  --ge-radius-sm: 6px;
+  --ge-radius: 8px;
+  --ge-radius-lg: 12px;
+  --ge-radius-pill: 999px;
+
+  // Shadows (soft, layered)
+  --ge-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --ge-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08),
+    0 1px 2px rgba(15, 23, 42, 0.06);
+  --ge-shadow-md: 0 6px 16px rgba(15, 23, 42, 0.1),
+    0 2px 6px rgba(15, 23, 42, 0.06);
+  --ge-shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.16),
+    0 6px 12px rgba(15, 23, 42, 0.08);
+
+  // Focus ring
+  --ge-ring: 0 0 0 3px rgba(79, 70, 229, 0.28);
+
+  // Motion
+  --ge-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}

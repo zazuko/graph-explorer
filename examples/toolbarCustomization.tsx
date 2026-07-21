@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import {
   Workspace,
@@ -15,10 +13,10 @@ import {
   saveLayoutToLocalStorage,
 } from "./common";
 
-const CLASSES = require("./resources/classes.json");
-const LINK_TYPES = require("./resources/linkTypes.json");
-const ELEMENTS = require("./resources/elements.json");
-const LINKS = require("./resources/links.json");
+import CLASSES from "./resources/classes.json";
+import LINK_TYPES from "./resources/linkTypes.json";
+import ELEMENTS from "./resources/elements.json";
+import LINKS from "./resources/links.json";
 
 export interface Props extends ToolbarProps {
   onExampleClick?: () => void;
@@ -71,7 +69,12 @@ function onWorkspaceMounted(workspace: Workspace) {
 
   const diagram = tryLoadLayoutFromLocalStorage();
   model.importLayout({
-    dataProvider: new DemoDataProvider(CLASSES, LINK_TYPES, ELEMENTS, LINKS),
+    dataProvider: new DemoDataProvider(
+      CLASSES as never,
+      LINK_TYPES as never,
+      ELEMENTS as never,
+      LINKS as never
+    ),
     diagram,
     validateLinks: true,
   });
@@ -94,5 +97,5 @@ const props: WorkspaceProps & React.ClassAttributes<Workspace> = {
 };
 
 onPageLoad((container) => {
-  ReactDOM.render(React.createElement(Workspace, props), container);
+  createRoot(container).render(React.createElement(Workspace, props));
 });

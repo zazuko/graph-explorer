@@ -13,11 +13,8 @@ export * from "./viewUtils/spinner";
 export * from "./widgets/listElementView";
 export * from "./widgets/searchResults";
 
-export {
-  WorkspaceContext,
-  WorkspaceContextWrapper,
-  WorkspaceContextTypes,
-} from "./workspace/workspaceContext";
+export { WorkspaceContext } from "./workspace/workspaceContext";
+export type { WorkspaceContextWrapper } from "./workspace/workspaceContext";
 
 export {
   groupForceLayout,

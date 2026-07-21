@@ -4,7 +4,8 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "skipLibCheck": true,
-    "outDir": "./dist/temp/dts"
+    "outDir": "./dist/temp/dts",
+    "rootDir": "./src/graph-explorer"
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx", "./typings/typings.d.ts"]
 }

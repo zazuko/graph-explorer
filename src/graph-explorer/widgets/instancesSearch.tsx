@@ -16,15 +16,12 @@ import { ProgressBar, ProgressState } from "./progressBar";
 import { SearchResults } from "./searchResults";
 
 import {
-  WorkspaceContextTypes,
-  WorkspaceContextWrapper,
+  WorkspaceContext,
   WorkspaceEventKey,
 } from "../workspace/workspaceContext";
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const DirectionInImage = require("../../../images/direction-in.png");
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const DirectionOutImage = require("../../../images/direction-out.png");
+import DirectionInImage from "../../../images/direction-in.png";
+import DirectionOutImage from "../../../images/direction-out.png";
 
 export interface InstancesSearchProps {
   className?: string;
@@ -58,15 +55,15 @@ export class InstancesSearch extends React.Component<
   InstancesSearchProps,
   State
 > {
-  static contextTypes = WorkspaceContextTypes;
-  readonly context: WorkspaceContextWrapper;
+  static contextType = WorkspaceContext;
+  declare readonly context: React.ContextType<typeof WorkspaceContext>;
 
   private readonly listener = new EventObserver();
 
   private currentRequest: FilterParams;
 
-  constructor(props: InstancesSearchProps, context: any) {
-    super(props, context);
+  constructor(props: InstancesSearchProps) {
+    super(props);
     this.state = {
       resultId: 0,
       selection: new Set<ElementIri>(),

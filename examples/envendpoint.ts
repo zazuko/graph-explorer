@@ -1,5 +1,5 @@
 import { createElement, ClassAttributes } from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import {
   Workspace,
@@ -26,7 +26,7 @@ function onWorkspaceMounted(workspace: Workspace) {
     validateLinks: true,
     dataProvider: new SparqlDataProvider(
       {
-        // this goes to process.env.SPARQL_ENDPOINT via devServer proxy rule in webpack.demo.config.js
+        // this goes to process.env.SPARQL_ENDPOINT via the dev-server proxy rule in vite.demo.config.mts
         endpointUrl: "../sparql",
 
         imagePropertyUris: [
@@ -63,5 +63,5 @@ const props: WorkspaceProps & ClassAttributes<Workspace> = {
 };
 
 onPageLoad((container) => {
-  ReactDOM.render(createElement(Workspace, props), container);
+  createRoot(container).render(createElement(Workspace, props));
 });

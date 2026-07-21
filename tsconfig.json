@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2020",
     "module": "commonjs",
     "jsx": "react",
-    "lib": ["dom", "es2015"],
+    "lib": ["dom", "ES2020"],
     "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
     "strict": true,
     "strictNullChecks": false
   },

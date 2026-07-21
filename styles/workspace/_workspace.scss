@@ -5,10 +5,14 @@
   // defaults for inheritable properties
   box-sizing: border-box;
   white-space: initial;
-  color: #333;
-  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  color: var(--ge-text);
+  background: var(--ge-bg);
+  font-family: var(--ge-font-sans);
   font-size: 14px;
-  line-height: 1.42857;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 
   *, *:before, *:after {
     box-sizing: inherit;
@@ -47,8 +51,9 @@
 
   h4 {
     font-size: 18px;
-    font-weight: 500;
-    line-height: 1.1;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
     margin-top: 10px;
     margin-bottom: 10px;
   }
@@ -63,8 +68,28 @@
 
   hr {
     border: 0;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--ge-border);
     height: 0;
+  }
+
+  // modern, thin scrollbars for panels
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--ge-border-strong);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: var(--ge-radius-pill);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ge-text-subtle);
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
