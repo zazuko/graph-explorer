@@ -155,6 +155,8 @@ const CLASS_NAME = "graph-explorer-paper-area";
 const DEFAULT_ANIMATION_DURATION = 500;
 const LEFT_MOUSE_BUTTON = 0;
 const MIDDLE_MOUSE_BUTTON = 1;
+/** Spacing of the background dot grid, in paper (unscaled) coordinates. */
+const GRID_STEP = 24;
 
 export class PaperArea extends React.Component<PaperAreaProps, State> {
   private readonly listener = new EventObserver();
@@ -246,6 +248,19 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
       componentClass += ` ${CLASS_NAME}--animated`;
     }
 
+    // Anchor the background dot grid to the diagram's coordinate space so it
+    // scales with the zoom level and stays aligned with the content while
+    // panning. Paper origin (0,0) sits at (padding + origin * scale) within the
+    // scrollable content, which is what `background-attachment: local` uses as
+    // its positioning origin.
+    const gridStep = GRID_STEP * scale;
+    const gridStyle: React.CSSProperties = {
+      backgroundSize: `${gridStep}px ${gridStep}px`,
+      backgroundPosition:
+        `${paddingX + originX * scale}px ` +
+        `${paddingY + originY * scale}px`,
+    };
+
     return (
       <PaperAreaContext.Provider
         value={{ paperArea: { paperArea: this, view } }}
@@ -254,6 +269,7 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
           <div
             className={areaClass}
             ref={this.onAreaMount}
+            style={gridStyle}
             onMouseDown={this.onAreaPointerDown}
           >
             <Paper

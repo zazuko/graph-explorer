@@ -18,7 +18,14 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
-      - name: Build the app
-        run: npm run build-all
       - name: Run the linter
         run: npm run lint
+      # build first so the unit tests can also assert on the built artifacts
+      - name: Build the app
+        run: npm run build-all
+      - name: Run unit tests
+        run: npm test
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run end-to-end tests
+        run: npm run test:e2e

@@ -28,7 +28,10 @@
     "build-all": "vite build && BUNDLE_PEERS=true vite build && npm run typings",
     "build-examples": "vite build --config vite.demo.config.mts",
     "typings": "npm run _typings-tsc && npm run _typings-dts-bundle",
-    "lint": "eslint './{src,examples}/**/*.{ts,tsx}'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "eslint './{src,examples,tests}/**/*.{ts,tsx}'",
     "_typings-tsc": "./node_modules/.bin/tsc --project tsconfig.typings.json",
     "_typings-dts-bundle": "./node_modules/.bin/dts-bundle --configJson dts-bundle.json"
   },
@@ -52,6 +55,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.61.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/d3-color": "^3.1.3",
     "@types/lodash": "^4.14.191",
@@ -72,7 +76,8 @@
     "typescript-eslint": "^8.63.0",
     "vite": "^8.1.4",
     "vite-plugin-css-injected-by-js": "^5.0.1",
-    "vite-plugin-node-polyfills": "^0.28.0"
+    "vite-plugin-node-polyfills": "^0.28.0",
+    "vitest": "^4.1.10"
   },
   "main": "dist/graph-explorer.js",
   "module": "dist/graph-explorer.mjs",

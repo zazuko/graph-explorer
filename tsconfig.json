@@ -16,6 +16,7 @@
     "./examples/**/*.tsx",
     "./src/**/*.ts",
     "./src/**/*.tsx",
+    "./tests/**/*.ts",
     "./typings/typings.d.ts"
   ]
 }
