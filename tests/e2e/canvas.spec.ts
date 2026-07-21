@@ -4,8 +4,8 @@ import {
   collectPageProblems,
   createElementOnCanvas,
   dragWithButton,
+  elementPlacement,
   openLocalDemo,
-  paperScroll,
   waitForCanvasSettled,
 } from "./helpers";
 
@@ -61,18 +61,21 @@ test.describe("canvas panning", () => {
   test("pans with the middle mouse button on empty canvas", async ({
     page,
   }) => {
-    // the paper is larger than the viewport from the start, so no diagram
-    // content is needed to exercise panning
     await openLocalDemo(page);
-
+    // an element acts as a visual reference for how far the canvas moved
+    await createElementOnCanvas(page, { x: 300, y: 150 });
     await waitForCanvasSettled(page);
-    const before = await paperScroll(page);
-    await dragWithButton(page, "middle", { x: 800, y: 500 }, { x: -120, y: -80 });
-    const after = await paperScroll(page);
 
-    // dragging up/left scrolls the viewport down/right by the same amount
-    expect(after.left - before.left).toBeCloseTo(120, 0);
-    expect(after.top - before.top).toBeCloseTo(80, 0);
+    const before = await elementPlacement(page);
+    // drag from a point well clear of the element and the navigator widget
+    await dragWithButton(page, "middle", { x: 800, y: 480 }, { x: -120, y: -80 });
+    const after = await elementPlacement(page);
+
+    // the diagram followed the pointer...
+    expect(after.left - before.left).toBeCloseTo(-120, 0);
+    expect(after.top - before.top).toBeCloseTo(-80, 0);
+    // ...without anything being repositioned inside the diagram
+    expect(after.transform).toBe(before.transform);
   });
 
   test("middle-drag starting on an element pans instead of moving it", async ({
@@ -81,28 +84,26 @@ test.describe("canvas panning", () => {
     await openLocalDemo(page);
     await createElementOnCanvas(page, { x: 500, y: 300 });
 
-    const element = page.locator(".graph-explorer-overlayed-element").first();
     await waitForCanvasSettled(page);
-    const boxBefore = await element.boundingBox();
-    const before = await paperScroll(page);
+    const before = await elementPlacement(page);
 
     await dragWithButton(
       page,
       "middle",
-      { x: boxBefore.x + boxBefore.width / 2, y: boxBefore.y + boxBefore.height / 2 },
+      {
+        x: before.left + before.width / 2,
+        y: before.top + before.height / 2,
+      },
       { x: -100, y: -60 }
     );
 
-    const after = await paperScroll(page);
-    const boxAfter = await element.boundingBox();
+    const after = await elementPlacement(page);
 
-    // the viewport panned...
-    expect(after.left - before.left).toBeCloseTo(100, 0);
-    expect(after.top - before.top).toBeCloseTo(60, 0);
-    // ...and the element moved *with* the canvas rather than being dragged,
-    // i.e. its screen position shifted by exactly the pan amount
-    expect(boxAfter.x - boxBefore.x).toBeCloseTo(-100, 0);
-    expect(boxAfter.y - boxBefore.y).toBeCloseTo(-60, 0);
+    // the element moved *with* the canvas, by exactly the pan amount...
+    expect(after.left - before.left).toBeCloseTo(-100, 0);
+    expect(after.top - before.top).toBeCloseTo(-60, 0);
+    // ...and was not dragged: its position within the diagram is unchanged
+    expect(after.transform).toBe(before.transform);
   });
 
   test("the dot grid pans together with the diagram", async ({ page }) => {
@@ -149,13 +150,15 @@ test.describe("canvas panning", () => {
 
   test("left-drag on empty canvas still pans", async ({ page }) => {
     await openLocalDemo(page);
-
+    await createElementOnCanvas(page, { x: 300, y: 150 });
     await waitForCanvasSettled(page);
-    const before = await paperScroll(page);
-    await dragWithButton(page, "left", { x: 800, y: 500 }, { x: -90, y: -60 });
-    const after = await paperScroll(page);
 
-    expect(after.left - before.left).toBeCloseTo(90, 0);
-    expect(after.top - before.top).toBeCloseTo(60, 0);
+    const before = await elementPlacement(page);
+    await dragWithButton(page, "left", { x: 800, y: 480 }, { x: -90, y: -60 });
+    const after = await elementPlacement(page);
+
+    expect(after.left - before.left).toBeCloseTo(-90, 0);
+    expect(after.top - before.top).toBeCloseTo(-60, 0);
+    expect(after.transform).toBe(before.transform);
   });
 });
