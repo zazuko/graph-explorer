@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.1
+
+### Patch Changes
+
+- 6f9830a: Fix locale switcher
+- c0c2224: Improve design of exported content
+
 ## 2.0.0
 
 ### Major Changes
