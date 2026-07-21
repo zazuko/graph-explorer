@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run the linter
+        run: npm run lint
+      # build first so the unit tests can also assert on the built artifacts
+      - name: Build the app
+        run: npm run build-all
+      - name: Run unit tests
+        run: npm test
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run end-to-end tests
+        run: npm run test:e2e

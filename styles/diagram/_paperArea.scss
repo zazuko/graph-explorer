@@ -5,16 +5,19 @@
   position: relative;
   cursor: default;
   background-color: var(--ge-canvas);
-  background-image: radial-gradient(
-    var(--ge-canvas-dot) 1px,
-    transparent 1px
-  );
-  background-size: 24px 24px;
-  background-position: -1px -1px;
 
   &__area {
     flex: auto;
     overflow: hidden;
+    // The dot grid lives on the scrolling element with `local` attachment so it
+    // pans together with the diagram instead of staying pinned to the viewport.
+    // `background-size` / `background-position` are set by PaperArea so the grid
+    // also scales with the zoom level and stays anchored to the paper origin.
+    background-image: radial-gradient(
+      var(--ge-canvas-dot) 1px,
+      transparent 1px
+    );
+    background-attachment: local;
   }
 
   &__widgets {
