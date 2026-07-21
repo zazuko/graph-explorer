@@ -104,9 +104,14 @@ function exportSVG(options: ToSVGOptions): Promise<SVGElement> {
   return convertingImages.then(() => {
     // workaround to include only graph-explorer-related stylesheets
     const exportedCssText = extractCSSFromDocument(svgClone);
+    // design tokens have to be re-declared on the detached export root,
+    // otherwise the `var(--…)` references in the rules above resolve to nothing
+    const exportedVariables = extractCSSVariables(
+      options.paper.closest(".graph-explorer")
+    );
 
     const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    defs.innerHTML = `<style>${exportedCssText}</style>`;
+    defs.innerHTML = `<style>${exportedVariables}\n${exportedCssText}</style>`;
     svgClone.insertBefore(defs, svgClone.firstChild);
 
     if (options.elementsToRemoveSelector) {
@@ -176,8 +181,7 @@ function _clearAttributes(svg: SVGElement) {
   }
 }
 
-function extractCSSFromDocument(targetSubtree: Element): string {
-  const exportedRules = new Set<CSSStyleRule>();
+function forEachStyleRule(callback: (rule: CSSStyleRule) => void) {
   for (let i = 0; i < document.styleSheets.length; i++) {
     let rules: CSSRuleList;
     try {
@@ -187,18 +191,68 @@ function extractCSSFromDocument(targetSubtree: Element): string {
         continue;
       }
     } catch (_e) {
+      // cross-origin stylesheets cannot be inspected
       continue;
     }
 
     for (let j = 0; j < rules.length; j++) {
       const rule = rules[j];
       if (rule instanceof CSSStyleRule) {
-        if (targetSubtree.querySelector(rule.selectorText)) {
-          exportedRules.add(rule);
-        }
+        callback(rule);
       }
     }
   }
+}
+
+/**
+ * The exported SVG is detached from the workspace, so CSS custom properties
+ * (the design tokens) declared on the workspace root are not in scope and every
+ * `var(--…)` reference in the exported rules would resolve to nothing, dropping
+ * colours, radii and shadows. Re-declare the resolved values on the exported
+ * root so the export matches what is on the canvas.
+ */
+function extractCSSVariables(source: Element | null | undefined): string {
+  if (!source) {
+    return "";
+  }
+  const computed = getComputedStyle(source);
+  const declarations = new Map<string, string>();
+
+  forEachStyleRule((rule) => {
+    for (let i = 0; i < rule.style.length; i++) {
+      const property = rule.style.item(i);
+      if (!property.startsWith("--") || declarations.has(property)) {
+        continue;
+      }
+      const value = computed.getPropertyValue(property).trim();
+      if (value) {
+        declarations.set(property, value);
+      }
+    }
+  });
+
+  if (declarations.size === 0) {
+    return "";
+  }
+  const variables = Array.from(
+    declarations,
+    ([name, value]) => `${name}: ${value};`
+  ).join(" ");
+  return `svg { ${variables} }`;
+}
+
+function extractCSSFromDocument(targetSubtree: Element): string {
+  const exportedRules = new Set<CSSStyleRule>();
+  forEachStyleRule((rule) => {
+    try {
+      if (targetSubtree.querySelector(rule.selectorText)) {
+        exportedRules.add(rule);
+      }
+    } catch (_e) {
+      // selectors that are not valid for querySelector (e.g. pseudo-elements)
+      // must not abort the whole export
+    }
+  });
 
   const exportedCssTexts: string[] = [];
   exportedRules.forEach((rule) => exportedCssTexts.push(rule.cssText));
