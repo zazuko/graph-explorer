@@ -54,6 +54,32 @@ test.describe("toolbar", () => {
       page.locator(".graph-explorer-toolbar__language-selector select")
     ).toBeVisible();
   });
+
+  /**
+   * Regression guard: the selector is a controlled `<select>` fed from
+   * `view.getLanguage()`. If the toolbar does not re-render on the language
+   * change, React resets the element and it keeps showing the old language.
+   */
+  test("keeps the data language selector in sync with the chosen language", async ({
+    page,
+  }) => {
+    await openLocalDemo(page);
+    const select = page.locator(
+      ".graph-explorer-toolbar__language-selector select"
+    );
+    await expect(select).toHaveValue("en");
+
+    await select.selectOption("ru");
+    await expect(select).toHaveValue("ru");
+
+    // it must also survive an unrelated re-render of the toolbar
+    await page.getByTitle("Zoom In").click();
+    await expect(select).toHaveValue("ru");
+
+    // and switch back again
+    await select.selectOption("en");
+    await expect(select).toHaveValue("en");
+  });
 });
 
 test.describe("instances search field", () => {
