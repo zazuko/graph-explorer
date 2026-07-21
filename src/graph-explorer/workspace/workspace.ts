@@ -543,7 +543,15 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
   componentDidMount() {
     const { workspace } = this.props;
     const editor = workspace.getEditor();
+    const view = workspace.getDiagram();
     this.listener.listen(editor.events, "changeAuthoringState", () => {
+      this.forceUpdate();
+    });
+    // The toolbar is registered as a paper widget once, so its element keeps the
+    // same reference and React bails out of re-rendering it when an ancestor
+    // updates. Re-render from here instead, otherwise the language `<select>`
+    // keeps showing the previously selected language.
+    this.listener.listen(view.events, "changeLanguage", () => {
       this.forceUpdate();
     });
   }
