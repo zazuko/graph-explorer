@@ -154,6 +154,7 @@ export interface ScaleOptions extends ViewportOptions {
 const CLASS_NAME = "graph-explorer-paper-area";
 const DEFAULT_ANIMATION_DURATION = 500;
 const LEFT_MOUSE_BUTTON = 0;
+const MIDDLE_MOUSE_BUTTON = 1;
 
 export class PaperArea extends React.Component<PaperAreaProps, State> {
   private readonly listener = new EventObserver();
@@ -506,6 +507,10 @@ export class PaperArea extends React.Component<PaperAreaProps, State> {
   }
 
   private shouldStartPanning(e: MouseEvent | React.MouseEvent<any>) {
+    // middle mouse button always pans, from anywhere on the canvas
+    if (e.button === MIDDLE_MOUSE_BUTTON) {
+      return true;
+    }
     const modifierPressed = e.ctrlKey || e.shiftKey || e.altKey;
     return e.button === LEFT_MOUSE_BUTTON && !modifierPressed;
   }
