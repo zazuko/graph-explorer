@@ -1,5 +1,10 @@
 import * as cola from "webcola";
-import ELK from "elkjs";
+// The default "elkjs" entry (lib/main.js) has a real `require('web-worker')`
+// call for its optional worker mode, which bundlers try to statically
+// resolve even though we never pass workerUrl/workerFactory. The prebuilt
+// browser bundle inlines its own worker stub instead, avoiding the need to
+// install that optional dependency just to satisfy the bundler.
+import ELK from "elkjs/lib/elk.bundled.js";
 
 import { DiagramModel } from "../diagram/model";
 import { boundsOf, Vector, computeGrouping, Size } from "../diagram/geometry";

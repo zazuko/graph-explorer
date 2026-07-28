@@ -15,6 +15,7 @@ const externalDeps = [
   "d3-color",
   "file-saverjs",
   "webcola",
+  "elkjs",
 ];
 
 // UMD global names for the external dependencies
@@ -27,6 +28,9 @@ const globals: Record<string, string> = {
   "d3-color": "d3",
   "file-saverjs": "saveAs",
   webcola: "cola",
+  // must match the exact import specifier used in source (elkjs/lib/elk.bundled.js,
+  // not the bare "elkjs" the `external` matcher above prefix-matches on)
+  "elkjs/lib/elk.bundled.js": "ELK",
 };
 
 export default defineConfig({
