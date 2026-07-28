@@ -8,6 +8,8 @@ export interface ToolbarProps {
   canPersistChanges?: boolean;
   onPersistChanges?: () => void;
   onForceLayout?: () => void;
+  onHierarchyLayout?: () => void;
+  onScatterLayout?: () => void;
   onClearAll?: () => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
@@ -120,6 +122,26 @@ export class DefaultToolbar extends React.Component<ToolbarProps, {}> {
           >
             <span className="fa fa-sitemap" aria-hidden="true" /> Layout
           </button>
+          {this.props.onHierarchyLayout ? (
+            <button
+              type="button"
+              className="graph-explorer-btn graph-explorer-btn-default"
+              title="Hierarchy layout"
+              onClick={this.props.onHierarchyLayout}
+            >
+              <span className="fa fa-code-fork" aria-hidden="true" /> Hierarchy
+            </button>
+          ) : null}
+          {this.props.onScatterLayout ? (
+            <button
+              type="button"
+              className="graph-explorer-btn graph-explorer-btn-default"
+              title="Scatter layout"
+              onClick={this.props.onScatterLayout}
+            >
+              <span className="fa fa-th" aria-hidden="true" /> Scatter
+            </button>
+          ) : null}
           <button
             type="button"
             className="graph-explorer-btn graph-explorer-btn-default"

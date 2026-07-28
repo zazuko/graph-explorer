@@ -893,11 +893,11 @@ export class EditorController {
       return Promise.all([
         this.model.requestElementData(elementIris),
         this.model.requestLinksOfType(),
-      ]).then(() => {
+      ]).then(async () => {
         this.view.performSyncUpdate();
         applyLayout(
           this.model,
-          forceLayout({
+          await forceLayout({
             model: this.model,
             group: element.id,
           })

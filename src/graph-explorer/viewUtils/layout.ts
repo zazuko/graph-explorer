@@ -1,4 +1,5 @@
 import * as cola from "webcola";
+import ELK from "elkjs";
 
 import { DiagramModel } from "../diagram/model";
 import { boundsOf, Vector, computeGrouping, Size } from "../diagram/geometry";
@@ -22,22 +23,14 @@ export interface LayoutLink {
   target: LayoutNode;
 }
 
-export function groupForceLayout(params: {
-  nodes: LayoutNode[];
-  links: LayoutLink[];
-  preferredLinkLength: number;
-  avoidOvelaps?: boolean;
-}) {
-  const layout = new cola.Layout()
-    .nodes(params.nodes)
-    .links(params.links)
-    .avoidOverlaps(params.avoidOvelaps)
-    .convergenceThreshold(1e-9)
-    .jaccardLinkLengths(params.preferredLinkLength)
-    .handleDisconnected(true);
-  layout.start(30, 0, 10, undefined, false);
-}
-
+/**
+ * Rectangle-only overlap resolution (nudges overlapping nodes apart with
+ * minimal displacement, ignoring links entirely). Kept on webcola: elk has
+ * no public equivalent — `org.eclipse.elk.overlapRemoval` is an internal
+ * option used by its own algorithms, not an invocable one — and this is a
+ * narrower, different problem than graph layout, so it isn't worth
+ * reimplementing webcola's solver from scratch.
+ */
 export function groupRemoveOverlaps(nodes: LayoutNode[]) {
   const nodeRectangles: cola.Rectangle[] = [];
   for (const node of nodes) {
@@ -169,6 +162,44 @@ export interface UnzippedCalculatedLayout extends CalculatedLayout {
   nestedLayouts: UnzippedCalculatedLayout[];
 }
 
+function gatherLayoutNodesAndLinks(
+  model: DiagramModel,
+  elements: readonly Element[],
+  fixedElements: ReadonlySet<Element> | undefined
+): { nodes: LayoutNode[]; links: LayoutLink[] } {
+  const nodes: LayoutNode[] = [];
+  const nodeById: Record<string, LayoutNode> = {};
+  for (const element of elements) {
+    const { x, y, width, height } = boundsOf(element);
+    const node: LayoutNode = {
+      id: element.id,
+      x,
+      y,
+      width,
+      height,
+      fixed: fixedElements && fixedElements.has(element) ? 1 : 0,
+    };
+    nodeById[element.id] = node;
+    nodes.push(node);
+  }
+
+  const links: LayoutLink[] = [];
+  for (const link of model.links) {
+    if (!model.isSourceAndTargetVisible(link)) {
+      continue;
+    }
+    const source = model.sourceOf(link);
+    const target = model.targetOf(link);
+    const sourceNode = nodeById[source.id];
+    const targetNode = nodeById[target.id];
+    if (sourceNode && targetNode) {
+      links.push({ source: sourceNode, target: targetNode });
+    }
+  }
+
+  return { nodes, links };
+}
+
 export function calculateLayout(params: {
   model: DiagramModel;
   layoutFunction: (
@@ -207,36 +238,77 @@ export function calculateLayout(params: {
       }
     }
 
-    const nodes: LayoutNode[] = [];
-    const nodeById: Record<string, LayoutNode> = {};
-    for (const element of elements) {
-      const { x, y, width, height } = boundsOf(element);
-      const node: LayoutNode = {
-        id: element.id,
-        x,
-        y,
-        width,
-        height,
-        fixed: fixedElements && fixedElements.has(element) ? 1 : 0,
-      };
-      nodeById[element.id] = node;
-      nodes.push(node);
+    const { nodes, links } = gatherLayoutNodesAndLinks(
+      model,
+      elements,
+      fixedElements
+    );
+    layoutFunction(nodes, links, group);
+
+    const positions = new Map<string, Vector>();
+    for (const node of nodes) {
+      positions.set(node.id, { x: node.x, y: node.y });
     }
 
-    const links: LayoutLink[] = [];
-    for (const link of model.links) {
-      if (!model.isSourceAndTargetVisible(link)) {
-        continue;
-      }
-      const source = model.sourceOf(link);
-      const target = model.targetOf(link);
-      const sourceNode = nodeById[source.id];
-      const targetNode = nodeById[target.id];
-      if (sourceNode && targetNode) {
-        links.push({ source: sourceNode, target: targetNode });
+    return {
+      positions,
+      group,
+      nestedLayouts,
+      keepAveragePosition: Boolean(selectedElements),
+    } as UnzippedCalculatedLayout;
+  }
+}
+
+/**
+ * Async counterpart to `calculateLayout`, for layout functions backed by
+ * elkjs (whose `layout()` call is promise-based). Mirrors the same
+ * grouping/fixedElements/selectedElements handling, including recursion
+ * into nested groups.
+ */
+export async function calculateLayoutAsync(params: {
+  model: DiagramModel;
+  layoutFunction: (
+    nodes: LayoutNode[],
+    links: LayoutLink[],
+    group: string
+  ) => Promise<void>;
+  fixedElements?: ReadonlySet<Element>;
+  group?: string;
+  selectedElements?: ReadonlySet<Element>;
+}): Promise<CalculatedLayout> {
+  const grouping = computeGrouping(params.model.elements);
+  const { layoutFunction, model, fixedElements, selectedElements } = params;
+
+  if (selectedElements && selectedElements.size <= 1) {
+    return {
+      positions: new Map(),
+      nestedLayouts: [],
+      keepAveragePosition: false,
+    } as UnzippedCalculatedLayout;
+  }
+  return internalRecursion(params.group);
+
+  async function internalRecursion(group: string): Promise<CalculatedLayout> {
+    const elementsToProcess = group
+      ? grouping.get(group)
+      : model.elements.filter((el) => el.group === undefined);
+    const elements = selectedElements
+      ? elementsToProcess.filter((el) => selectedElements.has(el))
+      : elementsToProcess;
+
+    const nestedLayouts: CalculatedLayout[] = [];
+    for (const element of elements) {
+      if (grouping.has(element.id)) {
+        nestedLayouts.push(await internalRecursion(element.id));
       }
     }
-    layoutFunction(nodes, links, group);
+
+    const { nodes, links } = gatherLayoutNodesAndLinks(
+      model,
+      elements,
+      fixedElements
+    );
+    await layoutFunction(nodes, links, group);
 
     const positions = new Map<string, Vector>();
     for (const node of nodes) {
@@ -397,34 +469,135 @@ export function removeOverlaps(params: {
   });
 }
 
-export function forceLayout(params: {
+const elk = new ELK();
+
+/**
+ * Runs an elkjs layout over the given nodes/links and writes the resulting
+ * x/y back onto the same `LayoutNode` objects (mutating in place), matching
+ * how `calculateLayout`/`calculateLayoutAsync` read positions back out.
+ */
+async function runElkLayout(
+  nodes: LayoutNode[],
+  links: LayoutLink[],
+  layoutOptions: Record<string, string>
+): Promise<void> {
+  const nodeById = new Map(nodes.map((node) => [node.id, node]));
+  const children = nodes.map((node) => ({
+    id: node.id,
+    width: node.width,
+    height: node.height,
+  }));
+  const edges = links.map((link, index) => ({
+    id: `e${index}`,
+    sources: [link.source.id],
+    targets: [link.target.id],
+  }));
+
+  const result = await elk.layout({ id: "root", layoutOptions, children, edges });
+  for (const child of result.children ?? []) {
+    const node = nodeById.get(child.id);
+    if (node && child.x !== undefined && child.y !== undefined) {
+      node.x = child.x;
+      node.y = child.y;
+    }
+  }
+}
+
+/**
+ * General-purpose layout, now backed by elkjs's `stress` algorithm instead
+ * of webcola (unmaintained since ~2018). `stress` targets a desired edge
+ * length like webcola's `jaccardLinkLengths` did, but doesn't guarantee
+ * zero overlap between unrelated nodes, so the result is still polished
+ * with `groupRemoveOverlaps` exactly like the old implementation did.
+ *
+ * `fixedElements` is honored on a best-effort basis via elk's `interactive`
+ * mode (bias the result toward the existing layout) — elk has no public
+ * per-node "pin in place" constraint the way webcola's `.fixed` flag did,
+ * so this is softer than before. No caller in this codebase currently
+ * passes `fixedElements`.
+ */
+export async function forceLayout(params: {
   model: DiagramModel;
   fixedElements?: ReadonlySet<Element>;
   group?: string;
   selectedElements?: ReadonlySet<Element>;
-}): CalculatedLayout {
+}): Promise<CalculatedLayout> {
   const { model, group, fixedElements, selectedElements } = params;
-  return calculateLayout({
+  const hasFixed = Boolean(fixedElements && fixedElements.size > 0);
+  return calculateLayoutAsync({
     model,
     group,
     fixedElements,
     selectedElements,
-    layoutFunction: (nodes, links) => {
-      if (fixedElements && fixedElements.size > 0) {
-        biasFreePadded(nodes, { x: 50, y: 50 }, () =>
-          groupForceLayout({
-            nodes,
-            links,
-            preferredLinkLength: 200,
-            avoidOvelaps: true,
-          })
-        );
-      } else {
-        groupForceLayout({ nodes, links, preferredLinkLength: 200 });
-        biasFreePadded(nodes, { x: 50, y: 50 }, () =>
-          groupRemoveOverlaps(nodes)
-        );
-      }
+    layoutFunction: async (nodes, links) => {
+      await runElkLayout(nodes, links, {
+        "elk.algorithm": "stress",
+        "elk.stress.desiredEdgeLength": "200",
+        "elk.spacing.nodeNode": "40",
+        ...(hasFixed ? { "elk.interactive": "true" } : {}),
+      });
+      biasFreePadded(nodes, { x: 50, y: 50 }, () => groupRemoveOverlaps(nodes));
+    },
+  });
+}
+
+/**
+ * Top-down layered layout via elkjs's `layered` algorithm, as an
+ * alternative to `forceLayout` for graphs that have a meaningful direction
+ * (e.g. `subClassOf`/`broader`-style edges). `separateConnectedComponents`
+ * keeps unrelated subgraphs from overlapping.
+ */
+export async function hierarchyLayout(params: {
+  model: DiagramModel;
+  group?: string;
+  selectedElements?: ReadonlySet<Element>;
+}): Promise<CalculatedLayout> {
+  const { model, group, selectedElements } = params;
+  return calculateLayoutAsync({
+    model,
+    group,
+    selectedElements,
+    layoutFunction: async (nodes, links) => {
+      await runElkLayout(nodes, links, {
+        "elk.algorithm": "layered",
+        "elk.direction": "DOWN",
+        "elk.separateConnectedComponents": "true",
+        "elk.spacing.nodeNode": "50",
+        "elk.layered.spacing.nodeNodeBetweenLayers": "100",
+      });
+    },
+  });
+}
+
+/**
+ * Compact, non-overlapping placement via elkjs's `box` algorithm — links
+ * are ignored entirely. Useful when you just want a tidy arrangement of a
+ * batch of elements rather than a layout that means anything graph-wise
+ * (e.g. dropping in several unrelated search results at once).
+ *
+ * elk's `disco` algorithm would be the closer match to "pack each connected
+ * component separately," but it isn't included in elkjs's default bundle
+ * (only `layered`/`force`/`stress`/`mrtree`/`radial`/`box`/etc. are) — `box`
+ * covers the "just place these" case directly since it doesn't consider
+ * edges at all.
+ */
+export async function scatterLayout(params: {
+  model: DiagramModel;
+  group?: string;
+  selectedElements?: ReadonlySet<Element>;
+}): Promise<CalculatedLayout> {
+  const { model, group, selectedElements } = params;
+  return calculateLayoutAsync({
+    model,
+    group,
+    selectedElements,
+    layoutFunction: async (nodes, links) => {
+      await runElkLayout(nodes, links, {
+        "elk.algorithm": "box",
+        "elk.box.packingMode": "GROUP_MIXED",
+        "elk.aspectRatio": "1.6",
+        "elk.spacing.nodeNode": "40",
+      });
     },
   });
 }

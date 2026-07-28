@@ -17,7 +17,6 @@ export { WorkspaceContext } from "./workspace/workspaceContext";
 export type { WorkspaceContextWrapper } from "./workspace/workspaceContext";
 
 export {
-  groupForceLayout,
   groupRemoveOverlaps,
   padded,
   biasFreePadded,

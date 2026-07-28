@@ -89,9 +89,12 @@ export type {
 } from "./editor/serializedDiagram";
 export {
   calculateLayout,
+  calculateLayoutAsync,
   removeOverlaps,
   applyLayout,
   forceLayout,
+  hierarchyLayout,
+  scatterLayout,
 } from "./viewUtils/layout";
 export type {
   CalculatedLayout,

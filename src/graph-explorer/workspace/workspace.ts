@@ -42,7 +42,12 @@ import { Navigator } from "../widgets/navigator";
 import { DefaultToolbar, ToolbarProps } from "./toolbar";
 import { WorkspaceMarkup, WorkspaceMarkupProps } from "./workspaceMarkup";
 import { WorkspaceEventHandler, WorkspaceEventKey } from "./workspaceContext";
-import { forceLayout, applyLayout } from "../viewUtils/layout";
+import {
+  forceLayout,
+  hierarchyLayout,
+  scatterLayout,
+  applyLayout,
+} from "../viewUtils/layout";
 
 const GRAPH_EXPLORER_WEBSITE = "https://graph-explorer.org/";
 const GRAPH_EXPLORER_LOGO_SVG: string | undefined = undefined;
@@ -406,11 +411,37 @@ export class Workspace extends Component<WorkspaceProps, WorkspaceState> {
     }
   }
 
-  forceLayout = () => {
+  forceLayout = async () => {
     const batch = this.model.history.startBatch("Force layout");
     batch.history.registerToUndo(RestoreGeometry.capture(this.model));
 
-    applyLayout(this.model, forceLayout({ model: this.model }));
+    applyLayout(this.model, await forceLayout({ model: this.model }));
+
+    for (const link of this.model.links) {
+      link.setVertices([]);
+    }
+
+    batch.store();
+  };
+
+  hierarchyLayout = async () => {
+    const batch = this.model.history.startBatch("Hierarchy layout");
+    batch.history.registerToUndo(RestoreGeometry.capture(this.model));
+
+    applyLayout(this.model, await hierarchyLayout({ model: this.model }));
+
+    for (const link of this.model.links) {
+      link.setVertices([]);
+    }
+
+    batch.store();
+  };
+
+  scatterLayout = async () => {
+    const batch = this.model.history.startBatch("Scatter layout");
+    batch.history.registerToUndo(RestoreGeometry.capture(this.model));
+
+    applyLayout(this.model, await scatterLayout({ model: this.model }));
 
     for (const link of this.model.links) {
       link.setVertices([]);
@@ -519,9 +550,22 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
         ? () => onPersistChanges(workspace)
         : undefined,
       onForceLayout: () => {
-        workspace.forceLayout();
-        workspace.getDiagram().performSyncUpdate();
-        workspace.zoomToFit();
+        workspace.forceLayout().then(() => {
+          workspace.getDiagram().performSyncUpdate();
+          workspace.zoomToFit();
+        });
+      },
+      onHierarchyLayout: () => {
+        workspace.hierarchyLayout().then(() => {
+          workspace.getDiagram().performSyncUpdate();
+          workspace.zoomToFit();
+        });
+      },
+      onScatterLayout: () => {
+        workspace.scatterLayout().then(() => {
+          workspace.getDiagram().performSyncUpdate();
+          workspace.zoomToFit();
+        });
       },
       onClearAll: workspace.clearAll,
       languages,

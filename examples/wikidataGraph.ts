@@ -50,8 +50,8 @@ function onWorkspaceMounted(workspace: Workspace) {
         .getModel()
         .importLayout({ diagram, preloadedElements, dataProvider })
     )
+    .then(() => workspace.forceLayout())
     .then(() => {
-      workspace.forceLayout();
       workspace.zoomToFit();
     });
 }
