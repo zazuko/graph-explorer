@@ -32,6 +32,22 @@ or
 
 `SPARQL_ENDPOINT=http://localhost:7200/repositories/foobar npm run demo` and open <http://localhost:10444/envendpoint.html>
 
+## Testing
+
+- `npm test` — unit tests (vitest)
+- `npm run test:e2e` — end-to-end tests (playwright)
+- `npm run lint` — lint `src`, `examples`, `tests`
+
+## Layout algorithms
+
+The toolbar offers three layout algorithms, all backed by [elkjs](https://github.com/kieler/elkjs) except overlap cleanup, which still uses [webcola](https://github.com/tgdwyer/WebCola):
+
+- **Layout** — general-purpose force-directed layout (elk's `stress` algorithm).
+- **Hierarchy** — top-down layered layout (elk's `layered`/Sugiyama algorithm), useful for directional relationships such as `subClassOf`. Note that for edges like `subClassOf` (child → parent), the *source* of the edge is ranked above the *target*, so children currently render above their parent rather than below — worth knowing before relying on it for class hierarchies.
+- **Scatter** — compact non-overlapping placement (elk's `box` algorithm) that ignores links entirely; useful for tidily arranging a batch of elements rather than producing a meaningful graph layout.
+
+webcola is unmaintained since ~2018 and has been dropped from every layout algorithm, but it's kept for one narrow utility elk has no public equivalent for: nudging a set of overlapping rectangles apart with minimal displacement (used after force layout and after expanding a node's connections). `fixedElements` (pinning specific nodes in place during layout) is only honored on a best-effort basis under elk, unlike webcola's hard pin.
+
 ## Installation
 
 `npm install graph-explorer`
