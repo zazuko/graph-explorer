@@ -9,10 +9,6 @@ export interface ToolbarProps {
   onPersistChanges?: () => void;
   onForceLayout?: () => void;
   onClearAll?: () => void;
-  onUndo?: () => void;
-  canUndo?: boolean;
-  onRedo?: () => void;
-  canRedo?: boolean;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
   onZoomToFit?: () => void;
@@ -139,28 +135,6 @@ export class DefaultToolbar extends React.Component<ToolbarProps, ToolbarState> 
         <div className="graph-explorer-btn-group graph-explorer-btn-group-sm">
           {this.renderSaveDiagramButton()}
           {this.renderPersistAuthoredChangesButton()}
-          {this.props.onUndo ? (
-            <button
-              type="button"
-              className="graph-explorer-btn graph-explorer-btn-default"
-              title="Undo"
-              disabled={this.props.canUndo === false}
-              onClick={this.props.onUndo}
-            >
-              <span className="fa fa-undo" aria-hidden="true" />
-            </button>
-          ) : null}
-          {this.props.onRedo ? (
-            <button
-              type="button"
-              className="graph-explorer-btn graph-explorer-btn-default"
-              title="Redo"
-              disabled={this.props.canRedo === false}
-              onClick={this.props.onRedo}
-            >
-              <span className="fa fa-repeat" aria-hidden="true" />
-            </button>
-          ) : null}
           {this.props.onClearAll ? (
             <button
               type="button"
