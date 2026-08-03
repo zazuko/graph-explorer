@@ -524,6 +524,10 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
         workspace.zoomToFit();
       },
       onClearAll: workspace.clearAll,
+      onUndo: workspace.undo,
+      canUndo: workspace.getModel().history.undoStack.length > 0,
+      onRedo: workspace.redo,
+      canRedo: workspace.getModel().history.redoStack.length > 0,
       languages,
       selectedLanguage: view.getLanguage(),
       onChangeLanguage: workspace.changeLanguage,
@@ -554,6 +558,13 @@ class ToolbarWrapper extends Component<ToolbarWrapperProps, {}> {
     this.listener.listen(view.events, "changeLanguage", () => {
       this.forceUpdate();
     });
+    this.listener.listen(
+      workspace.getModel().history.events,
+      "historyChanged",
+      () => {
+        this.forceUpdate();
+      }
+    );
   }
 
   componentWillUnmount() {
