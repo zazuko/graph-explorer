@@ -83,13 +83,22 @@ test.describe("halo actions", () => {
 });
 
 test.describe("toolbar actions", () => {
-  test("Clear All empties the canvas", async ({ page }) => {
+  test("Clear All requires a confirmation click before it empties the canvas", async ({
+    page,
+  }) => {
     await openLocalDemo(page);
     await createElementOnCanvas(page);
     await expect(page.locator(OVERLAYED)).toHaveCount(1);
 
-    await page.getByTitle("Clear All").click();
+    const clearAllButton = page.locator("button:has(.fa-trash)");
 
+    // first click only arms the confirmation, it must not clear yet
+    await clearAllButton.click();
+    await expect(page.locator(OVERLAYED)).toHaveCount(1);
+    await expect(clearAllButton).toHaveText(/Are you sure\?/);
+
+    // second click confirms and actually clears
+    await clearAllButton.click();
     await expect(page.locator(OVERLAYED)).toHaveCount(0);
   });
 
