@@ -21,9 +21,43 @@ export interface ToolbarProps {
   hidePanels?: boolean;
 }
 
-const CLASS_NAME = "graph-explorer-toolbar";
+interface ToolbarState {
+  clearAllArmed?: boolean;
+}
 
-export class DefaultToolbar extends React.Component<ToolbarProps, {}> {
+const CLASS_NAME = "graph-explorer-toolbar";
+// how long the "Clear All" confirmation stays armed before reverting on its own
+const CLEAR_ALL_ARM_TIMEOUT = 4000;
+
+export class DefaultToolbar extends React.Component<ToolbarProps, ToolbarState> {
+  state: ToolbarState = {};
+  private clearAllTimeout: ReturnType<typeof setTimeout> | undefined;
+
+  componentWillUnmount() {
+    this.clearClearAllTimeout();
+  }
+
+  private clearClearAllTimeout() {
+    if (this.clearAllTimeout !== undefined) {
+      clearTimeout(this.clearAllTimeout);
+      this.clearAllTimeout = undefined;
+    }
+  }
+
+  private onClearAllClick = () => {
+    if (this.state.clearAllArmed) {
+      this.clearClearAllTimeout();
+      this.setState({ clearAllArmed: false });
+      this.props.onClearAll();
+    } else {
+      this.clearClearAllTimeout();
+      this.clearAllTimeout = setTimeout(() => {
+        this.setState({ clearAllArmed: false });
+      }, CLEAR_ALL_ARM_TIMEOUT);
+      this.setState({ clearAllArmed: true });
+    }
+  };
+
   private onChangeLanguage = (
     event: React.SyntheticEvent<HTMLSelectElement>
   ) => {
@@ -104,12 +138,21 @@ export class DefaultToolbar extends React.Component<ToolbarProps, {}> {
           {this.props.onClearAll ? (
             <button
               type="button"
-              className="graph-explorer-btn graph-explorer-btn-default"
-              title="Clear All"
-              onClick={this.props.onClearAll}
+              className={
+                this.state.clearAllArmed
+                  ? "graph-explorer-btn graph-explorer-btn-danger"
+                  : "graph-explorer-btn graph-explorer-btn-default"
+              }
+              title={
+                this.state.clearAllArmed
+                  ? "Click again to confirm"
+                  : "Clear All"
+              }
+              onClick={this.onClearAllClick}
+              onBlur={() => this.setState({ clearAllArmed: false })}
             >
               <span className="fa fa-trash" aria-hidden="true" />
-              &nbsp;Clear All
+              &nbsp;{this.state.clearAllArmed ? "Are you sure?" : "Clear All"}
             </button>
           ) : null}
           <button
