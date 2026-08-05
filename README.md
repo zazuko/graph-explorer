@@ -47,6 +47,10 @@ npm run test:e2e     # end-to-end tests (playwright; starts its own dev server)
 
 `npm install graph-explorer`
 
+## Documentation
+
+See [docs/](./docs/README.md) for embedding it in your own application, connecting to a SPARQL endpoint (including full-text search), and customizing appearance.
+
 ## Building / Publishing
 
 ```
