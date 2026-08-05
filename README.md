@@ -32,6 +32,17 @@ or
 
 `SPARQL_ENDPOINT=http://localhost:7200/repositories/foobar npm run demo` and open <http://localhost:10444/envendpoint.html>
 
+## Before opening a PR
+
+CI (`.github/workflows/test.yaml`) runs these, in this order — run them locally first:
+
+```
+npm run lint       # lint src, examples, tests
+npm run build-all   # production build; also type-checks the whole project (via the typings step)
+npm test            # unit tests (vitest)
+npm run test:e2e     # end-to-end tests (playwright; starts its own dev server)
+```
+
 ## Installation
 
 `npm install graph-explorer`
