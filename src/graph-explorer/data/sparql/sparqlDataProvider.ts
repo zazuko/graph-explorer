@@ -700,10 +700,23 @@ export class SparqlDataProvider implements DataProvider {
         // eslint-disable-next-line no-useless-assignment
         textSearchPart += sparqlExtractLabel("?inst", "?extractedLabel");
       }
-      textSearchPart = resolveTemplate(fullTextSearch.queryPattern, {
-        text: params.text,
-        dataLabelProperty,
-      });
+      if (fullTextSearch.queryPatternPerWord) {
+        const words = params.text.trim().split(/\s+/).filter(Boolean);
+        textSearchPart =
+          words
+            .map((word) =>
+              resolveTemplate(fullTextSearch.queryPatternPerWord, {
+                word: escapeSparqlStringLiteral(word),
+                dataLabelProperty,
+              })
+            )
+            .join("\n") + "\nBIND(0 as ?score)";
+      } else {
+        textSearchPart = resolveTemplate(fullTextSearch.queryPattern, {
+          text: params.text,
+          dataLabelProperty,
+        });
+      }
     }
 
     const blankNodes = this.options.acceptBlankNodes;
@@ -1141,4 +1154,13 @@ function escapeIri(iri: string) {
     throw new Error(`Cannot escape IRI of type "${typeof iri}"`);
   }
   return `<${iri}>`;
+}
+
+/** Escapes a value for embedding in a double-quoted SPARQL string literal. */
+function escapeSparqlStringLiteral(value: string) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r");
 }

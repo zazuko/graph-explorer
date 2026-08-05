@@ -236,8 +236,11 @@ export interface FullTextSearchSettings {
   /**
    * SPARQL query pattern to search/restrict results by text token.
    *
+   * Mutually exclusive with `queryPatternPerWord` — set exactly one of
+   * the two.
+   *
    * Parametrized variables:
-   *   - `${text}` text token
+   *   - `${text}` text token, as typed by the user (may contain multiple words)
    *   - `${dataLabelProperty}` `dataLabelProperty` property from the settings
    *
    * Expected bindings:
@@ -245,7 +248,25 @@ export interface FullTextSearchSettings {
    *   - `?score` numerical score for ordering search results by relevance
    *   - `?extractedLabel` (optional; if `extractLabel` is enabled)
    */
-  queryPattern: string;
+  queryPattern?: string;
+
+  /**
+   * SPARQL query pattern applied once per whitespace-separated word in the
+   * search text (the resulting patterns are concatenated with an implicit
+   * AND), for full-text search syntaxes that only accept a single word per
+   * triple — e.g. QLever's `ql:has-word` magic property. Mutually exclusive
+   * with `queryPattern` — set exactly one of the two.
+   *
+   * Parametrized variables:
+   *   - `${word}` a single word from the search text (SPARQL-string-escaped)
+   *   - `${dataLabelProperty}` `dataLabelProperty` property from the settings
+   *
+   * Expected bindings: same as `queryPattern`, except `?score` only needs to
+   * be bound once overall (the generated query does this once after all the
+   * per-word patterns, not per word — repeated `BIND` of the same variable
+   * in one scope is invalid SPARQL).
+   */
+  queryPatternPerWord?: string;
 
   /**
    * When enabled, adds SPARQL patterns to try to extract label from IRI and
@@ -677,4 +698,21 @@ const DBPediaOverride: Partial<SparqlDataProviderSettings> = {
 export const DBPediaSettings: SparqlDataProviderSettings = {
   ...OWLRDFSSettings,
   ...DBPediaOverride,
+};
+
+const QLeverOverride: Partial<SparqlDataProviderSettings> = {
+  fullTextSearch: {
+    prefix: "PREFIX ql: <http://qlever.cs.uni-freiburg.de/builtin-functions/>\n",
+    // QLever's `ql:has-word` magic property only matches a single word per
+    // triple (case-insensitively); multiple words need one triple each,
+    // ANDed together, hence `queryPatternPerWord` instead of `queryPattern`.
+    queryPatternPerWord: `
+              ?inst \${dataLabelProperty} ?searchLabel .
+              ?searchLabel ql:has-word "\${word}" .
+        `,
+  },
+};
+export const QLeverSettings: SparqlDataProviderSettings = {
+  ...OWLRDFSSettings,
+  ...QLeverOverride,
 };
