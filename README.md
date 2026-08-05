@@ -36,12 +36,11 @@ or
 
 CI (`.github/workflows/test.yaml`) runs these, in this order — run them locally first:
 
-```
+```sh
 npm run lint       # lint src, examples, tests
-npm run build-all   # production build; also type-checks the whole project (via the typings step)
-npm test            # unit tests (vitest)
-npm run test:e2e     # end-to-end tests (playwright; starts its own dev server)
-```
+npm run build-all  # production build; also type-checks the whole project (via the typings step)
+npm test           # unit tests (vitest)
+npm run test:e2e   # end-to-end tests (playwright; starts its own dev server)
 
 ## Installation
 
