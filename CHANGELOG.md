@@ -1,5 +1,15 @@
 # Change Log
 
+## 2.1.0
+
+### Minor Changes
+
+- 4144258: Add QLeverSettings preset for full-text search via QLever's `ql:has-word` magic property, and support for full-text search syntaxes that only accept one word per triple (`FullTextSearchSettings.queryPatternPerWord`)
+
+### Patch Changes
+
+- 278fc6c: Require confirmation before "Clear All" removes everything from the diagram
+
 ## 2.0.1
 
 ### Patch Changes
